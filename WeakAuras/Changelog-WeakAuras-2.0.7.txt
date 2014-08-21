@@ -1,0 +1,179 @@
+------------------------------------------------------------------------
+r65 | stanzilla | 2014-07-09 18:16:48 +0000 (Wed, 09 Jul 2014) | 12 lines
+Changed paths:
+   A /tags/2.0.7 (from /trunk:64)
+
+Tagging as 2.0.7. 
+
+*NEW: Option to disable imports (Stanzilla)
+*NEW: Option to load/not load auras in Pet Battles (esiemiat)
+*NEW: Added 'Dynamic' to the Time Precision options. This will return 1 or 2 digits after the comma when the "Time" of an aura is less than 3 seconds. This value is hardcoded (Znuff)
+*NEW: Added font outline option for the "icon" region type. Defaults to "OUTLINE". (Znuff)
+*NEW: Add an "interrupt" word - same style as others (Hobo font with shaded outline) (Mikk)
+*NEW: Add Mythic to the raid difficulty load condition in prep for 6.0 (MysticalOS)
+*FIX: Make the tooltip scanner "size" parser understand "1,234" not just "1234" (Mikk)
+*FIX: nil error with unitCaster
+*CHANGE: More work on fighting scammers. (nebula169)
+*CHANGE: Handle subnamespaces in translations correctly and add missing translations to WowAce tool (Stanzilla & cremor)
+------------------------------------------------------------------------
+r64 | stanzilla | 2014-07-09 18:07:40 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+Cleanup after nebula169..this guy... (<3)
+------------------------------------------------------------------------
+r63 | nebula169 | 2014-07-09 18:04:43 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+clean up on aisle Stanzilla!
+------------------------------------------------------------------------
+r62 | stanzilla | 2014-07-09 17:59:59 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+clarify tooltip and move button further to the right.
+------------------------------------------------------------------------
+r61 | stanzilla | 2014-07-09 17:55:59 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+Tooltip for Import disabler now works.
+------------------------------------------------------------------------
+r60 | nebula169 | 2014-07-09 17:55:32 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+missed a table level
+------------------------------------------------------------------------
+r59 | nebula169 | 2014-07-09 17:51:58 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+check all triggers for custom code on import
+------------------------------------------------------------------------
+r58 | nebula169 | 2014-07-09 17:29:49 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAuras.lua
+
+wrap the assert in a pcall so nothing breaks
+------------------------------------------------------------------------
+r57 | nebula169 | 2014-07-09 16:45:32 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAuras.lua
+
+add pcall to blocked function list
+------------------------------------------------------------------------
+r56 | nebula169 | 2014-07-09 16:45:29 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAuras.lua
+
+add custom functions to the restricted environment before assert()
+------------------------------------------------------------------------
+r55 | nebula169 | 2014-07-09 14:56:02 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+fix showing name in transmit tooltip
+------------------------------------------------------------------------
+r54 | stanzilla | 2014-07-09 14:26:27 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+check the button if the setting is enabled.
+------------------------------------------------------------------------
+r53 | nebula169 | 2014-07-09 14:18:25 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+clean up some globals/typos
+------------------------------------------------------------------------
+r52 | stanzilla | 2014-07-09 14:09:04 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+Import disabled function now works, just need to fix the tooltip
+------------------------------------------------------------------------
+r51 | stanzilla | 2014-07-09 13:56:11 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+don't spam the custom code message
+------------------------------------------------------------------------
+r50 | stanzilla | 2014-07-09 13:49:33 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+changes, yes I like Tupac.
+------------------------------------------------------------------------
+r49 | stanzilla | 2014-07-09 13:42:30 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+needs more end
+------------------------------------------------------------------------
+r48 | stanzilla | 2014-07-09 13:37:45 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+
+more working, less retard
+------------------------------------------------------------------------
+r47 | stanzilla | 2014-07-09 13:18:54 +0000 (Wed, 09 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Transmission.lua
+   M /trunk/WeakAurasOptions/WeakAurasOptions.lua
+
+Check for pcall in imported auras, warn when imported code contains a custom trigger, more work on disable/save import feature.
+------------------------------------------------------------------------
+r46 | stanzilla | 2014-07-06 14:18:05 +0000 (Sun, 06 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Localization-esES.lua
+   M /trunk/Localization-esMX.lua
+   M /trunk/Localization-frFR.lua
+   M /trunk/Localization-koKR.lua
+   M /trunk/Localization-ptBR.lua
+   M /trunk/Localization-ruRU.lua
+   M /trunk/Localization-zhCN.lua
+   M /trunk/Localization-zhTW.lua
+
+handle-subnamespaces="none" for all the other locales as this seems to be working.
+------------------------------------------------------------------------
+r45 | cremor | 2014-07-06 09:06:28 +0000 (Sun, 06 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Localization-deDE.lua
+
+Try to fix deDE localization keyword substitution by adding the missing comma.
+------------------------------------------------------------------------
+r44 | stanzilla | 2014-07-05 17:29:39 +0000 (Sat, 05 Jul 2014) | 2 lines
+Changed paths:
+   M /trunk/Localization-deDE.lua
+
+try handle-subnamespaces="none" to see if it fixes #29
+/me glares at Torhal
+------------------------------------------------------------------------
+r43 | stanzilla | 2014-07-04 15:14:04 +0000 (Fri, 04 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Prototypes.lua
+
+localize In Pet Battle
+------------------------------------------------------------------------
+r42 | stanzilla | 2014-07-03 23:56:53 +0000 (Thu, 03 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/Prototypes.lua
+   M /trunk/WeakAuras.lua
+
+add pet battle option for auras, thanks esiemiat
+------------------------------------------------------------------------
+r41 | stanzilla | 2014-07-03 03:58:41 +0000 (Thu, 03 Jul 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAuras.lua
+
+add a nil-check for unitCaster
+------------------------------------------------------------------------
+r40 | mikk | 2014-05-25 01:34:30 +0000 (Sun, 25 May 2014) | 1 line
+Changed paths:
+   M /trunk/WeakAuras.lua
+
+Make the tooltip scanner "size" parser understand "1,234" not just "1234". Groumf Blizzard.
+------------------------------------------------------------------------
