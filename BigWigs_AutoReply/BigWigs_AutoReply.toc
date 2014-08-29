@@ -1,0 +1,11 @@
+## Interface: 50400
+## Title: Big Wigs [|cffeda55fAuto Reply|r]
+## Author: Kiezo
+## Notes: Auto reply module for BigWigs
+## Version: 1.12
+## Dependencies: BigWigs
+## SavedVariables: BigWigs_AutoReplyReportHealth, BigWigs_AutoReplyReportStatus, BigWigs_AutoReplyFilterWhispers, BigWigs_AutoReplyIgnoreList
+
+embeds.xml
+
+AutoReply.lua

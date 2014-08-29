@@ -1,0 +1,21 @@
+tag v1.11
+d2e1e6b67037a9bab314ceca36b9c0e26bf9806e
+John Pasula <ackis@shaw.ca>
+2009-08-07 10:59:28 -0600
+
+Tagging as v1.11
+
+
+--------------------
+
+John Pasula:
+	- ToC/Version/Docs update... I never got a chance to actually test this to see if it worked :P
+	- Update ToC
+	- Update project revision.
+	- Change some of the triggers around.
+	- Convert enUS to use localization app.
+	- Update .pkgmeta.
+	- Fix locals issues and replacements.
+	- Add deDE
+	- Fix the wiki link
+	- Iniitial commit super dry-coded.

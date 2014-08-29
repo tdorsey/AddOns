@@ -1,0 +1,17 @@
+## Interface: 50400
+## Title: Big Wigs |cffff0000+|r|cffffffffZon'ozz Icons|r
+## Notes: Sets raid target icons on players affected by Warlord Zon'ozz's Disrupting Shadows debuff.
+## Notes-deDE: Setzt Raidsymbole auf Spieler, die von Kriegsherr Zon'ozz' "Störende Schatten"-Fähigkeit betroffen sind.
+## Version: 1.2.9cf732d
+## Author: Gnarfoz
+## LoadOnDemand: 1
+## Dependencies: BigWigs
+## X-BigWigs-LoadOn-ZoneId: 824
+## X-Email: gnarfoz@gmail.com
+## X-Category: Raid
+## X-Curse-Packaged-Version: 1.2
+## X-Curse-Project-Name: BigWigs_ZonozzIcons
+## X-Curse-Project-ID: bigwigs_zonozzicons
+## X-Curse-Repository-ID: wow/bigwigs_zonozzicons/mainline
+
+icons.lua

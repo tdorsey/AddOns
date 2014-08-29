@@ -1,0 +1,64 @@
+------------------------------------------------------------------------
+r16 | nebula169 | 2013-05-24 22:42:27 +0000 (Fri, 24 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+add /bwts to open the settings panel
+------------------------------------------------------------------------
+r15 | nebula169 | 2013-05-24 07:06:13 +0000 (Fri, 24 May 2013) | 1 line
+Changed paths:
+   M /trunk/BigWigs_Transcriptor.toc
+
+TOC bump
+------------------------------------------------------------------------
+r14 | nebula169 | 2013-05-24 07:05:47 +0000 (Fri, 24 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+tweaks
+------------------------------------------------------------------------
+r13 | nebula169 | 2013-05-08 13:00:08 +0000 (Wed, 08 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+it's profile, not profiles, damit
+------------------------------------------------------------------------
+r12 | nebula169 | 2013-05-08 12:33:29 +0000 (Wed, 08 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+fix some locale strings
+------------------------------------------------------------------------
+r11 | nebula169 | 2013-05-08 04:09:54 +0000 (Wed, 08 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+aaand another
+------------------------------------------------------------------------
+r10 | nebula169 | 2013-05-08 04:01:01 +0000 (Wed, 08 May 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+fix typo
+------------------------------------------------------------------------
+r9 | nebula169 | 2013-05-08 00:52:09 +0000 (Wed, 08 May 2013) | 1 line
+Changed paths:
+   M /trunk/BigWigs_Transcriptor.toc
+   A /trunk/Locales.lua
+
+may as well add other locales
+------------------------------------------------------------------------
+r8 | nebula169 | 2013-05-08 00:41:49 +0000 (Wed, 08 May 2013) | 3 lines
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+add ignored event toggles to the panel (the ldb menu is annoying)
+add an option to enable for lfr
+save your ignored events in case you nuke your Transcriptor db
+------------------------------------------------------------------------
+r7 | nebula169 | 2013-03-22 09:18:37 +0000 (Fri, 22 Mar 2013) | 1 line
+Changed paths:
+   M /trunk/Transcriptor.lua
+
+add some memory checking stuff since I keep blowing up my db
+------------------------------------------------------------------------

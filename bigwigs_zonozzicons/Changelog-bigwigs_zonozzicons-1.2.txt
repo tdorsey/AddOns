@@ -1,0 +1,12 @@
+tag 1.2
+d1106e00aa2ecc643245e75448134cf82f7c7a49
+Gnarfoz (Christian Wiese) <gnarfoz@gmail.com>
+2014-02-07 21:08:20 +0100
+
+Tag 1.2
+
+
+--------------------
+
+Gnarfoz (Christian Wiese):
+	- I guess this is how this works now.

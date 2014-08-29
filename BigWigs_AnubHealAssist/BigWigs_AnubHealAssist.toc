@@ -1,0 +1,16 @@
+## Interface: 30300
+## Title: Big Wigs |cffff0000+|r|cffffffffAnub Heal Assist|r
+## Notes: Assigns icons to the people who get Penetrating Cold.
+## Author: Rabbit
+## Version: 1
+## X-Category: Raid
+## X-BigWigs-LoadOn-Zone: Trial of the Crusader
+## Dependencies: BigWigs
+## LoadOnDemand: 1
+## X-Curse-Packaged-Version: r2
+## X-Curse-Project-Name: BigWigs_AnubHealAssist
+## X-Curse-Project-ID: bigwigs-anubhealassist
+## X-Curse-Repository-ID: wow/bigwigs-anubhealassist/mainline
+
+assist.lua
+

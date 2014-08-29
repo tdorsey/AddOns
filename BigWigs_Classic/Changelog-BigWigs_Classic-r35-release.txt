@@ -1,0 +1,14 @@
+------------------------------------------------------------------------
+r35 | funkydude | 2014-08-06 18:06:03 +0000 (Wed, 06 Aug 2014) | 1 line
+Changed paths:
+   A /tags/r35-release (from /trunk:34)
+
+Tagging as r35-release
+------------------------------------------------------------------------
+r34 | funkydude | 2014-08-06 18:03:49 +0000 (Wed, 06 Aug 2014) | 1 line
+Changed paths:
+   M /trunk/BlackwingLair/Nefarian.lua
+   M /trunk/MoltenCore/Ragnaros.lua
+
+Nefarian/Ragnaros: Prevent module conflicts when loaded at the same time as Firelands/BWD.
+------------------------------------------------------------------------

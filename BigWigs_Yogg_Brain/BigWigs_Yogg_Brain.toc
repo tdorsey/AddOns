@@ -1,0 +1,34 @@
+## Title: Big Wigs |cffff0000+|r|cffffffffYogg Brain|r
+## X-Curse-Packaged-Version: v1.11
+## X-Curse-Project-Name: BigWigs Yogg Brain
+## X-Curse-Project-ID: bigwigs-yogg-brain
+## X-Curse-Repository-ID: wow/bigwigs-yogg-brain/mainline
+
+## Notes: Displays the health of Yogg-Saron's brain during Phase 2 for all raid members.
+
+## Author: Ackis
+## eMail: ackis AT shaw DOT ca
+## X-Author-Faction: Horde
+## X-Author-Server: Thunderlord US
+
+## X-Donate: http://www.curseforge.com/projects/bigwigs-yogg-brain/#w_donations
+
+## Interface: 30200
+## Version: 1.11
+## X-Revision: @project-revision@
+## X-Date: 2009-08-07T16:59:18Z
+
+## X-credits: Funkydude, Saroz
+
+## X-Category: Raid
+## X-Localizations: enUS
+## X-Website: http://www.wowwiki.com/BigWigs_YoggBrain/
+## X-Feedback: http://wow.curse.com/downloads/wow-addons/details/bigwigs-yogg-brain.aspx
+
+## X-BigWigs-LoadInZone: Ulduar
+
+## Dependencies: BigWigs
+
+## LoadOnDemand: 1
+
+BigWigs_YoggBrain.lua

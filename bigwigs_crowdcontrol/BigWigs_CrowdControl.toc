@@ -1,0 +1,16 @@
+## Interface: 30000
+## Title: Big Wigs |cffff0000+|r|cffffffffCrowd Control|r
+## Notes: Creates timer bars for Polymorphs/Shackles/Banishes etc.
+## Author: Ethan Centaurai
+## Version: 1.0
+## LoadOnDemand: 1
+## Dependencies: BigWigs
+## OptionalDeps: BigWigs_Plugins
+## X-Website: http://www.wowace.com/
+## X-Category: Raid
+## X-License: GPL v2 or later
+## X-BigWigs-LoadWithCore: 1
+## X-Curse-Packaged-Version: v1.0-beta
+
+Core.lua
+

@@ -1,0 +1,16 @@
+## Interface: 30300
+## Title: Big Wigs |cffff0000+|r|cffffffffSindragosa Icons|r
+## Notes: Assigns icons to the people who get tombed.
+## Author: Rabbit
+## Version: 1
+## X-Category: Raid
+## X-BigWigs-LoadOn-Zone: Icecrown Citadel
+## Dependencies: BigWigs
+## LoadOnDemand: 1
+## X-Curse-Packaged-Version: r2
+## X-Curse-Project-Name: BigWigs_SindragosaIcons
+## X-Curse-Project-ID: bigwigs_sindragosaicons
+## X-Curse-Repository-ID: wow/bigwigs_sindragosaicons/mainline
+
+icons.lua
+
