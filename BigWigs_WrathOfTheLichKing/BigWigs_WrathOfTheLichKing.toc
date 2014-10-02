@@ -1,5 +1,5 @@
 ## Interface: 50400
-## X-Curse-Packaged-Version: r26-release
+## X-Curse-Packaged-Version: r35-release
 ## X-Curse-Project-Name: BigWigs_WrathOfTheLichKing
 ## X-Curse-Project-ID: bigwigs_wrathofthelichking
 ## X-Curse-Repository-ID: wow/bigwigs_wrathofthelichking/mainline

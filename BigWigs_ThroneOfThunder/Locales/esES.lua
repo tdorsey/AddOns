@@ -11,6 +11,8 @@ end
 L = BigWigs:NewBossLocale("Horridon", "esES") or BigWigs:NewBossLocale("Horridon", "esMX")
 if L then
 	L.charge_trigger = "fija la vista" -- Horridon sets his eyes on PLAYERNAME and stamps his tail!
+	--L.door_trigger = "pour" -- Farraki forces pour from the Farraki Tribal Door!
+	--L.orb_trigger = "charge" -- PLAYERNAME forces Horridon to charge the Farraki door!
 
 	L.chain_lightning_message = "¡Tu foco está casteando Cadena de relámpagos!"
 	L.chain_lightning_bar = "Foco: Cadena de relámpagos"
@@ -40,6 +42,7 @@ if L then
 	L.priestess_adds_desc = "Aviso para todo tipo de adds de la Suma Sacerdotisa Mar'li."
 	L.priestess_adds_message = "Add de la Sacerdotisa"
 
+	--L.priestess_heal = "%s was healed!"
 	L.assault_stun = "¡Tanque aturdido!"
 	L.full_power = "Poder máximo"
 	L.assault_message = "Asalto"
@@ -177,7 +180,6 @@ if L then
 
 	L.last_inermission_ability = "¡Última habilidad del intermedio usada!"
 	L.safe_from_stun = "Probablemente estés a salvo de los aturdimientos por Sobrecarga"
-	L.intermission = "Intermedio"
 	L.diffusion_add = "Difusión de adds"
 	L.shock = "Choque"
 	L.static_shock_bar = "<Choque estático dividido>"
@@ -195,7 +197,7 @@ if L then
 	L.balls_desc = "Bolas de Ánima (rojo) y Vita (azul), que determinan que habilidades ganará Ra-den"
 
 	L.assistPrint = "Un plugin llamado 'BigWigs_Ra-denAssist' ha sido publicado para ayudarte en el encuentro contra Ra-den y puede que tu grupo esté interesado en probarlo."
-	
+
 	L.corruptedballs = "Bolas corruptas"
 	L.corruptedballs_desc = "Bolas Vita y Ánima corruptas, que, o bien aumenta el daño (Vita) o hp máximo (Ánima)"
 
@@ -209,8 +211,6 @@ end
 
 L = BigWigs:NewBossLocale("Throne of Thunder Trash", "esES") or BigWigs:NewBossLocale("Throne of Thunder Trash", "esMX")
 if L then
-	L.displayname = "Trash"
-
 	L.stormcaller = "Invocatormentas Zandalari"
 	L.stormbringer = "Extiendetormentas Draz'kil"
 	L.monara = "Monara"

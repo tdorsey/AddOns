@@ -46,6 +46,8 @@ L["north_tower"] = "Tour nord"
 L["north_tower_trigger"] = "La porte qui barrait l’accès à la tour nord a été détruite !"
 L["south_tower"] = "Tour sud"
 L["south_tower_trigger"] = "La porte qui barrait l’accès à la tour sud a été détruite !"
+L["start_trigger_alliance"] = "Très bien ! Commandos de débarquement, en formation ! Les fantassins en première ligne !"
+L["start_trigger_horde"] = "Bien joué. La première brigade vient d’accoster." -- Needs review
 L["tower_defender"] = "Défenseur de la tour"
 L["towers"] = "Tours"
 L["towers_desc"] = "Alertes quand les portes des tours sont détruites."
@@ -109,10 +111,10 @@ L["start_trigger"] = "Est-ce que ça tourne ?" -- Needs review
 L["win_trigger"] = "Système en cours de réinitialisation. Veuillez ne pas le débrancher, ou il pourrait vous sauter à la figure."
 
 
-	--L.crates = "Crates"
-	--L.crates_desc = "Messages for how much power you still need and how many large/medium/small crates it will take."
-	--L.full_power = "Full Power!"
-	--L.power_left = "%d left! (%d/%d/%d)"
+	L.crates = "Caisses"
+	L.crates_desc = "Messages indiquant combien d'énergie titanesque vous avez encore besoin et combien de grandes/moyennes/petites caisses sont nécessaires pour y arriver."
+	L.full_power = "Énergie maximale !"
+	L.power_left = "Plus que %d ! (%d/%d/%d)"
 end
 
 L = BigWigs:NewBossLocale("Thok the Bloodthirsty", "frFR")
@@ -136,7 +138,6 @@ L["item_magnet"] = "Aimant"
 L["item_mines"] = "Mines"
 L["item_missile"] = "Missile"
 L["laser_on_you"] = "Laser sur vous PIOU PIOU !"
-L["laser_say"] = "Laser PIOU PIOU"
 L["overcharged_crawler_mine"] = "Mine rampante surchargée"
 L["saw_blade_near_you"] = "Lame de scie près de vous (pas sur vous)"
 L["saw_blade_near_you_desc"] = "Vous devriez désactiver ceci pour éviter d'être spammé si votre raid est regroupé dans votre stratégie."
@@ -186,7 +187,6 @@ L["clump_check_desc"] = "Vérifie toutes les 3 secondes durant les bombardements
 L["clump_check_warning"] = "Regroupement détecté, arrivée d'une étoile"
 L["empowered_message"] = "%s est maintenant surpuissant !"
 L["farseer_trigger"] = "Long-voyants, soignez nos blessures !"
-L["intermission"] = "Intervalle"
 L["ironstar_impact_desc"] = "Une barre de délai indiquant quand l'Étoile de fer touchera le mur d'en face."
 L["ironstar_rolling"] = "L'Étoile de fer roule !"
 L["manifest_rage"] = "Manifestation de la rage"

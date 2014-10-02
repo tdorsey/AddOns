@@ -24,6 +24,9 @@ local updateData = function()
 	local tree = GetSpecialization()
 	if tree then
 		myRole = GetSpecializationRole(tree)
+		if IsSpellKnown(152276) and UnitBuff("player", (GetSpellInfo(156291))) then -- Gladiator Stance
+			myRole = "DAMAGER"
+		end
 	end
 
 	local _, _, diff = GetInstanceInfo()
@@ -243,7 +246,7 @@ do
 				-- XXX compat
 				local mobId
 				if isWOD then
-					local _, _, _, _, _, id = strsplit(":", destGUID)
+					local _, _, _, _, _, id = strsplit("-", destGUID)
 					mobId = tonumber(id) or -1
 				else
 					mobId = tonumber(sub(destGUID, 6, 10), 16)
@@ -444,7 +447,7 @@ do
 				if type(id) == "number" then
 					-- XXX compat
 					if isWOD then
-						local _, _, _, _, _, id = strsplit(":", guid)
+						local _, _, _, _, _, id = strsplit("-", guid)
 						guid = tonumber(id) or -1
 					else
 						guid = tonumber(sub(guid, 6, 10), 16)
@@ -591,7 +594,7 @@ end
 
 function boss:Heroic()
 	-- XXX compat so I don't have to change every :Heroic() call initially
-	if self.zoneId == 953 and difficulty == 16 then
+	if self.zoneId == 953 and difficulty == 16 then -- Mythic SoO
 		return true
 	end
 
@@ -604,7 +607,7 @@ end
 
 function boss:MobId(guid)
 	if isWOD and guid then -- XXX compat
-		local _, _, _, _, _, id = strsplit(":", guid)
+		local _, _, _, _, _, id = strsplit("-", guid)
 		return tonumber(id) or -1
 	else
 		return guid and tonumber(sub(guid, 6, 10), 16) or -1
@@ -655,6 +658,20 @@ do
 	end
 
 	function boss:Range(player, otherPlayer)
+		if isWOD then -- XXX compat, cleanup
+			if not otherPlayer then
+				local squaredPos = UnitDistanceSquared(player)
+				return squaredPos == 0 and 200 or squaredPos^0.5
+			else
+				local tx, ty = UnitPosition(player)
+				local px, py = UnitPosition(otherPlayer)
+				local dx = tx - px
+				local dy = ty - py
+				local distance = (dx * dx + dy * dy) ^ 0.5
+				return distance
+			end
+		end
+
 		if not activeMap then return 200 end
 
 		SetMapToCurrentZone()
@@ -698,7 +715,7 @@ function boss:Damager()
 	then
 		role = "RANGED"
 	elseif
-		class == "ROGUE" or (class == "WARRIOR" and tree ~= 3) or (class == "DEATHKNIGHT" and tree ~= 1) or
+		class == "ROGUE" or class == "WARRIOR" or (class == "DEATHKNIGHT" and tree ~= 1) or
 		(class == "PALADIN" and tree == 3) or (class == "DRUID" and tree == 2) or (class == "SHAMAN" and tree == 2) or
 		(class == "MONK" and tree == 3)
 	then

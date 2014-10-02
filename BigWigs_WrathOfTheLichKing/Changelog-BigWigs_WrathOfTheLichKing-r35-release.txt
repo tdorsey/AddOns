@@ -1,0 +1,19 @@
+------------------------------------------------------------------------
+r35 | funkydude | 2014-09-01 22:39:53 +0000 (Mon, 01 Sep 2014) | 1 line
+Changed paths:
+   A /tags/r35-release (from /trunk:34)
+
+Tagging as r35-release
+------------------------------------------------------------------------
+r34 | funkydude | 2014-09-01 22:33:49 +0000 (Mon, 01 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Citadel/LichKing.lua
+
+Citadel/LichKing: Add Tirion as an enable trigger, separate warmup bar into a proper warmup option.
+------------------------------------------------------------------------
+r33 | funkydude | 2014-05-12 16:24:25 +0000 (Mon, 12 May 2014) | 1 line
+Changed paths:
+   M /trunk/Northrend/Halion.lua
+
+Halion: comment out invalid spell ids.
+------------------------------------------------------------------------

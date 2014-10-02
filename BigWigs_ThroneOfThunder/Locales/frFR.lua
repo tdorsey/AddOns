@@ -12,6 +12,7 @@ L = BigWigs:NewBossLocale("Horridon", "frFR")
 if L then
 	L.charge_trigger = "pose les yeux sur"
 	L.door_trigger = "surgissent de la porte"
+	--L.orb_trigger = "charge" -- PLAYERNAME forces Horridon to charge the Farraki door!
 
 	L.chain_lightning_message = "Votre focalisation est entrain d'incanter Chaîne d'éclairs !"
 	L.chain_lightning_bar = "Focalisation : Chaîne d'éclairs"
@@ -42,6 +43,7 @@ if L then
 	L.custom_on_markpossessed = "Marquage du boss possédé"
 	L.custom_on_markpossessed_desc = "Marque le boss possédé à l'aide d'une icône de crâne. Nécessite d'être assistant ou chef de raid."
 
+	--L.priestess_heal = "%s was healed!"
 	L.assault_stun = "Tank étourdi !"
 	L.assault_message = "Assaut"
 	L.full_power = "Puissance maximale"
@@ -170,7 +172,6 @@ if L then
 
 	L.last_inermission_ability = "Dernière technique d'entracte utilisée !"
 	L.safe_from_stun = "Vous êtes probablement à l'abri des étourdissements de Surchargé"
-	L.intermission = "Intervalle"
 	L.diffusion_add = "Foudres diffuses"
 	L.shock = "Horion"
 	L.static_shock_bar = "<Split d'Horion statique>"
@@ -202,8 +203,6 @@ end
 
 L = BigWigs:NewBossLocale("Throne of Thunder Trash", "frFR")
 if L then
-	L.displayname = "Trash"
-
 	L.stormcaller = "Mande-foudre zandalari"
 	L.stormbringer = "Porte-tempête Draz’kil"
 	L.monara = "Monara"

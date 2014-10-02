@@ -23,9 +23,6 @@ local fixateList = {}
 
 local L = mod:NewLocale("enUS", true)
 if L then
-	L.intermission = "Intermission"
-	L.intermission_icon = "spell_arcane_blast"
-
 	L.volatile_anomaly, L.volatile_anomaly_desc = EJ_GetSectionInfo(9919)
 	L.volatile_anomaly_icon = "spell_arcane_arcane04"
 
@@ -48,7 +45,7 @@ function mod:GetOptions()
 		"stages", "bosskill"
 	}, {
 		[159515] = mod.displayName,
-		["volatile_anomaly"] = L.intermission,
+		["volatile_anomaly"] = CL.intermission,
 		[157801] = -9922,
 		[158553] = -9921,
 		["stages"] = "general",
@@ -71,7 +68,8 @@ function mod:OnBossEnable()
 	self:Log("SPELL_AURA_APPLIED", "IntermissionStart", 174057) -- Arcane Power
 	self:Log("SPELL_AURA_REMOVED", "IntermissionEnd", 174057)
 	self:Log("SPELL_AURA_APPLIED", "Slow", 157801)
-	self:Log("SPELL_AURA_APPLIED", "Fixate", 157763)
+	self:Log("SPELL_AURA_APPLIED", "FixateApplied", 157763)
+	self:Log("SPELL_AURA_REMOVED", "FixateRemoved", 157763)
 	self:Log("SPELL_AURA_APPLIED_DOSE", "CrushArmor", 158553)
 	self:Log("SPELL_CAST_SUCCESS", "KickToTheFace", 158563)
 
@@ -204,8 +202,8 @@ do
 	end
 
 	function mod:IntermissionStart(args)
-		self:Message("stages", "Neutral", nil, L.intermission, false)
-		self:Bar("stages", 65, L.intermission, L.intermission_icon)
+		self:Message("stages", "Neutral", nil, CL.intermission, false)
+		self:Bar("stages", 65, CL.intermission, "spell_arcane_blast")
 		self:Bar("volatile_anomaly", 14, L.volatile_anomaly, L.volatile_anomaly_icon)
 		self:ScheduleTimer(nextAdd, 14, self)
 	end
@@ -217,7 +215,7 @@ do
 end
 
 function mod:Slow(args)
-	if self:Dispeller("MAGIC", nil, args.spellId) then
+	if self:Dispeller("magic", nil, args.spellId) then
 		self:TargetMessage(args.spellId, args.destName, "Attention", "Alert", nil, true)
 	end
 end

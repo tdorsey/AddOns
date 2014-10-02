@@ -1,5 +1,5 @@
 ## Interface: 50400
-## X-Curse-Packaged-Version: r44-release
+## X-Curse-Packaged-Version: r46-release
 ## X-Curse-Project-Name: BigWigs_Cataclysm
 ## X-Curse-Project-ID: bigwigs_cataclysm
 ## X-Curse-Repository-ID: wow/bigwigs_cataclysm/mainline

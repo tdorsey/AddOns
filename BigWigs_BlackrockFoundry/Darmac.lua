@@ -6,7 +6,7 @@
 if not BigWigs.isWOD then return end -- XXX compat
 local mod, CL = BigWigs:NewBoss("Beastlord Darmac", 988, 1122)
 if not mod then return end
-mod:RegisterEnableMob(76796)
+mod:RegisterEnableMob(76865)
 --mod.engageId = 1694
 
 --------------------------------------------------------------------------------
@@ -42,18 +42,18 @@ L = mod:GetLocale()
 
 function mod:GetOptions()
 	return {
-		154960, "custom_off_pinned_marker", 154975,
+		{154960, "SAY"}, "custom_off_pinned_marker", 154975,
 		{155061, "TANK"}, 155198,
-		{155030, "TANK"}, 154989, {154981, "HEALER"}, "custom_off_conflag_marker", {155499, "FLASH"}, {155657, "FLASH"},
+		{155030, "TANK"}, {154989, "FLASH"}, {154981, "HEALER"}, "custom_off_conflag_marker", 155499, 155657,
 		{155236, "TANK"}, 155222, 155247,
-		155284, {159044, "FLASH"}, 155826,
+		155284, 159044, 155826,
 		"stages", "proximity", "berserk", "bosskill",
 	}, {
 		[154960] = -9298, -- Stage 1
 		[155061] = -9301, -- Cruelfang
 		[155030] = -9302, -- Dreadwing
 		[155236] = -9303, -- Ironcrusher
-		[155284] = ("%s (%s)"):format(EJ_GetSectionInfo(9304), GetDifficultyInfo(16)), -- Faultline (Mythic)
+		[155284] = ("%s (%s)"):format(EJ_GetSectionInfo(9304), CL.mythic), -- Faultline (Mythic)
 		["stages"] = "general",
 	}
 end
@@ -63,8 +63,8 @@ function mod:OnBossEnable()
 
 	-- Stage 1
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", nil, "boss1", "boss2")
-	self:Log("SPELL_AURA_APPLIED", "PinDownApplied", 154960)
-	self:Log("SPELL_SUMMON", "PinDownSpear", 154956)
+	self:Log("SPELL_AURA_APPLIED", "PinnedDown", 154960)
+	self:Log("SPELL_SUMMON", "SpearSummon", 154956)
 	self:Log("SPELL_CAST_START", "CallThePack", 154975)
 
 	-- Stage 2
@@ -99,7 +99,7 @@ function mod:OnBossEnable()
 
 	self:Death("SpearDeath", 76796) -- Heavy Spear
 	self:Death("Deaths", 76884, 76874, 76945, 76946) -- Cruelfang, Dreadwing, Ironcrusher, Faultline
-	self:Death("Win", 76796) -- Beastlord Darmac
+	self:Death("Win", 76865) -- Beastlord Darmac
 end
 
 function mod:OnEngage(diff)
@@ -161,7 +161,7 @@ function mod:INSTANCE_ENCOUNTER_ENGAGE_UNIT()
 	for i=1, 5 do
 		local unit = ("boss%d"):format(i)
 		local mobId = self:MobId(UnitGUID(unit))
-		if mobId > 0 and mobId ~= 76796 then
+		if mobId > 0 and mobId ~= 76865 then
 			currentBosses[mobId] = true
 			if activatedMounts[mobId] == nil then
 				self:StopBar(155061) -- Rend and Tear
@@ -203,7 +203,7 @@ function mod:Deaths(args)
 end
 
 function mod:UNIT_HEALTH_FREQUENT(unit)
-	if self:MobId(UnitGUID(unit)) == 76796 then
+	if self:MobId(UnitGUID(unit)) == 76865 then
 		local hp = UnitHealth(unit) / UnitHealthMax(unit) * 100
 		-- Warnings for 85%, 65%, 45%, and 25% for mythic
 		if (phase == 1 and hp < 90) or (phase == 2 and hp < 70) or (phase == 3 and hp < 50) or (phase == 4 and hp < 30) then
@@ -218,17 +218,17 @@ end
 
 function mod:UNIT_SPELLCAST_SUCCEEDED(unit, spellName, _, _, spellId)
 	if spellId == 155365 then -- Pin Down
-		self:Message(spellId, "Urgent", "Warning", CL.incoming:format(spellName))
+		self:Message(154960, "Urgent", "Warning", CL.incoming:format(spellName))
 	elseif spellId == 155221 then -- Iron Crusher's Tantrum
-		self:Message(155222, "Attention", nil, CL.count:format(tantrumCount))
+		self:Message(155222, "Attention", nil, CL.count:format(spellName, tantrumCount))
 		tantrumCount = tantrumCount + 1
-		self:CDBar(spellId, 26, CL.count:format(spellName, tantrumCount))
+		self:CDBar(155222, 26, CL.count:format(spellName, tantrumCount))
 	elseif spellId == 155520 then -- Darmac's Tantrum
-		self:Message(155222, "Attention", nil, CL.count:format(tantrumCount))
+		self:Message(155222, "Attention", nil, CL.count:format(spellName, tantrumCount))
 		tantrumCount = tantrumCount + 1
-		self:CDBar(spellId, 23, CL.count:format(spellName, tantrumCount))
+		self:CDBar(155222, 23, CL.count:format(spellName, tantrumCount))
 	elseif spellId == 155497 then -- Superheated Shrapnel
-		self:Message(155499, "Urgent", nil, CL.incoming:format(spellName))
+		self:Message(155499, "Urgent")
 		self:CDBar(155499, 25)
 	elseif spellId == 159044 or spellId == 162277 then -- Epicenter (Faultline/Darmac)
 		self:Message(159044, "Attention")
@@ -288,15 +288,16 @@ do
 	local pinnedList, scheduled = mod:NewTargetList(), nil
 	local function warnSpear(spellId)
 		if #pinnedList > 0 then
-			mod:TargetMessage(spellId, pinnedList, "Important", "Alarm", nil, true)
-		else
-			mod:Message(spellId, "Attention")
+			mod:TargetMessage(spellId, pinnedList, "Important", "Alarm", nil, nil, true)
 		end
 		scheduled = nil
 	end
 
-	function mod:PinDownApplied(args)
+	function mod:PinnedDown(args)
 		pinnedList[#pinnedList+1] = args.destName
+		if self:Me(args.destGUID) then
+			self:Say(args.spellId, 155365) -- Pin Down
+		end
 		if not spearList[args.sourceGUID] then
 			spearList[args.sourceGUID] = true
 			if self.db.profile.custom_off_pinned_marker and not markTimer then
@@ -305,7 +306,7 @@ do
 		end
 	end
 
-	function mod:PinDownSpear(args)
+	function mod:SpearSummon(args)
 		if not scheduled then
 			self:CDBar(154960, 20)
 			scheduled = self:ScheduleTimer(warnSpear, 0.2, 154960)
@@ -315,24 +316,22 @@ end
 
 function mod:CallThePack(args)
 	self:Message(args.spellId, "Attention")
-	self:CDBar(args.spellId, 20) -- 20-30
+	self:CDBar(args.spellId, 31.5) -- can be delayed
 end
 
 -- Stage 2
 
 do
-	local scheduled = nil
-	local function reset() scheduled = nil end
-
+	local prev = 0
 	function mod:RendAndTear(args)
 		if self:Tank(args.destName) then
 			local amount = args.amount or 1
 			self:StackMessage(args.spellId, args.destName, amount, "Attention", amount > 2 and "Warning")
 		end
-		if not scheduled then
-			-- XXX can hit multiple people at staggered times :\ SPELL_CAST_SUCCESS triggers multiple times, too
+		local t = GetTime()
+		if t-prev > 10 then -- XXX can hit multiple people at staggered times
 			self:CDBar(args.spellId, 12) -- 12-16
-			scheduled = self:ScheduleTimer(reset, 10)
+			prev = t
 		end
 	end
 end
@@ -342,8 +341,8 @@ function mod:SavageHowl(args)
 	self:Bar(args.spellId, 26)
 end
 
-function mod:InfernoBreath(args)
-	self:Message(args.spellId, "Urgent", nil, CL.incoming(args.spellName))
+function mod:InfernoBreath()
+	self:Message(154989, "Urgent", "Alert", CL.incoming:format(self:SpellName(154989)))
 end
 
 do
@@ -351,8 +350,9 @@ do
 	function mod:InfernoBreathDamage(args)
 		local t = GetTime()
 		if t-prev > 3 and self:Me(args.destGUID) then
+			self:Message(args.spellId, "Personal", "Alarm", CL.you:format(args.spellName))
+			self:Flash(args.spellId)
 			prev = t
-			self:Message(args.spellId, "Personal", "Alarm", CL.underyou:format(args.spellName))
 		end
 	end
 end
@@ -361,7 +361,7 @@ do
 	local conflagList, conflagMark, scheduled = mod:NewTargetList(), 8, nil
 
 	local function warnConflag(spellId)
-		mod:TargetMessage(spellId, conflagList, "Urgent", mod:Dispeller("MAGIC") and "Alert")
+		mod:TargetMessage(spellId, conflagList, "Urgent", mod:Dispeller("magic") and "Info")
 		scheduled = nil
 	end
 
@@ -394,7 +394,7 @@ end
 
 function mod:Stampede(args)
 	self:Message(args.spellId, "Attention")
-	self:Bar(args.spellId, 20)
+	self:CDBar(args.spellId, 20)
 end
 
 function mod:CrushArmor(args)
@@ -414,7 +414,6 @@ do
 		local t = GetTime()
 		if t-prev > 2 and self:Me(args.destGUID) then
 			self:Message(159044, "Personal", "Alarm", CL.underyou:format(args.spellName))
-			self:Flash(159044)
 			prev = t
 		end
 	end
@@ -428,7 +427,6 @@ do
 		local t = GetTime()
 		if t-prev > 3 and self:Me(args.destGUID) then
 			self:Message(args.spellId, "Personal", "Alarm", CL.underyou:format(args.spellName))
-			self:Flash(args.spellId)
 			prev = t
 		end
 	end
@@ -440,7 +438,6 @@ do
 		local t = GetTime()
 		if t-prev > 3 and self:Me(args.destGUID) then
 			self:Message(args.spellId, "Personal", "Alarm", CL.underyou:format(args.spellName))
-			self:Flash(args.spellId)
 			prev = t
 		end
 	end

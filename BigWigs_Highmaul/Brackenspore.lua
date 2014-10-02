@@ -25,10 +25,6 @@ if L then
 	L.flesh_eater, L.flesh_eater_desc = EJ_GetSectionInfo(9995)
 	L.flesh_eater_icon = "Ability_Creature_Disease_02"
 
-	L.decay, L.decay_desc = EJ_GetSectionInfo(9996)
-	L.decay_icon = "Spell_Nature_WispSplodeGreen"
-	L.decay_message = "Your focus is casting Decay!"
-
 	L.living_mushroom = EJ_GetSectionInfo(9989)
 	L.living_mushroom_desc = select(2, EJ_GetSectionInfo(9990))
 	L.living_mushroom_icon = "inv_misc_starspecklemushroom"
@@ -40,7 +36,6 @@ if L then
 	L.creeping_moss_heal = "Creeping Moss under BOSS (healing)"
 end
 L = mod:GetLocale()
-L.decay_desc = CL.focus_only..L.decay_desc
 
 --------------------------------------------------------------------------------
 -- Initialization
@@ -48,10 +43,12 @@ L.decay_desc = CL.focus_only..L.decay_desc
 
 function mod:GetOptions()
 	return {
-		"spore_shooter", "mind_fungus", "flesh_eater", "decay",
+		163755, 163794,
+		"spore_shooter", "mind_fungus", "flesh_eater", 160013,
 		"living_mushroom", "rejuvenating_mushroom",
 		{164125, "FLASH"}, {163241, "TANK"}, {159219, "TANK_HEALER"}, 159996, "berserk", "bosskill"
 	}, {
+		[163755] = "mythic",
 		["spore_shooter"] = -9993,
 		["living_mushroom"] = -9998,
 		[164125] = "general"
@@ -69,6 +66,8 @@ function mod:OnBossEnable()
 	self:Log("SPELL_CAST_START", "InfestingSpores", 159996)
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "FungusSpawns", "boss1")
 	self:Log("SPELL_CAST_START", "Decay", 160013)
+	-- Mythic
+	self:Log("SPELL_AURA_APPLIED", "CallOfTheTides", 163755)
 
 	self:Death("Win", 78491)
 end
@@ -88,12 +87,16 @@ end
 -- Event Handlers
 --
 
+function mod:CallOfTheTides(args)
+	self:Message(args.spellId, "Urgent")
+end
+
 do
 	local prev = 0
 	function mod:CreepingMossHeal(args)
 		local t = GetTime()
 		local mobId = self:MobId(args.destGUID)
-		if self:Tank() and (mobId == 78491 or mobId == 79092) and t-prev > 1 then -- Brackenspore or Fungal Flesh-Eater
+		if self:Tank() and not self:LFR() and (mobId == 78491 or mobId == 79092) and t-prev > 1 then -- Brackenspore or Fungal Flesh-Eater
 			self:Message(args.spellId, "Important", "Alarm", L.creeping_moss_heal)
 			prev = t
 		end
@@ -106,7 +109,7 @@ function mod:Rot(args)
 end
 
 function mod:NecroticBreath(args)
-	self:Message(args.spellId, "Urgent", "Alert")
+	self:Message(args.spellId, "Urgent", "Warning")
 	self:Bar(args.spellId, 30)
 end
 
@@ -116,15 +119,13 @@ function mod:InfestingSpores(args)
 end
 
 function mod:Decay(args)
-	if UnitGUID("focus") == args.sourceGUID then
-		self:Message("decay", "Personal", "Alert", L.decay_message, L.decay_icon)
-	end
+	self:Message(args.spellId, "Personal", not self:Healer() and "Alert", CL.casting:format(args.spellName))
 end
 
 function mod:FungusSpawns(unit, spellName, _, _, spellId)
 	if spellId == 164125 then -- Creeping Moss
 		local flamethrower = UnitBuff("player", self:SpellName(163322))
-		self:Message(spellId, "Urgent", flamethrower and "Alert")
+		self:Message(spellId, "Urgent", flamethrower and "Warning")
 		if flamethrower then
 			self:Flash(spellId)
 		end
@@ -138,11 +139,14 @@ function mod:FungusSpawns(unit, spellName, _, _, spellId)
 		self:Message("flesh_eater", "Urgent", self:Tank() and "Info", CL.spawning:format(CL.big_add), L.flesh_eater_icon)
 		self:Bar("flesh_eater", 120, CL.big_add, L.flesh_eater_icon)
 	elseif spellId == 160022 then -- Living Mushroom
-		self:Message("living_mushroom", "Positive", "Info", spellId, L.living_mushroom_icon)
+		self:Message("living_mushroom", "Positive", self:Healer() and "Info", spellId, L.living_mushroom_icon)
 		self:Bar("living_mushroom", 60, spellId, L.living_mushroom_icon)
 	elseif spellId == 160021 then -- Rejuvenating Mushroom
-		self:Message("rejuvenating_mushroom", "Positive", "Info", spellId, L.rejuvenating_mushroom_icon)
+		self:Message("rejuvenating_mushroom", "Positive", self:Healer() and "Info", spellId, L.rejuvenating_mushroom_icon)
 		self:Bar("rejuvenating_mushroom", 145, spellId, L.rejuvenating_mushroom_icon)
+	elseif spellId == 163794 then  -- Exploding Fungus (Mythic)
+		self:Message(spellId, "Urgent")
+		self:Bar(spellId, 5)
 	end
 end
 

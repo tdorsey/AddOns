@@ -63,7 +63,7 @@ function mod:OnBossEnable()
 	self:Log("SPELL_AURA_APPLIED_DOSE", "FroststormStrike", 144215)
 	self:Log("SPELL_CAST_START", "AshenWall", 144070)
 	-- Wavebinder Kardris
-	self:Log("SPELL_CAST_START", "FallingAsh", 143973)
+	self:RegisterUnitEvent("UNIT_SPELLCAST_START", nil, "boss1", "boss2") -- Falling Ash
 	self:Log("SPELL_CAST_SUCCESS", "FoulGeyser", 143990)
 	self:Log("SPELL_AURA_REMOVED", "FoulGeyserRemoved", 143990)
 	self:Log("SPELL_CAST_START", "ToxicStorm", 144005)
@@ -179,11 +179,13 @@ end
 
 -- Wavebinder Kardris
 
-function mod:FallingAsh(args)
-	-- this is for when the damage happens
-	self:ScheduleTimer("Message", 14, args.spellId, "Attention", self:Healer() and "Info", CL.soon:format(CL.count:format(args.spellName, ashCounter)))
-	self:Bar(args.spellId, 17, CL.count:format(args.spellName, ashCounter))
-	ashCounter = ashCounter + 1
+function mod:UNIT_SPELLCAST_START(unit, spellName, _, _, spellId)
+	if spellId == 143973 then -- Falling Ash
+		-- this is for when the damage happens
+		self:DelayedMessage(143973, 14, "Attention", CL.soon:format(CL.count:format(self:SpellName(143973), ashCounter)), 143973, self:Healer() and "Info")
+		self:Bar(143973, 17, CL.count:format(self:SpellName(143973), ashCounter))
+		ashCounter = ashCounter + 1
+	end
 end
 
 function mod:FoulGeyser(args) -- Blobs

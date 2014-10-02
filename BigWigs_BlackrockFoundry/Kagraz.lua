@@ -110,7 +110,7 @@ function mod:UNIT_SPELLCAST_SUCCEEDED(unit, spellName, _, _, spellId)
 		self:Bar(155318, 14.5)
 	elseif spellId == 163644 then -- Summon Enchanted Armaments
 		self:Message(156724, "Attention")
-		self:Bar(156724, self:IsMythic() and 20 or 45)
+		self:Bar(156724, self:Mythic() and 20 or 45)
 	end
 end
 
@@ -188,7 +188,7 @@ function mod:CharringBreath(args)
 end
 
 function mod:Rekindle(args)
-	self:TargetMessage(args.spellId, args.destName, "Positive", "Warning")
+	self:TargetMessage(args.spellId, args.sourceName, "Positive", "Warning")
 	self:Bar(args.spellId, 6)
 end
 

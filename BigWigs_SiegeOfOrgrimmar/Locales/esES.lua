@@ -20,7 +20,7 @@ L["big_add"] = "Esbirro grande (%d)"
 L["big_add_killed"] = "Esbirro grande muerto (%d)"
 L["big_adds"] = "Esbirros grandes"
 L["big_adds_desc"] = "Alertas para la aparición de esbirros grandes y sus muertes."
-L["warmup_trigger"] = "Muy bien, creare un campo que contendrá la corrupción en cuarentena."
+L["warmup_trigger"] = "Muy bien, crearé un campo para mantener aislada vuestra corrupción." -- Needs review
 
 end
 
@@ -42,15 +42,15 @@ if L then
 L["adds_desc"] = "Temporizadores cuando un nuevo grupo de esbirros entren en el combate." -- Needs review
 L["demolisher_message"] = "Demoledor" -- Needs review
 L["drakes"] = "Protodracos" -- Needs review
-L["north_tower"] = "Torre Norte" -- Needs review
-L["north_tower_trigger"] = "¡La puerta de la Torre Norte se ha roto!" -- Needs review
-L["south_tower"] = "Torre Sur" -- Needs review
-L["south_tower_trigger"] = "¡La puerta de la Torre Sur se ha roto!" -- Needs review
-L["start_trigger_alliance"] = "¡Bien hecho! ¡Grupos de desembarco, formad! ¡Lacayos al frente!" -- Needs review
+L["north_tower"] = "Torre norte" -- Needs review
+L["north_tower_trigger"] = "¡La puerta de la torre norte está abierta!"
+L["south_tower"] = "Torre sur" -- Needs review
+L["south_tower_trigger"] = "¡La puerta de la torre sur está abierta!"
+L["start_trigger_alliance"] = "¡Bien hecho! ¡Grupos de desembarco, formad! ¡Infantería, al frente!" -- Needs review
 L["start_trigger_horde"] = "Bien hecho. La primera brigada a tomado tierra." -- Needs review
-L["tower_defender"] = "Defensor de la Torre" -- Needs review
+L["tower_defender"] = "Defensor de la torre" -- Needs review
 L["towers"] = "Torres" -- Needs review
-L["towers_desc"] = "Advertencia cuando las torres se rompan." -- Needs review
+L["towers_desc"] = "Advertencia cuando las torres se abran." -- Needs review
 L["warlord_zaela"] = "Señora de la guerra Zaela"
 
 
@@ -102,20 +102,21 @@ end
 
 L = BigWigs:NewBossLocale("Malkorok", "esES") or BigWigs:NewBossLocale("Malkorok", "esMX")
 if L then
-
+	L.custom_off_energy_marks = "Marcador de Energía desplazada"
+	L.custom_off_energy_marks_desc = "Para ayudar a dispelear, marca la gente que tiene Energía desplazada en ellos con {rt1}{rt2}{rt3}{rt4}, requiere ayudante o líder.\n|cFFFF0000SSólo 1 persona en la raid debería tener activada esta opción para evitar conflictos con las marcas.|r"
 end
 
 L = BigWigs:NewBossLocale("Spoils of Pandaria", "esES") or BigWigs:NewBossLocale("Spoils of Pandaria", "esMX")
 if L then
 L["enable_zone"] = "Depósito de Artefactos" -- Needs review
-L["start_trigger"] = "Eh,¿Estamos grabando?" -- Needs review
+L["start_trigger"] = "¿Estamos grabando?" -- Needs review
 L["win_trigger"] = "Reiniciando sistema. No lo apague si no quiere que el artefacto explote." -- Needs review
 
 
-	--L.crates = "Crates"
-	--L.crates_desc = "Messages for how much power you still need and how many large/medium/small crates it will take."
-	--L.full_power = "Full Power!"
-	--L.power_left = "%d left! (%d/%d/%d)"
+	L.crates = "Cajas"
+	L.crates_desc = "Mensajes para saber cuanto poder necesitas y cuantas cajas grandes/medianas/pequeñas necesitarás para lograrlo."
+	L.full_power = "¡Poder máximo!"
+	L.power_left = "%d restantes! (%d/%d/%d)"
 end
 
 L = BigWigs:NewBossLocale("Thok the Bloodthirsty", "esES") or BigWigs:NewBossLocale("Thok the Bloodthirsty", "esMX")
@@ -131,7 +132,7 @@ L = BigWigs:NewBossLocale("Siegecrafter Blackfuse", "esES") or BigWigs:NewBossLo
 if L then
 L["assembly_line_items"] = "Objetos (%d): %s" -- Needs review
 L["assembly_line_message"] = "Armas sin terminar (%d)" -- Needs review
-L["assembly_line_trigger"] = "Armas sin terminar comienzar a salir de la linea de montaje." -- Needs review
+L["assembly_line_trigger"] = "La cadena de montaje empieza a sacar armas sin terminar." -- Needs review
 L["disabled"] = "Desactivado" -- Needs review
 L["item_deathdealer"] = "Mortifero" -- Needs review
 L["item_laser"] = "Laser" -- Needs review
@@ -139,11 +140,11 @@ L["item_magnet"] = "Iman" -- Needs review
 L["item_mines"] = "Minas" -- Needs review
 L["item_missile"] = "Misiles" -- Needs review
 L["laser_on_you"] = "¡Laser en ti PEW PEW!" -- Needs review
-L["laser_say"] = "Laser PEW PEW" -- Needs review
 L["overcharged_crawler_mine"] = "Mina reptadora sobrecargada." -- Needs review
 L["saw_blade_near_you"] = "Hoja de sierra cerca de ti (no en ti)" -- Needs review
 L["saw_blade_near_you_desc"] = "Tal vez desees desactivar esto para evitar spam si la raid esta de acuerdo con tus tácticas." -- Needs review
-L["shredder_engage_trigger"] = "¡Una Trituradora Automatica se acerca!" -- Needs review
+L["shockwave_missile_trigger"] = "¡He aquí la hermosa torreta de misiles de ondas de choque ST-03!" -- Needs review
+L["shredder_engage_trigger"] = "¡Una trituradora automática se acerca!" -- Needs review
 
 
 	--L.custom_off_mine_marker = "Mine marker"
@@ -188,7 +189,6 @@ L["clump_check_desc"] = "Comprueba cada 3 segundos durante el bombardeo los juga
 L["clump_check_warning"] = "Grupo encontrado, Estrella inc"
 L["empowered_message"] = "¡%s está potenciado!"
 L["farseer_trigger"] = "¡Clarividentes, sanad nuestras heridas!" -- Needs review
-L["intermission"] = "Intermedio" -- Needs review
 L["ironstar_impact_desc"] = "Un temporizador para cuando la Estrella de hierro choque con la pared en el otro lado." -- Needs review
 L["ironstar_rolling"] = "¡Estrella de hierro rodando!"
 L["manifest_rage"] = "Manifiesto de ira"

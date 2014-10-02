@@ -10,8 +10,9 @@ end
 
 L = BigWigs:NewBossLocale("Horridon", "itIT")
 if L then
-	L.charge_trigger = "posa il suo sguardo" -- Horridon sets his eyes on PLAYERNAME and stamps his tail! Horridon posa il suo sguardo su PLAYER e sbatte la coda!
-	L.door_trigger = "irrompono" -- "<160.1 21:33:04> CHAT_MSG_RAID_BOSS_EMOTE#Farraki forces pour from the Farraki Tribal Door!#War-God Jalak#####0#0##0#1107#nil#0#false#false", -- [1]
+	L.charge_trigger = "posa il suo sguardo"
+	L.door_trigger = "irrompono"
+	--L.orb_trigger = "charge" -- PLAYERNAME forces Horridon to charge the Farraki door!
 
 	L.chain_lightning_message = "Il tuo focus sta lanciando Catena di Fulmini!"
 	L.chain_lightning_bar = "Focus: Catena di Fulmini"
@@ -41,6 +42,7 @@ if L then
 	L.priestess_adds_desc = "Avvisa quando la Gran Sacerdotessa Mar'li inizia ad evocare un'add"
 	L.priestess_adds_message = "Add Sacerdotessa"
 
+	--L.priestess_heal = "%s was healed!"
 	L.assault_stun = "Difensore Stordito!"
 	L.full_power = "Pieno Potere"
 	L.assault_message = "Assalto"
@@ -177,7 +179,6 @@ if L then
 
 	L.last_inermission_ability = "Ultima abilità intermezzo usata!"
 	L.safe_from_stun = "Sei probabilmente al sicuro dai disorientamenti di Sovraccarico"
-	L.intermission = "Intermezzo"
 	L.diffusion_add = "Add di Diffusione"
 	L.shock = "Folgore"
 	L.static_shock_bar = "<Divisione Folgore Statica>"
@@ -206,8 +207,6 @@ end
 
 L = BigWigs:NewBossLocale("Throne of Thunder Trash", "itIT")
 if L then
-	L.displayname = "Trash"
-
 	L.stormcaller = "Invocatore delle Tempeste Zandalari"
 	L.stormbringer = "Araldo della Tempesta Draz'kil"
 	L.monara = "Monara"

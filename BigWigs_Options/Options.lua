@@ -1,5 +1,5 @@
 
-local BIGWIGS_AUTHORS = "rabbit, ammo, 7destiny, pettigrow, ananhaid, mojosdojo, Wetxius, jongt23, tekkub, fenlis, StingerSoft, shyva, _yusaku_, dynaletik, cwdg, gamefaq, yoshimo, sayclub, saroz, nevcairiel, s8095324, handdol, durcyn, chuanhsing, scorpio0920, kebinusan, flyflame, onyxmaster, zhTW, grimwald, Dynaletik, lcf_hell, starinnia, chinkuwaila, arrowmaster, mysticalos, next96, tnt2ray, Leialyn, ackis, moonsorrow, fryguy, xinsonic, jerry, beerke, stanzilla, tsigo, hk2717, cremor, pigmonkey, ulic, Carlos, mecdemort, a9012456, cronan, Cybersea, gnarfoz, nirek, hyperactiveChipmunk, darchon, neriak, mikk, darkwings, hshh, otravi, yhpdoit, kergoth, kjheng, AnarkiQ3, dessa, ethancentaurai, Swix, Sayclub, Gothwin, erwanoops, nymbia, oojoo, kyahx, valdriethien, profalbert, illiaster, oxman, phyber, Traeumer, Anadale, zealotonastick, tazmanyak, tain, archarodim, thiana, ckknight, Adam77, kemayo, coalado, silverwind, Zidomo, lucen."
+local BIGWIGS_AUTHORS = "rabbit, ammo, 7destiny, pettigrow, ananhaid, mojosdojo, Wetxius, jongt23, tekkub, fenlis, _yusaku_, shyva, StingerSoft, dynaletik, cwdg, gamefaq, yoshimo, sayclub, saroz, nevcairiel, s8095324, handdol, durcyn, chuanhsing, scorpio0920, kebinusan, Dynaletik, flyflame, zhTW, stanzilla, onyxmaster, MysticalOS, grimwald, lcf_hell, starinnia, chinkuwaila, arrowmaster, next96, tnt2ray, ackis, Leialyn, cremor, moonsorrow, jerry, fryguy, xinsonic, beerke, shari83, tsigo, hk2717, pigmonkey, ulic, mecdemort, Carlos, gnarfoz, a9012456, Cybersea, cronan, hyperactiveChipmunk, darchon, neriak, nirek, mikk, darkwings, hshh, otravi, yhpdoit, kjheng, AnarkiQ3, kergoth, dessa, ethancentaurai, Sayclub, erwanoops, Swix, Gothwin, illiaster, oojoo, nymbia, kyahx, valdriethien, phyber, oxman, profalbert, Traeumer, Zidomo, Anadale, tazmanyak, tain, thiana, ckknight, kemayo, zealotonastick, archarodim, coalado, silverwind, lucen, Adam77."
 
 local BigWigs = BigWigs
 local options = BigWigs:NewModule("Options")
@@ -334,7 +334,7 @@ function options:OnInitialize()
 		local noteKey = "Notes"
 		if GetAddOnMetadata("BigWigs", "Notes-" .. GetLocale()) then noteKey = "Notes-" .. GetLocale() end
 		local notes = GetAddOnMetadata("BigWigs", noteKey)
-		subtitle:SetText(notes .. " |cff44ff44" .. BigWigsLoader.BIGWIGS_RELEASE_STRING .. "|r")
+		subtitle:SetText(notes .. " |cff44ff44" .. BigWigsLoader:GetReleaseString() .. "|r")
 
 		local anchor = nil
 		for i, field in next, fields do
@@ -388,14 +388,15 @@ function options:OnInitialize()
 end
 
 function options:OnEnable()
+	self:RegisterMessage("BigWigs_BossModuleRegistered", "Register")
+	self:RegisterMessage("BigWigs_PluginRegistered", "Register")
+
 	for name, module in BigWigs:IterateBossModules() do
 		self:Register("BigWigs_BossModuleRegistered", name, module)
 	end
 	for name, module in BigWigs:IteratePlugins() do
 		self:Register("BigWigs_PluginRegistered", name, module)
 	end
-	self:RegisterMessage("BigWigs_BossModuleRegistered", "Register")
-	self:RegisterMessage("BigWigs_PluginRegistered", "Register")
 
 	self:RegisterMessage("BigWigs_SetConfigureTarget")
 	self:RegisterMessage("BigWigs_StartConfigureMode")
@@ -1223,8 +1224,8 @@ do
 	function options:GetZonePanel(zoneId)
 		local zoneName = translateZoneID(zoneId)
 		local parent = BigWigsLoader.zoneTbl[zoneId] and addonNameToHeader[BigWigsLoader.zoneTbl[zoneId]] or addonNameToHeader.BigWigs_WarlordsOfDraenor or addonNameToHeader.BigWigs_MistsOfPandaria -- XXX compat
-		local panel, created = self:GetPanel(zoneName, parent, zoneId)
-		if created then
+		local panel, justCreated = self:GetPanel(zoneName, parent, zoneId)
+		if justCreated then
 			panel:SetScript("OnShow", onZoneShow)
 			panel:SetScript("OnHide", onZoneHide)
 		end
