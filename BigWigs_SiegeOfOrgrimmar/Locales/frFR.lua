@@ -1,13 +1,13 @@
 local L = BigWigs:NewBossLocale("The Fallen Protectors", "frFR")
 if not L then return end
 if L then
-L["defile_you"] = "Sol profané en dessous de vous" -- Needs review
-L["defile_you_desc"] = "Prévient quand vous vous trouvez dans le Sol profané." -- Needs review
-L["inferno_self"] = "Frappe du feu d'enfer sur vous" -- Needs review
-L["inferno_self_bar"] = "Vous explosez !" -- Needs review
-L["inferno_self_desc"] = "Compte à rebours spécial quand la Frappe du feu d'enfer est sur vous." -- Needs review
-L["intermission_desc"] = "Prévient quand l'un des boss est sur le point d'utiliser ses Mesures désespérées." -- Needs review
-L["no_meditative_field"] = "Vous n'êtes pas dans la bulle !" -- Needs review
+L["defile_you"] = "Sol profané en dessous de vous"
+L["defile_you_desc"] = "Prévient quand vous vous trouvez dans le Sol profané."
+L["inferno_self"] = "Frappe du feu d'enfer sur vous"
+L["inferno_self_bar"] = "Vous explosez !"
+L["inferno_self_desc"] = "Compte à rebours spécial quand la Frappe du feu d'enfer est sur vous."
+L["intermission_desc"] = "Prévient quand l'un des boss est sur le point d'utiliser ses Mesures désespérées."
+L["no_meditative_field"] = "Vous n'êtes pas dans la bulle !"
 
 
 	L.custom_off_bane_marks = "Marquage Mot de l'ombre : Plaie"
@@ -19,14 +19,14 @@ if L then
 L["big_add"] = "Manifestation de la corruption (%d)"
 L["big_add_killed"] = "Manifestation de la corruption tuée (%d)"
 L["big_adds"] = "Manifestations de la corruption"
-L["big_adds_desc"] = "Alertes quand les gros adds apparaissent et sont tués." -- Needs review
+L["big_adds_desc"] = "Alertes quand les gros adds apparaissent et sont tués."
 L["warmup_trigger"] = "Très bien, je vais créer un champ de force qui contiendra votre corruption."
 
 end
 
 L = BigWigs:NewBossLocale("Sha of Pride", "frFR")
 if L then
-L["projection_green_arrow"] = "FLÈCHE VERTE" -- Needs review
+L["projection_green_arrow"] = "FLÈCHE VERTE"
 L["titan_pride"] = "Titan+Orgueil : %s"
 
 
@@ -47,7 +47,7 @@ L["north_tower_trigger"] = "La porte qui barrait l’accès à la tour nord a é
 L["south_tower"] = "Tour sud"
 L["south_tower_trigger"] = "La porte qui barrait l’accès à la tour sud a été détruite !"
 L["start_trigger_alliance"] = "Très bien ! Commandos de débarquement, en formation ! Les fantassins en première ligne !"
-L["start_trigger_horde"] = "Bien joué. La première brigade vient d’accoster." -- Needs review
+L["start_trigger_horde"] = "Bien joué. La première brigade vient d’accoster."
 L["tower_defender"] = "Défenseur de la tour"
 L["towers"] = "Tours"
 L["towers_desc"] = "Alertes quand les portes des tours sont détruites."
@@ -107,7 +107,7 @@ end
 L = BigWigs:NewBossLocale("Spoils of Pandaria", "frFR")
 if L then
 L["enable_zone"] = "Entrepôt de l’Artéfact"
-L["start_trigger"] = "Est-ce que ça tourne ?" -- Needs review
+L["start_trigger"] = "Est-ce que ça tourne ?"
 L["win_trigger"] = "Système en cours de réinitialisation. Veuillez ne pas le débrancher, ou il pourrait vous sauter à la figure."
 
 
@@ -119,7 +119,7 @@ end
 
 L = BigWigs:NewBossLocale("Thok the Bloodthirsty", "frFR")
 if L then
-L["adds_desc"] = "Alertes indiquant quand le Yéti ou les Chauve-souris se joignent au combat." -- Needs review
+L["adds_desc"] = "Alertes indiquant quand le Yéti ou les Chauve-souris se joignent au combat."
 L["cage_opened"] = "Cage ouverte"
 L["npc_akolik"] = "Akolik"
 L["npc_waterspeaker_gorai"] = "Eauracle Goraï"
@@ -132,7 +132,7 @@ L["assembly_line_items"] = "Objets (%d) : %s"
 L["assembly_line_message"] = "Armes non terminées (%d)"
 L["assembly_line_trigger"] = "Des armes non terminées commencent à avancer sur la chaîne d’assemblage."
 L["disabled"] = "Désactivé"
-L["item_deathdealer"] = "Cracheuse de mort" -- Needs review
+L["item_deathdealer"] = "Cracheuse de mort"
 L["item_laser"] = "Laser"
 L["item_magnet"] = "Aimant"
 L["item_mines"] = "Mines"

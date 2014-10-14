@@ -22,9 +22,6 @@ local AceDB = LibStub("AceDB-3.0")
 -- GLOBALS: LibStub
 -- GLOBALS: TMWOptDB
 -- GLOBALS: TELLMEWHEN_VERSION, TELLMEWHEN_VERSION_MINOR, TELLMEWHEN_VERSION_FULL, TELLMEWHEN_VERSIONNUMBER, TELLMEWHEN_MAXROWS
--- GLOBALS: UIDROPDOWNMENU_MENU_LEVEL, UIDROPDOWNMENU_MENU_VALUE, UIDROPDOWNMENU_OPEN_MENU
--- GLOBALS: UIDropDownMenu_AddButton, UIDropDownMenu_CreateInfo, UIDropDownMenu_SetText, UIDropDownMenu_GetSelectedValue, UIDropDownMenu_Initialize, UIDropDownMenu_JustifyText, UIDropDownMenu_SetAnchor, UIDropDownMenu_StartCounting
--- GLOBALS: CloseDropDownMenus, ToggleDropDownMenu, DropDownList1
 -- GLOBALS: NORMAL_FONT_COLOR, HIGHLIGHT_FONT_COLOR, INVSLOT_FIRST_EQUIPPED, INVSLOT_LAST_EQUIPPED, SPELL_RECAST_TIME_MIN, SPELL_RECAST_TIME_SEC, NONE, SPELL_CAST_CHANNELED, NUM_BAG_SLOTS, CANCEL
 -- GLOBALS: GameTooltip
 -- GLOBALS: UIParent, WorldFrame, TellMeWhen_IconEditor, GameFontDisable, GameFontHighlight, CreateFrame, collectgarbage 
@@ -150,22 +147,6 @@ end}) local CI = TMW.CI		--current icon
 -- WOW API HOOKS
 -- ----------------------
 
--- Dropdown tooltip wrapping.
-GameTooltip.TMW_OldAddLine = GameTooltip.AddLine
-function GameTooltip:AddLine(text, r, g, b, wrap, ...)
-	-- this fixes the problem where tooltips in blizz dropdowns dont wrap, nor do they have a setting to do it.
-	-- Pretty hackey fix, but it works
-	-- Only force the wrap option if the current dropdown has wrapTooltips set true, the dropdown is shown, and the mouse is over the dropdown menu (not DDL.isCounting)
-	for i = 1, UIDROPDOWNMENU_MENU_LEVEL do
-		local DDL = _G["DropDownList" .. i]
-		if DDL and DDL:IsMouseOver() and DDL.dropdown and DDL.dropdown.wrapTooltips and DDL:IsShown() then
-			wrap = 1
-			break
-		end
-	end
-	self:TMW_OldAddLine(text, r, g, b, wrap, ...)
-end
-
 function GameTooltip:TMW_SetEquiv(equiv)
 	GameTooltip:AddLine(L[equiv], HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b, 1)
 	GameTooltip:AddLine(IE:Equiv_GenerateTips(equiv), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
@@ -282,26 +263,15 @@ function TMW.IconsSort(a, b)
 end
 
 
----------- Dropdown Utilities ----------
-local spacerInfo = {
-	text = "",
-	isTitle = true,
-	notCheckable = true,
-}
-function TMW.AddDropdownSpacer()
-	UIDropDownMenu_AddButton(spacerInfo, UIDROPDOWNMENU_MENU_LEVEL)
-end
-
-
 
 ---------- Misc Utilities ----------
 local ScrollContainerHook_Hide = function(c) c.ScrollFrame:Hide() end
 local ScrollContainerHook_Show = function(c) c.ScrollFrame:Show() end
 local ScrollContainerHook_OnSizeChanged = function(c) c.ScrollFrame:Show() end
-function TMW:ConvertContainerToScrollFrame(container, exteriorScrollBarPosition, scrollBarXOffs, scrollBarSizeX)
+function TMW:ConvertContainerToScrollFrame(container, exteriorScrollBarPosition, scrollBarXOffs, scrollBarSizeX, leftSide)
 	
-	
-	local ScrollFrame = CreateFrame("ScrollFrame", container:GetName() .. "ScrollFrame", container:GetParent(), "TellMeWhen_ScrollFrameTemplate")
+	local name = container:GetName() and container:GetName() .. "ScrollFrame"
+	local ScrollFrame = CreateFrame("ScrollFrame", name, container:GetParent(), "TellMeWhen_ScrollFrameTemplate")
 	
 	-- Make the ScrollFrame clone the container's position and size
 	local x, y = container:GetSize()
@@ -317,10 +287,11 @@ function TMW:ConvertContainerToScrollFrame(container, exteriorScrollBarPosition,
 	ScrollFrame:SetScrollChild(container)
 	container:SetSize(x, 1)
 	
+	local relPoint = leftSide and "LEFT" or "RIGHT"
 	if exteriorScrollBarPosition then
-		ScrollFrame.ScrollBar:SetPoint("LEFT", ScrollFrame, "RIGHT", scrollBarXOffs or 0, 0)
+		ScrollFrame.ScrollBar:SetPoint("LEFT", ScrollFrame, relPoint, scrollBarXOffs or 0, 0)
 	else
-		ScrollFrame.ScrollBar:SetPoint("RIGHT", ScrollFrame, "RIGHT", scrollBarXOffs or 0, 0)
+		ScrollFrame.ScrollBar:SetPoint("RIGHT", ScrollFrame, relPoint, scrollBarXOffs or 0, 0)
 	end
 	
 	if scrollBarSizeX then
@@ -335,59 +306,6 @@ function TMW:ConvertContainerToScrollFrame(container, exteriorScrollBarPosition,
 	
 end
 
-function TMW:AnimateHeightChange(f, endHeight, duration)
-	
-	-- This function currently disabled because of frame level issues.
-	-- Top frames need to be above lower frames, but editboxes seem to go underneath everything for some reason.
-	-- It doesn't look awful, but I'm going to leave it disabled till I decide otherwise.
-	f:SetHeight(endHeight)
-	do return end
-	
-	if not f.__animateHeightHooked then
-		f.__animateHeightHooked = true
-		f:HookScript("OnUpdate", function(f)
-				if f.__animateHeight_duration then
-					if TMW.time - f.__animateHeight_startTime > f.__animateHeight_duration then
-						f.__animateHeight_duration = nil
-						f:SetHeight(f.__animateHeight_end)
-						return  
-					end
-					
-					local pct = (TMW.time - f.__animateHeight_startTime)/f.__animateHeight_duration
-					
-					f:SetHeight((pct*f.__animateHeight_delta)+f.__animateHeight_start)
-				end
-		end)    
-	end
-	
-	f.__animateHeight_start = f:GetHeight()
-	f.__animateHeight_end = endHeight
-	f.__animateHeight_delta = f.__animateHeight_end - f.__animateHeight_start
-	f.__animateHeight_startTime = TMW.time
-	f.__animateHeight_duration = duration
-end
-
-do	-- TMW:GetParser()
-	local Parser, LT1, LT2, LT3, RT1, RT2, RT3
-	function TMW:GetParser()
-		if not Parser then
-			Parser = CreateFrame("GameTooltip")
-
-			LT1 = Parser:CreateFontString()
-			RT1 = Parser:CreateFontString()
-			Parser:AddFontStrings(LT1, RT1)
-
-			LT2 = Parser:CreateFontString()
-			RT2 = Parser:CreateFontString()
-			Parser:AddFontStrings(LT2, RT2)
-
-			LT3 = Parser:CreateFontString()
-			RT3 = Parser:CreateFontString()
-			Parser:AddFontStrings(LT3, RT3)
-		end
-		return Parser, LT1, LT2, LT3, RT1, RT2, RT3
-	end
-end
 
 
 
@@ -418,6 +336,11 @@ function TMW:Group_Delete(group)
 end
 
 function TMW:Group_Add(domain, view)
+	if InCombatLockdown() then
+		-- Error if we are in combat because TMW:Update() won't create the group instantly if we are.
+		error("TMW: Can't add groups while in combat")
+	end
+
 	local groupID = TMW.db[domain].NumGroups + 1
 
 	TMW.db[domain].NumGroups = groupID
@@ -492,7 +415,7 @@ IE.CONST = {
 
 function IE:OnInitialize()
 	-- if the file IS required for gross functionality
-	if not TMW.ACEOPTIONS then
+	if not TMW.DROPDOWNMENU then
 		-- GLOBALS: StaticPopupDialogs, StaticPopup_Show, EXIT_GAME, CANCEL, ForceQuit
 		StaticPopupDialogs["TMWOPT_RESTARTNEEDED"] = {
 			text = L["ERROR_MISSINGFILE_OPT"], 
@@ -504,7 +427,7 @@ function IE:OnInitialize()
 			whileDead = true,
 			preferredIndex = 3, -- http://forums.wowace.com/showthread.php?p=320956
 		}
-		StaticPopup_Show("TMWOPT_RESTARTNEEDED", TELLMEWHEN_VERSION_FULL, "TellMeWhen_Options/AceOptions.lua") -- arg3 could also be L["ERROR_MISSINGFILE_REQFILE"]
+		StaticPopup_Show("TMWOPT_RESTARTNEEDED", TELLMEWHEN_VERSION_FULL, "TellMeWhen_Options/TMWUIDropDownMenu.lua") -- arg3 could also be L["ERROR_MISSINGFILE_REQFILE"]
 		return
 
 	-- if the file is NOT required for gross functionality
@@ -1239,7 +1162,7 @@ function IE:PositionPanels()
 			if type(parent[#parent]) == "table" then
 				frame:SetPoint("TOP", parent[#parent], "BOTTOM", 0, -11)
 			else
-				frame:SetPoint("TOP", 0, -10)
+				frame:SetPoint("TOP", 0, -11)
 			end
 			parent[#parent + 1] = frame
 			
@@ -1265,6 +1188,7 @@ function IE:DistributeFrameAnchorsLaterally(parent, numPerRow, ...)
 	local numChildFrames = select("#", ...)
 	
 	local parentWidth = parent:GetWidth()
+
 	local paddingPerSide = 5 -- constant
 	local parentWidth_padded = parentWidth - paddingPerSide*2
 	
@@ -1346,10 +1270,12 @@ function IE:Load(isRefresh, icon, isHistoryChange)
 
 	if IE.db.global.LastChangelogVersion > 0 then
 		if IE.db.global.LastChangelogVersion < TELLMEWHEN_VERSIONNUMBER then
-			if TELLMEWHEN_VERSION_MINOR == "" -- upgraded to a release version (e.g. 7.0.0 release)
+			if IE.db.global.LastChangelogVersion < TELLMEWHEN_FORCECHANGELOG -- forced
+			or TELLMEWHEN_VERSION_MINOR == "" -- upgraded to a release version (e.g. 7.0.0 release)
 			or floor(IE.db.global.LastChangelogVersion/100) < floor(TELLMEWHEN_VERSIONNUMBER/100) -- upgraded to a new minor version (e.g. 6.2.6 release -> 7.0.0 alpha)
 			then
 				TellMeWhen_ChangelogDialog.showIEOnClose = true
+				TellMeWhen_ChangelogDialog:SetLastVersion(IE.db.global.LastChangelogVersion)
 				TellMeWhen_ChangelogDialog:Show()
 				shouldShow = false
 
@@ -1402,13 +1328,13 @@ function IE:Load(isRefresh, icon, isHistoryChange)
 		IE:PositionPanels()
 		
 		if CI.ics.Type == "" then
-			UIDropDownMenu_SetText(IE.Main.Type, L["ICONMENU_TYPE"])
+			IE.Main.Type:SetText(L["ICONMENU_TYPE"])
 		else
 			local Type = rawget(TMW.Types, CI.ics.Type)
 			if Type then
-				UIDropDownMenu_SetText(IE.Main.Type, Type.name)
+				IE.Main.Type:SetText(Type.name)
 			else
-				UIDropDownMenu_SetText(IE.Main.Type, CI.ics.Type .. ": UNKNOWN TYPE")
+				IE.Main.Type:SetText(CI.ics.Type .. ": UNKNOWN TYPE")
 			end
 		end
 
@@ -1630,12 +1556,50 @@ TMW:NewClass("Config_Panel", "Config_Frame"){
 	CheckDisabled = TMW.NULLFUNC,
 
 	OnNewInstance_Panel = function(self)
+		if self:GetHeight() <= 0 then
+			self:SetHeight_base(1)
+		end
 		local hue = 2/3
 		
 		self.Background:SetTexture(hue, hue, hue) -- HUEHUEHUE
 		self.Background:SetGradientAlpha("VERTICAL", 1, 1, 1, 0.05, 1, 1, 1, 0.10)
 
 		self.height = self:GetHeight()
+	end,
+
+	Flash = function(self, dur)
+		local start = GetTime()
+		local duration = 0
+		local period = 0.2
+
+		while duration < dur do
+			duration = duration + (period * 2)
+		end
+		local ticker
+		ticker = C_Timer.NewTicker(0.01, function() 
+			local bg = TellMeWhen_DotwatchSettings.Background
+
+			local timePassed = GetTime() - start
+			local fadingIn = FlashPeriod == 0 or floor(timePassed/period) % 2 == 1
+
+			if FlashPeriod ~= 0 then
+				local remainingFlash = timePassed % period
+				local offs
+				if fadingIn then
+					offs = (period-remainingFlash)/period
+				else
+					offs = (remainingFlash/period)
+				end
+				offs = offs*0.3
+				bg:SetGradientAlpha("VERTICAL", 1, 1, 1, 0.05 + offs, 1, 1, 1, 0.10 + offs)
+			end
+
+			if timePassed > duration then
+				bg:SetGradientAlpha("VERTICAL", 1, 1, 1, 0.05, 1, 1, 1, 0.10)
+				ticker:Cancel()
+			end	
+		end)
+
 	end,
 
 	SetTitle = function(self, text)
@@ -1661,145 +1625,63 @@ TMW:NewClass("Config_Panel", "Config_Frame"){
 		end
 	end,
 
-	OnHide = function(self)
-		self:SetHeight_base(-11)
-	end,
-	OnShow = function(self)
-		self:SetHeight_base(self.height)
-	end,
 
 	SetHeight = function(self, height)
-		self.height = height
-		if self:IsShown() then
+		if self.__oldHeight then
+			self.__oldHeight = height
+		else
 			self:SetHeight_base(height)
 		end
 	end,
-}
+	OnHide = function(self)
+		local p, r, t, x, y = self:GetPoint(1)
+		self:SetPoint(p, r, t, x, 1)
 
-TMW:NewClass("Config_DropDownMenu", "Config_Frame"){
-	noResize = 1,
+		-- Set the height to 1 so things anchored under it are positioned right.
+		-- Can't set height to 0 anymore in WoD.
+		self.__oldHeight = self:GetHeight()
+		self:SetHeight_base(1)
+	end,
+	OnShow = function(self)
+		local p, r, t, x, y = self:GetPoint(1)
+		self:SetPoint(p, r, t, x, -11)
 
-	OnNewInstance_DropDownMenu = function(self, data)
-		self.Button:SetMotionScriptsWhileDisabled(false)
-		self.wrapTooltips = true
-
-		if data.func then
-			self:SetFunction(data.func)
-		end
-		if data.title then
-			UIDropDownMenu_SetText(self, data.title)
+		-- Restore the old height if it is still set to 1.
+		if self.__oldHeight and floor(self:GetHeight() + 0.5) == 1 then
+			self:SetHeight_base(self.__oldHeight)
+			self.__oldHeight = nil
 		end
 	end,
 
-	SetUIDropdownText = function(self, value, tbl, text)
-		self.selectedValue = value
-
-		if tbl then
-			for k, v in pairs(tbl) do
-				if v.value == value then
-					UIDropDownMenu_SetText(self, v.text)
-					return v
+	--[[
+	SetHeight = function(self, endHeight)
+		-- This function currently disabled because of frame level issues.
+		-- Top frames need to be above lower frames, but editboxes seem to go underneath everything for some reason.
+		-- It doesn't look awful, but I'm going to leave it disabled till I decide otherwise.
+		
+		if not self.__animateHeightHooked then
+			self.__animateHeightHooked = true
+			self:HookScript("OnUpdate", function()
+				if self.__animateHeight_duration then
+					if TMW.time - self.__animateHeight_startTime > self.__animateHeight_duration then
+						self.__animateHeight_duration = nil
+						self:SetHeight_base(self.__animateHeight_end)
+						return  
+					end
+					
+					local pct = (TMW.time - self.__animateHeight_startTime)/self.__animateHeight_duration
+					
+					self:SetHeight_base((pct*self.__animateHeight_delta)+self.__animateHeight_start)
 				end
-			end
-		end
-		UIDropDownMenu_SetText(self, text or value)
-	end,
-
-	SetFunction = function(self, func)
-		self.initialize = func
-	end,
-
-	METHOD_EXTENSIONS = {
-		OnEnable = function(self)
-			self.Button:Enable()
-		end,
-		OnDisable = function(self)
-			self.Button:Disable()
-		end,
-	}
-}
-
-TMW:NewClass("Config_DropDownMenu_Icon", "Config_DropDownMenu"){
-	previewSize = 18,
-
-	OnNewInstance_DropDownMenu_Icon = function(self, data)
-		self:SetPreviewSize(self.previewSize)
-	end,
-
-	SetPreviewSize = function(self, size)
-		self.previewSize = size
-		self.IconPreview:SetSize(size, size)
-		self.Left:SetPoint("LEFT", -17 + size, 0)
-	end,
-
-
-	SetUIDropdownGUIDText = function(self, GUID, text)
-		self.selectedValue = GUID
-
-		local owner = TMW.GUIDToOwner[GUID]
-		local type = TMW:ParseGUID(GUID)
-
-		if owner then
-			if type == "icon" then
-				local icon = owner
-
-				UIDropDownMenu_SetText(self, icon:GetIconMenuText())
-
-				return icon
-
-			elseif type == "group" then
-				local group = owner
-
-				UIDropDownMenu_SetText(self, group:GetGroupName())
-
-				return group
-			end
-
-		elseif GUID and GUID ~= "" then
-			if type == "icon" then
-				text = L["UNKNOWN_ICON"]
-			elseif type == "group" then
-				text = L["UNKNOWN_GROUP"]
-			else
-				text = L["UNKNOWN_UNKNOWN"]
-			end
+			end)    
 		end
 		
-		UIDropDownMenu_SetText(self, text)
-	end,
-
-	SetIconPreviewIcon = function(self, icon)
-		if not icon or not icon.IsIcon then
-			self.IconPreview:Hide()
-			return
-		end
-
-		local desc = L["ICON_TOOLTIP2NEWSHORT"]
-
-		if TMW.db.global.ShowGUIDs then
-			desc = desc .. "\r\n\r\n|cffffffff" .. (not icon.TempGUID and (icon:GetGUID() .. "\r\n") or "") .. icon.group:GetGUID()
-		end
-
-		TMW:TT(self.IconPreview, icon:GetIconName(), desc, 1, 1)
-		self.IconPreview.icon = icon
-		self.IconPreview.texture:SetTexture(icon and icon.attributes.texture)
-		self.IconPreview:Show()
-	end,
-
-	SetGUID = function(self, GUID)
-		local icon = TMW.GUIDToOwner[GUID]
-
-		self:SetUIDropdownGUIDText(GUID, L["CHOOSEICON"])
-		self:SetIconPreviewIcon(icon)
-	end,
-
-	SetIcon = function(self, icon)
-		local GUID = icon:GetGUID()
-
-		self:SetUIDropdownGUIDText(GUID, L["CHOOSEICON"])
-		self:SetIconPreviewIcon(icon)
-	end,
-
+		self.__animateHeight_start = self:GetHeight()
+		self.__animateHeight_end = endHeight
+		self.__animateHeight_delta = self.__animateHeight_end - self.__animateHeight_start
+		self.__animateHeight_startTime = TMW.time
+		self.__animateHeight_duration = 0.1
+	end,]]
 }
 
 
@@ -2055,6 +1937,10 @@ TMW:NewClass("Config_Slider", "Slider", "Config_Frame")
 	GetValue = function(self)
 		if self.EditBoxShowing then
 			local text = self.EditBox:GetText()
+			if text == "" then
+				text = 0
+			end
+
 			text = tonumber(text)
 			if text then
 				return self:CalculateValueRoundedToStep(text)
@@ -2215,6 +2101,10 @@ TMW:NewClass("Config_Slider", "Slider", "Config_Frame")
 	end,
 
 	CalculateValueRoundedToStep = function(self, value)
+		if value == math.huge or value == -math.huge then
+			return value
+		end
+		
 		local step = self:GetValueStep()
 
 		return floor(value * (1/step) + 0.5) / (1/step)
@@ -2368,7 +2258,7 @@ TMW:NewClass("Config_Slider", "Slider", "Config_Frame")
 
 	UpdateRange = function(self, value)
 		if self.mode == self.MODE_ADJUSTING then
-			local deviation = self.range/2
+			local deviation = ceil(self.range/2)
 			local val = value or self:GetValue()
 
 			local newmin = min(max(self.min, val - deviation), self.max)
@@ -2516,7 +2406,7 @@ TMW:NewClass("Config_Frame_WhenChecks", "Config_Frame"){
 		-- ShowWhen toggle
 		assert(data.bit, "SettingWhenCheckSet's data table must declare a bit flag to be toggled in ics.ShowWhen! (data.bit)")
 		
-		self.Check:SetAttribute("tmw-class", "Config_CheckButton_BitToggle")
+		self.Check.tmwClass = "Config_CheckButton_BitToggle"
 		TMW:CInit(self.Check, {
 			setting = "ShowWhen",
 			bit = data.bit,
@@ -2834,11 +2724,11 @@ TMW:MakeSingleArgFunctionCached(IE, "Equiv_GenerateTips")
 function IE:Type_DropDown()
 	for _, typeData in ipairs(TMW.OrderedTypes) do
 		if CI.ics.Type == typeData.type or not get(typeData.hidden) then
-			if typeData.spacebefore then
-				TMW.AddDropdownSpacer()
+			if typeData.menuSpaceBefore then
+				TMW.DD:AddSpacer()
 			end
 
-			local info = UIDropDownMenu_CreateInfo()
+			local info = TMW.DD:CreateInfo()
 			
 			info.text = get(typeData.name)
 			info.value = typeData.type
@@ -2859,7 +2749,6 @@ function IE:Type_DropDown()
 			if desc then
 				info.tooltipTitle = typeData.tooltipTitle or info.text
 				info.tooltipText = desc
-				info.tooltipOnButton = true
 				info.tooltipWhileDisabled = true
 			end
 			
@@ -2873,10 +2762,10 @@ function IE:Type_DropDown()
 			info.tCoordTop = 0.07
 			info.tCoordBottom = 0.93
 				
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 
-			if typeData.spaceafter then
-				TMW.AddDropdownSpacer()
+			if typeData.menuSpaceAfter then
+				TMW.DD:AddSpacer()
 			end
 		end
 	end
@@ -2919,9 +2808,9 @@ function IE:GetRealNames(Name)
 	if SoI == "item" then
 		tbl = TMW:GetItems(text)
 	else
-		tbl = TMW:GetSpellNames(text, 1)
+		tbl = TMW:GetSpells(text).Array
 	end
-	local durations = CI_typeData.DurationSyntax and TMW:GetSpellDurations(text)
+	local durations = CI_typeData.DurationSyntax and TMW:GetSpells(text).Durations
 
 	local Cache = TMW:GetModule("SpellCache"):GetCache()
 	
@@ -3044,7 +2933,7 @@ function TMW:Import(SettingsItem, ...)
 	assert(version, "Missing version of settings")
 	assert(type, "No settings type specified!")
 
-	CloseDropDownMenus()
+	TMW.DD:CloseDropDownMenus()
 
 	TMW:Fire("TMW_IMPORT_PRE", SettingsItem, ...)
 	
@@ -3271,8 +3160,8 @@ TMW:RegisterCallback("TMW_CONFIG_REQUEST_AVAILABLE_IMPORT_EXPORT_TYPES", functio
 	if editbox.IsImportExportWidget then
 		local info = editbox.obj.userdata
 		
-		import.group_overwrite = FindGroupFromInfo(info)
-		export.group = FindGroupFromInfo(info)
+		import.group_overwrite = TMW.FindGroupFromInfo(info)
+		export.group = TMW.FindGroupFromInfo(info)
 	end
 end)
 
@@ -3384,7 +3273,7 @@ function IE:DoUndoRedo(direction)
 	
 	TMW:Fire("TMW_CONFIG_ICON_HISTORY_STATE_CHANGED", icon)
 
-	CloseDropDownMenus()
+	TMW.DD:CloseDropDownMenus()
 	IE:Load(1)
 	
 	IE:UndoRedoChanged()
@@ -3424,7 +3313,7 @@ function IE:DoBackForwards(direction)
 
 	IE.historyState = IE.historyState + direction
 
-	CloseDropDownMenus()
+	TMW.DD:CloseDropDownMenus()
 	IE:Load(nil, IE.history[IE.historyState], true)
 
 	IE:BackFowardsChanged()

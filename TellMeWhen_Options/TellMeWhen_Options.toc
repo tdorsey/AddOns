@@ -1,6 +1,6 @@
-﻿## Interface: 50400
+﻿## Interface: 60000
 ## Title: TellMeWhen Options
-## X-Curse-Packaged-Version: 7.0.2
+## X-Curse-Packaged-Version: 7.1.1
 ## X-Curse-Project-Name: TellMeWhen
 ## X-Curse-Project-ID: tellmewhen
 ## X-Curse-Repository-ID: wow/tellmewhen/mainline

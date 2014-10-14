@@ -518,6 +518,8 @@ L["CONDITIONPANEL_BIGWIGS_TIMER"] = "Big Wigs - 计时器"
 L["CONDITIONPANEL_BIGWIGS_TIMER_DESC"] = [=[检测Big Wigs首领模块计时器的持续时间。
 
 请输入计时器全名到“用于检测的计时器”。]=]
+L["CONDITIONPANEL_BITFLAGS_CHOOSEMENU"] = "选择%s" -- Needs review
+L["CONDITIONPANEL_BITFLAGS_SELECTED"] = "|cff7fffff已选|r:" -- Needs review
 L["CONDITIONPANEL_BLIZZEQUIPSET"] = "套装已装备(自带装备管理器)"
 L["CONDITIONPANEL_BLIZZEQUIPSET_DESC"] = "检测暴雪自带装备管理器中设置的套装是否已装备。"
 L["CONDITIONPANEL_BLIZZEQUIPSET_INPUT"] = "套装名称"
@@ -578,6 +580,8 @@ L["CONDITIONPANEL_ICONSHOWNTIME_DESC"] = [=[此条件检测指定的图标已经
 如果你不想显示被检测的图标,请在被检测图标的图标编辑器勾选 %q.]=]
 L["CONDITIONPANEL_INPETBATTLE"] = "在宠物对战中"
 L["CONDITIONPANEL_INSTANCETYPE"] = "副本类型"
+L["CONDITIONPANEL_INSTANCETYPE_LEGACY"] = "%s(神话难度)" -- Needs review
+L["CONDITIONPANEL_INSTANCETYPE_NONE"] = "野外" -- Needs review
 L["CONDITIONPANEL_INTERRUPTIBLE"] = "可打断"
 L["CONDITIONPANEL_ITEMRANGE"] = "单位在物品范围内"
 L["CONDITIONPANEL_LESS"] = "小于"
@@ -601,6 +605,8 @@ NPC编号可以在Wowhead之类的魔兽世界数据库找到(例如http://www.w
 玩家与某些单位没有NPC编号,在此条件中的返回值为0.]=]
 L["CONDITIONPANEL_NPCIDTOMATCH"] = "用于比较的编号"
 L["CONDITIONPANEL_NPCIDTOOLTIP"] = "你可以利用分号(;)输入多个NPC编号.条件会在任意一个编号相符时通过."
+L["CONDITIONPANEL_OLD"] = "<|cffff1300老版本|r>" -- Needs review
+L["CONDITIONPANEL_OLD_DESC"] = "<|cffff1300老版本|r> - 此条件有新版本可用。" -- Needs review
 L["CONDITIONPANEL_OPERATOR"] = "运算符"
 L["CONDITIONPANEL_OR"] = "或者"
 L["CONDITIONPANEL_PERCENT"] = "(百分比)"
@@ -1448,13 +1454,16 @@ L["INCHEALS_DESC"] = [=[检测单位即将受到的治疗量(包括下一跳HoT�
 译者註:由于暴雪API的限制, HoT只会返回单位框架上所显示的数值.]=]
 L["IncreasedAP"] = "攻击强度提高"
 L["IncreasedCrit"] = "暴击几率提高"
+L["IncreasedHaste"] = "急速提高" -- Needs review
 L["IncreasedMastery"] = "精通等级提高"
+L["IncreasedMultistrike"] = "获得多重打击" -- Needs review
 L["IncreasedPhysHaste"] = "物理急速提高"
 L["IncreasedSP"] = "法术强度提高"
 L["IncreasedSpellHaste"] = "法术急速提高"
 L["IncreasedSPsix"] = "法术强度提高 (6%)"
 L["IncreasedSPten"] = "法术强度提高 (10%)"
 L["IncreasedStats"] = "属性提高"
+L["IncreasedVersatility"] = "获得多才多艺" -- Needs review
 L["INRANGE"] = "在范围内"
 L["ITEMCOOLDOWN"] = "物品冷却"
 L["ITEMEQUIPPED"] = "已装备物品"
@@ -1797,6 +1806,7 @@ L["SUG_FIRSTHELP_DESC"] = [=[这是一个提示与建议列表，它可以显示
 无论何时按下Tab键都会插入显示在第一行的条目。如果你输入的是一个名称，则右键点击条目会插入一个ID，反之亦然,你输入的是ID则点右键会插入一个名称。]=]
 L["SUGGESTIONS"] = "提示与建议:"
 L["SUGGESTIONS_DOGTAGS"] = "DogTags:"
+L["SUGGESTIONS_SORTING"] = "排列中..." -- Needs review
 L["SUG_INSERT_ANY"] = "|cff7fffff点击鼠标|r"
 L["SUG_INSERTEQUIV"] = "%s 插入同类型条目"
 L["SUG_INSERTID"] = "%s插入编号(ID)"

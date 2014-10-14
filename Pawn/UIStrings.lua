@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -29,32 +29,30 @@ PawnStats =
 	{L.PrimaryStats},
 	{SPELL_STAT1_NAME, "Strength", L.StrengthInfo},
 	{SPELL_STAT2_NAME, "Agility", L.AgilityInfo},
-	{SPELL_STAT3_NAME, "Stamina", L.StaminaInfo},
 	{SPELL_STAT4_NAME, "Intellect", L.IntellectInfo},
-	{SPELL_STAT5_NAME, "Spirit", L.SpiritInfo},
+	{SPELL_STAT3_NAME, "Stamina", L.StaminaInfo},
 	
 	{L.WeaponStats},
 	{STAT_DPS_SHORT, "Dps", L.DpsInfo, true},
 	{WEAPON_SPEED, "Speed", L.SpeedInfo, true, L.SpeedIs},
-	
-	{L.HybridStats},
-	{L.Crit, "CritRating", L.CritInfo},
-	{STAT_HASTE, "HasteRating", L.HasteInfo},
-	{L.Hit, "HitRating", L.HitInfo},
-	{STAT_MASTERY, "MasteryRating", L.MasteryInfo},
-	
-	{L.PhysicalStats},
-	{L.Ap, "Ap", L.ApInfo},
-	{STAT_EXPERTISE, "ExpertiseRating", L.ExpertiseInfo},
-	
-	{L.CasterStats},
 	{L.SpellPower, "SpellPower", L.SpellPowerInfo},
 	
-	{L.TankStats},
+	{L.SecondaryStats},
+	{SPELL_STAT5_NAME, "Spirit", L.SpiritInfo},
+	{L.Ap, "Ap", L.ApInfo},
 	{ARMOR, "Armor", L.ArmorInfo},
-	{STAT_DODGE, "DodgeRating", L.DodgeInfo},
-	{STAT_PARRY, "ParryRating", L.ParryInfo},
+	{L.Crit, "CritRating", L.CritInfo},
+	{STAT_HASTE, "HasteRating", L.HasteInfo},
+	{STAT_MASTERY, "MasteryRating", L.MasteryInfo},
+	{STAT_MULTISTRIKE, "Multistrike", L.MultistrikeInfo},
+	{STAT_VERSATILITY, "Versatility", L.VersatilityInfo},
 	
+	{L.MinorStats},
+	{STAT_MOVEMENT_SPEED, "MovementSpeed", L.MovementSpeedInfo},
+	{STAT_AVOIDANCE, "Avoidance", L.AvoidanceInfo},
+	{STAT_LIFESTEAL, "Leech", L.LeechInfo},
+	{STAT_STURDINESS, "Indestructible", L.IndestructibleInfo, false, L.IndestructibleIs},
+
 	{L.PvPStats},
 	{L.PvPPower, "SpellPenetration", L.PvPPowerInfo},
 	{L.PvPResilience, "ResilienceRating", L.PvPResilienceInfo},
@@ -257,10 +255,10 @@ PawnUIFrame_ShowQuestUpgradeAdvisorCheck_Text = L.OptionsQuestUpgradeAdvisor
 PawnUIFrame_ShowQuestUpgradeAdvisorCheck_Tooltip = L.OptionsQuestUpgradeAdvisorTooltip
 PawnUIFrame_ShowSocketingAdvisorCheck_Text = L.OptionsSocketingAdvisor
 PawnUIFrame_ShowSocketingAdvisorCheck_Tooltip = L.OptionsSocketingAdvisorTooltip
-PawnUIFrame_ShowReforgingAdvisorCheck_Text = L.OptionsReforgingAdvisor
-PawnUIFrame_ShowReforgingAdvisorCheck_Tooltip = L.OptionsReforgingAdvisorTooltip
 PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck_Text = L.OptionsUpgradesForBothWeaponTypes
 PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck_Tooltip = L.OptionsUpgradesForBothWeaponTypesTooltip
+PawnUIFrame_IgnoreGemsWhileLevelingCheck_Text = L.OptionsIgnoreGemsWhileLevelingCheck
+PawnUIFrame_IgnoreGemsWhileLevelingCheck_Tooltip = L.OptionsIgnoreGemsWhileLevelingCheckTooltip
 
 PawnUIFrame_OtherOptionsHeaderLabel_Text = L.OptionsOtherHeader
 PawnUIFrame_DebugCheck_Text = L.OptionsDebug

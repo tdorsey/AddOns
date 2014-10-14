@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -51,10 +51,6 @@ PawnLocal =
 	NoScalesDescription = "準備開始, 導入一個比重或者啟用一個新的.",
 	NoStatDescription = "從左側列表選擇一個屬性.",
 	Or = "或 ",
-	ReforgeCappedStatWarning = "當重鑄命中或者熟練時請小心使用！不要讓你的未擊中的幾率高過0%。",
-	ReforgeDebugMessage = "   ---- 通過重鑄裝備獲得 +%g",
-	ReforgeInstructions = "重鑄 %s 到 %s",
-	ReforgeInstructionsNoReforge = "不要重鑄",
 	RenameScaleEnterName = "%s 的新名為:",
 	SocketBonusValueCalculationMessage = "   -- 插槽加成是值得的:",
 	StatNameText = "1 |cffffffff%s|r 價值:",
@@ -85,28 +81,27 @@ www.vgermods.com
 		ApInfo = "攻擊強度. 不直接存在於大多數物品上。 不包括從力量或敏捷上獲取的攻擊強度。", -- Needs review
 		ArmorInfo = "護甲，無論物品類型。不區分基礎護甲和額外護甲，因為額外護甲的項目是過時的。護甲，無論物品類型。不區分基礎護甲和額外護甲，因為額外護甲的物品是過時的。", -- Needs review
 		ArmorTypes = "防禦屬性", -- Needs review
-		CasterStats = "法術屬性", -- Needs review
+		AvoidanceInfo = "Avoidance.  Reduces the damage you take from area-of-effect attacks.", -- Requires localization
 		Cloth = "布甲", -- Needs review
 		ClothInfo = "此物若為布甲，點數將被分配。", -- Needs review
 		Crit = "致命一擊等級", -- Needs review
 		CritInfo = "致命一擊等級。影響近戰攻擊，遠程攻擊，法術。", -- Needs review
-		DodgeInfo = "防禦屬性。", -- Needs review
 		DpsInfo = "每秒武器傷害。 (若你想要為不同武器的不同DPS估值, 請看 \"特定武器屬性\" 部份.)", -- Needs review
-		ExpertiseInfo = "熟練等級。 使你的敵人的躲閃和招架無效的統計。", -- Needs review
 		HasteInfo = "加速等級。影響近戰攻擊，遠程攻擊，法術。\"", -- Needs review
-		Hit = "命中等級", -- Needs review
-		HitInfo = "命中等級.  影響近戰攻擊，遠程攻擊，法術。", -- Needs review
-		HybridStats = "混合等級", -- Needs review
+		IndestructibleInfo = "Indestructible.  Prevents your equipment from taking durability damage.", -- Requires localization
+		IndestructibleIs = "Being |cffffffffindestructible|r is worth:", -- Requires localization
 		IntellectInfo = "主要屬性, 智力.", -- Needs review
 		Leather = "皮甲", -- Needs review
 		LeatherInfo = "此物若為皮甲，點數將被分配。", -- Needs review
+		LeechInfo = "Leech.  Causes your attacks and healing spells to restore your health.", -- Requires localization
 		Mail = "鎖甲", -- Needs review
 		MailInfo = "此物若為鎖甲，點數將被分配。", -- Needs review
 		MasteryInfo = "精通等級。提高你主天賦的特有加成。", -- Needs review
 		MetaSocket = "變換", -- Needs review
 		MetaSocketInfo = "一個變換插槽, 是否空的還是滿的.  只計算一個變換寶石的附加效果, 而非屬性加成.", -- Needs review
-		ParryInfo = "防禦屬性。", -- Needs review
-		PhysicalStats = "物理攻擊屬性", -- Needs review
+		MinorStats = "Minor stats", -- Requires localization
+		MovementSpeedInfo = "Movement speed.  Causes your character to run faster.", -- Requires localization
+		MultistrikeInfo = "Multistrike.  Increases the chance that your attacks and healing spells will hit your target two extra times at reduced potency.", -- Requires localization
 		Plate = "鎧甲", -- Needs review
 		PlateInfo = "此物若為鎧甲，點數將被分配。", -- Needs review
 		PrimaryStats = "基本屬性",
@@ -115,6 +110,7 @@ www.vgermods.com
 		PvPResilience = "PvP韌性", -- Needs review
 		PvPResilienceInfo = "PvP韌性. 減少您受到的損害從其他玩家的攻擊。", -- Needs review
 		PvPStats = "PvP屬性", -- Needs review
+		SecondaryStats = "Secondary stats", -- Requires localization
 		Shield = "盾牌", -- Needs review
 		ShieldInfo = "此物若為盾牌，點數將被分配。", -- Needs review
 		Sockets = "插槽", -- Needs review
@@ -129,7 +125,7 @@ www.vgermods.com
 		SpiritInfo = "主要屬性, 精神.", -- Needs review
 		StaminaInfo = "主要屬性, 耐力.", -- Needs review
 		StrengthInfo = "主要屬性, 力量.", -- Needs review
-		TankStats = "防禦屬性", -- Needs review
+		VersatilityInfo = "Versatility.  Increases damage dealt for damage characters, increases healing done by healing characters, and reduces damage taken for tank characters.", -- Requires localization
 		WeaponMainHandDps = "主手: DPS", -- Needs review
 		WeaponMainHandDpsInfo = "武器每秒傷害，只針對於主手武器。", -- Needs review
 		WeaponMainHandMaxDamage = "主手: 最大傷害", -- Needs review
@@ -223,9 +219,11 @@ www.vgermods.com
 		Ap = "^%+?([%d%.,]+) 攻擊強度$", -- Needs review
 		Armor = "^([%d%.,]+)點?護甲$", -- Needs review
 		Armor2 = "^裝備: %+([%d%.,]+)點護甲值。$", -- Needs review
+		Avoidance = "^%+([%d%.,]+) Avoidance$", -- Requires localization
 		Axe = "^斧$", -- Needs review
 		BagSlots = "^%d+格容器$", -- Needs review
 		BladesEdgeMountains = "^劍刃山脈$", -- Needs review
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$", -- Requires localization
 		Bow = "^弓$", -- Needs review
 		ChanceOnHit = "擊中時可能: ", -- Needs review
 		Charges = "^.+ Charges?$", -- Needs review
@@ -237,8 +235,6 @@ www.vgermods.com
 		Dagger = "^匕首$", -- Needs review
 		Design = "設計圖:", -- Needs review
 		DisenchantingRequires = "^分解需要", -- Needs review
-		Dodge = "^%+?([%d%.,]+)閃躲等級$", -- Needs review
-		Dodge2 = "^裝備: 提高([%d%.,]+)點閃躲等級。$", -- Needs review
 		Dps = "^%(([%d%.,]+)每秒傷害%)$", -- Needs review
 		DpsAdd = "^增加 ([%d%.,]+)每秒傷害$", -- Needs review
 		Duration = "^持續:", -- Needs review
@@ -252,10 +248,8 @@ www.vgermods.com
 		EnchantmentPyriumWeaponChain = "^黃鐵武器鍊$",
 		EnchantmentTitaniumWeaponChain = "^泰坦鋼武器鍊$", -- Needs review
 		Equip = "裝備: ", -- Needs review
-		Expertise = "^%+?([%d%.,]+)熟練等級$", -- Needs review
-		Expertise2 = "^裝備: 使你的熟練等級提高([%d%.,]+)點。$", -- Needs review
 		FistWeapon = "^拳套$", -- Needs review
-		Flexible = "^Flexible$",
+		Flexible = "^Flexible$", -- Requires localization
 		Formula = "公式: ", -- Needs review
 		Gun = "^槍械$", -- Needs review
 		Haste = "^%+?([%d%.,]+)加速等級$", -- Needs review
@@ -266,28 +260,25 @@ www.vgermods.com
 		Heroic = "^英雄模式$", -- Needs review
 		HeroicElite = "^英雄難度精英$", -- Needs review
 		HeroicThunderforged = "^Heroic Thunderforged$", -- Requires localization
-		HeroicWarforged = "^Heroic Warforged$",
-		Hit = "^%+?([%d%.,]+)命中等級$", -- Needs review
-		Hit2 = "^裝備: 提高([%d%.,]+)點命中等級。$", -- Needs review
-		Hit3 = "^UNUSED$", -- Needs review
+		HeroicWarforged = "^Heroic Warforged$", -- Requires localization
 		Hp5 = "^裝備: 每5秒恢復([%d%.,]+)生命力。$", -- Needs review
 		Hp52 = "^每5秒恢復([%d%.,]+)生命力。?$", -- Needs review
 		Hp53 = "^UNUSED$", -- Needs review
 		Hp54 = "^UNUSED$", -- Needs review
 		Intellect = "^%+?([-%d%.,]+)智力$", -- Needs review
 		Leather = "^皮甲$", -- Needs review
+		Leech = "^%+([%d%.,]+) Leech$", -- Requires localization
 		Mace = "^錘$", -- Needs review
 		Mail = "^鎖甲$", -- Needs review
 		Manual = "手冊: ", -- Needs review
 		Mastery = "^%+?([%d%.,]+)精通等級$", -- Needs review
 		Mastery2 = "^裝備: 提高([%d%.,]+)點精通等級。$", -- Needs review
 		MetaGemRequirements = "|cff%x%x%x%x%x%x需求", -- Needs review
+		MovementSpeed = "^%+([%d%.,]+) Speed$", -- Requires localization
 		MultiStatSeparator1 = "and", -- Needs review
+		Multistrike = "^%+([%d%.,]+) Multistrike$", -- Requires localization
 		NormalizationEnchant = "^Enchanted: (.*)$", -- Needs review
-		NormalizationReforge = "^(.*) %(Reforged from (.*)%)$", -- Needs review
 		OnlyFitsInMetaGemSlot = "^\"只適用於變換寶石插槽。\"$", -- Needs review
-		Parry = "^%+?([%d%.,]+)招架等級$", -- Needs review
-		Parry2 = "^裝備: 提高([%d%.,]+)點招架等級。$", -- Needs review
 		Pattern = "圖樣: ", -- Needs review
 		Plans = "結構圖: ", -- Needs review
 		Plate = "^鎧甲$", -- Needs review
@@ -318,11 +309,12 @@ www.vgermods.com
 		TemporaryBuffMinutes = "^.+%(%d+ 分%)$", -- Needs review
 		TemporaryBuffSeconds = "^.+%(%d+ 秒%)$", -- Needs review
 		Thunderforged = "^Thunderforged$", -- Requires localization
-		Timeless = "^Timeless$",
+		Timeless = "^Timeless$", -- Requires localization
 		UpgradeLevel = "^Upgrade Level:", -- Needs review
 		Use = "使用: ", -- Needs review
+		Versatility = "^%+([%d%.,]+) Versatility$", -- Requires localization
 		Wand = "^魔杖$", -- Needs review
-		Warforged = "^Warforged$",
+		Warforged = "^Warforged$", -- Requires localization
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) 傷害$", -- Needs review
 		WeaponDamageArcane = "^%+?([%d%.,]+)%-([%d%.,]+)秘法傷害$", -- Needs review
 		WeaponDamageEnchantment = "^%+?([%d%.,]+)武器傷害$", -- Needs review
@@ -352,7 +344,6 @@ Wowhead stat 權數來與許可權 — — 請直接回饋 Wowhead 的預設縮�
 		CompareHeader = "用 %s 進行對比", -- Needs review
 		CompareMetaSockets = "通訊端元", -- Needs review
 		CompareOtherHeader = "其他", -- Needs review
-		CompareReforgingPotential = "重鑄潛力", -- Needs review
 		CompareShaTouchedSockets = "煞化",
 		CompareSlotEmpty = "(空)", -- Needs review
 		CompareSocketBonus = "插槽獎勵", -- Needs review
@@ -424,6 +415,12 @@ Pawn 會將它與你裝備的物品進行對比.]=], -- Needs review
 /pawn debug on
 /pawn debug off]=], -- Needs review
 		OptionsHeader = "調整 Pawn 設置", -- Needs review
+		OptionsIgnoreGemsWhileLevelingCheck = "Ignore sockets on low-level items", -- Requires localization
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = [=[Enable this option to have Pawn ignore sockets on low-level items when calculating item values, since most people do not go to the effort or expense of socketing items while still leveling.  A "low-level" item is one weaker than what can be obtained in a heroic dungeon at the level cap.
+
+If checked, Pawn's socketing advisor will still suggest appropriate gems for low-level items, but sockets will be ignored in calculations and socketed items will not show up as upgrades as often.
+
+If unchecked, Pawn will calculate values for items as if they were socketed in the way that maximizes the item's value, regardless of the item's level.]=], -- Requires localization
 		OptionsInventoryIcon = "顯示清單圖標", -- Needs review
 		OptionsInventoryIconTooltip = "啟用此選項以顯示庫存圖示旁邊專案連結視窗。", -- Needs review
 		OptionsItemIDs = "顯示物品ID", -- Needs review
@@ -435,8 +432,6 @@ World of Warcraft 中的每個項都有與它關聯 ID 號。通常，此資訊�
 		OptionsOtherHeader = "其它選項", -- Needs review
 		OptionsQuestUpgradeAdvisor = "顯示任務獎勵升級建議", -- Needs review
 		OptionsQuestUpgradeAdvisorTooltip = "在你尋求日誌和時交談 NPC，如果一個追求回報的選擇是升級您當前的齒輪，Pawn 將顯示一個綠色的箭頭圖示，在該專案上。如果升級的任何專案，Pawn 將顯示一堆硬幣上是值得最大時賣給供應商的專案。", -- Needs review
-		OptionsReforgingAdvisor = "顯示重鑄建議", -- Needs review
-		OptionsReforgingAdvisorTooltip = "探訪神秘的再造時, 典當將顯示一個快顯視窗，這表明哪些統計資訊，若要更改專案的功率最大限度地。", -- Needs review
 		OptionsResetUpgrades = "重新掃描裝備", -- Needs review
 		OptionsResetUpgradesTooltip = [=[Pawn 會忘記其瞭解的最佳專案你過以往任何時候都配備和提供更多的最新升級資訊在將來重新掃描您的齒輪。
 
@@ -459,7 +454,6 @@ World of Warcraft 中的每個項都有與它關聯 ID 號。通常，此資訊�
 
 如果不選中，裝備雙手武器將會阻止 Pawn 顯示您升級為單手項，反之亦然。]=], -- Needs review
 		OptionsWelcome = "按照你的偏好配置 Pawn.  更改會馬上生效.", -- Needs review
-		ReforgingAdvisorHeader = "Pawn 重鑄建議:", -- Needs review
 		ScaleChangeColor = "調整顏色", -- Needs review
 		ScaleChangeColorTooltip = "調整物品提示欄中比重名稱和數值的顏色.", -- Needs review
 		ScaleCopy = "複製", -- Needs review
@@ -489,6 +483,7 @@ World of Warcraft 中的每個項都有與它關聯 ID 號。通常，此資訊�
 		ScaleWelcome = "比重是設定屬性和價值，這是用來分配物品的EP值。你可以定制你自己的或別人已經創造的比重值。", -- Needs review
 		SocketingAdvisorButtonTooltip = "點擊顯示Pawn珠寶介面, 此處你可看到 Pawn 為每種比重推薦的寶石,和更換至更高或更低品質的寶石.", -- Needs review
 		SocketingAdvisorHeader = "Pawn 插槽建議:", -- Needs review
+		SocketingAdvisorIgnoreThisItem = "Don't bother adding gems to this low-level item.  But if you do, use these:", -- Requires localization
 		ValuesDoNotShowUpgradesFor1H = "請不要顯示單手裝備的提升", -- Needs review
 		ValuesDoNotShowUpgradesFor2H = "請不要顯示雙手裝備的提升", -- Needs review
 		ValuesDoNotShowUpgradesTooltip = "啟用該選項來隱藏此類型裝備的提升。比如，雖然坦騎可以用雙手武器，但是對坦騎設定來說一件雙手武器從來都不是一個\\\"提升\\\"，因此Pawn將不會為它們顯示提升信息。同樣，懲戒騎可以使用單手武器，但它們從不是一個提升。", -- Needs review
@@ -530,6 +525,7 @@ World of Warcraft 中的每個項都有與它關聯 ID 號。通常，此資訊�
 		PriestHoly = "牧師: 神聖", -- Needs review
 		PriestShadow = "牧師: 暗影", -- Needs review
 		Provider = "Wowhead 比重", -- Needs review
+		ProviderStarter = "Starter scales", -- Requires localization
 		RogueAssassination = "盜賊: 刺殺", -- Needs review
 		RogueCombat = "盜賊: 戰鬥", -- Needs review
 		RogueSubtlety = "盜賊: 敏銳", -- Needs review

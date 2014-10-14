@@ -14,7 +14,7 @@ local VUHDO_SHIELDS = {
 	[114908] = 15, -- VUHDO_SPELL_ID.SPIRIT_SHELL (Buff) -- ok
 	[116849] = 12, -- Life Cocoon
 	[115295] = 30, -- Guard (brewmaster monk's self buff, unglyphed)
-	[118604] = 30, -- Guard (brewmaster monk's black ox statue (cast on group), unglyphed)
+	--[118604] = 30, -- Guard (brewmaster monk's black ox statue (cast on group), unglyphed)
 	--[123402] = 30, -- Guard (brewmaster monk's self buff, with Glyph of Guard) - Magic damage ONLY
 	--[136070] = 30, -- Guard (brewmaster monk's black ox statue (cast on group), with Glyph of Guard) - Magic damage ONLY
 	[112048] = 6, -- Shield Barrier (Prot warrior)
@@ -22,6 +22,7 @@ local VUHDO_SHIELDS = {
 	[108416] = 20, -- Sacrificial Pact (warlock talent)
 	[1463] = 8, -- Incanter's Ward (mage talent)
 	[114893] = 10, -- Stone Bulwark Totem (shaman talent)
+	[152118] = 15, -- VUDHO_SPELL_ID.CLARITY_OF_WILL -- ok
 }
 
 
@@ -29,6 +30,7 @@ local VUHDO_SHIELDS = {
 local VUHDO_PUMP_SHIELDS = {
 	[VUHDO_SPELL_ID.DIVINE_AEGIS] = 0.6,
 	[VUHDO_SPELL_ID.SPIRIT_SHELL] = 0.6,
+	[VUHDO_SPELL_ID.CLARITY_OF_WILL] = 0.6,
 }
 
 

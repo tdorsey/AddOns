@@ -23,6 +23,11 @@ function AskMrRobot.FontString:SetFontSize(fontSize)
 	self:SetFont(file, fontSize, flags)
 end
 
+function AskMrRobot.FontString:IncreaseFontSize(add)
+	local file, fontSize, flags = self:GetFont()
+	self:SetFont(file, fontSize + add, flags)
+end
+
 function AskMrRobot.SetFontSize(fontString, fontSize)
 	local file, _, flags = fontString:GetFont()
 	fontString:SetFont(file, fontSize, flags)

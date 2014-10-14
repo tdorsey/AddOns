@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -51,10 +51,6 @@ PawnLocal =
 	NoScalesDescription = "Pour commencer, importez une formule ou commencez une nouvelle.", -- Needs review
 	NoStatDescription = "Choisissez une statistique \195\160 partir de la liste sur la gauche.", -- Needs review
 	Or = "ou", -- Needs review
-	ReforgeCappedStatWarning = "Faites attention quand vous retouchez le Toucher ou l Expertise. Ne laissez pas vos chance de rater aller en dessous de 0%.", -- Needs review
-	ReforgeDebugMessage = "   ---- Retouche l item pour gagner +%g", -- Needs review
-	ReforgeInstructions = "Retouche %s en %s", -- Needs review
-	ReforgeInstructionsNoReforge = "Ne pas retoucher", -- Needs review
 	RenameScaleEnterName = "Entrer un nouveau nom pour %s:", -- Needs review
 	SocketBonusValueCalculationMessage = "   -- Le bonus de sertissage vaudrait: %g", -- Needs review
 	StatNameText = "1 |cffffffff%s|r vaut:", -- Needs review
@@ -88,28 +84,27 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		ApInfo = "Puissance d attaque. absent sur la pluspart des items directement. n'inclus pas la puissance d attaque que vous recevrez de la force ou de l'agilit\195\169", -- Needs review
 		ArmorInfo = "Armure, quelle que soit le type d item. Ne distingue pas entre l armure de base et le bonus d'armure car les items avec bonus d'amure sont obsoletes.", -- Needs review
 		ArmorTypes = "Types d'armure", -- Needs review
-		CasterStats = "stats de lanceur se sort", -- Needs review
+		AvoidanceInfo = "Avoidance.  Reduces the damage you take from area-of-effect attacks.", -- Requires localization
 		Cloth = "Tissu", -- Needs review
 		ClothInfo = "Points a etre assign\195\169 si l item est en tissu", -- Needs review
 		Crit = "Crit", -- Needs review
 		CritInfo = "Coup critique. affecte les attaques de m\195\169l\195\169e, les attaques a distance et les sorts", -- Needs review
-		DodgeInfo = "Statistique tank", -- Needs review
 		DpsInfo = "d\195\169gat par seconde d arme. (si vous voulez diff\195\169rentes estimation pour diff\195\169rents types d'arme, voir la section \"statistiques sp\195\169ciale arme\".)", -- Needs review
-		ExpertiseInfo = "Expertise. r\195\169duit les chances que la cible parre ou \195\169vite vos attaques.", -- Needs review
 		HasteInfo = "Hate. affecte les attaques de m\195\169l\195\169e, les attaques a distance et les sorts", -- Needs review
-		Hit = "Toucher", -- Needs review
-		HitInfo = "Toucher. affecte les attaques de m\195\169l\195\169e, les attaques a distance et les sorts", -- Needs review
-		HybridStats = "statistiques hybride", -- Needs review
+		IndestructibleInfo = "Indestructible.  Prevents your equipment from taking durability damage.", -- Requires localization
+		IndestructibleIs = "Being |cffffffffindestructible|r is worth:", -- Requires localization
 		IntellectInfo = "La statistique principale, Intelligence", -- Needs review
 		Leather = "Cuir", -- Needs review
 		LeatherInfo = "points \195\160 etre assign\195\169s si l item est en cuir", -- Needs review
+		LeechInfo = "Leech.  Causes your attacks and healing spells to restore your health.", -- Requires localization
 		Mail = "maille", -- Needs review
 		MailInfo = "points \195\160 etre assign\195\169 si l item est en maille", -- Needs review
 		MasteryInfo = "Ma\195\174trise. am\195\169liore le bonus unique de la sp\195\169cialistation de votre classe", -- Needs review
 		MetaSocket = "M\195\169ta ch\195\162sse", -- Needs review
 		MetaSocketInfo = "Une m\195\169ta-ch\195\162sse, que ce sois vide ou plein. ajoute des points en plus aux casques qui ont une m\195\169ta-ch\195\162sse pour compenser l'effet sp\195\169cial de la m\195\169ta gemme.", -- Needs review
-		ParryInfo = "Statistique tank", -- Needs review
-		PhysicalStats = "Statistiques de d\195\169gats physique", -- Needs review
+		MinorStats = "Minor stats", -- Requires localization
+		MovementSpeedInfo = "Movement speed.  Causes your character to run faster.", -- Requires localization
+		MultistrikeInfo = "Multistrike.  Increases the chance that your attacks and healing spells will hit your target two extra times at reduced potency.", -- Requires localization
 		Plate = "plaque", -- Needs review
 		PlateInfo = "points a etre ajouter si l item est en plaque", -- Needs review
 		PrimaryStats = "stats primaire", -- Needs review
@@ -118,6 +113,7 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		PvPResilience = "R\195\169silience JcJ", -- Needs review
 		PvPResilienceInfo = "R\195\169silience JcJ. R\195\169duit les d\195\169gats que vous recevez des attaques des autres joueurs. Effectif seulement contre d'autres joueurs", -- Needs review
 		PvPStats = "Stats JcJ", -- Needs review
+		SecondaryStats = "Secondaire", -- Needs review
 		Shield = "Bouclier", -- Needs review
 		ShieldInfo = "points a ajouter si l item est un bouclier", -- Needs review
 		Sockets = "ch\195\162sse", -- Needs review
@@ -132,7 +128,7 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		SpiritInfo = "La statistique principale, Esprit", -- Needs review
 		StaminaInfo = "La statistique principale, Endurance", -- Needs review
 		StrengthInfo = "La statistique principale, Force", -- Needs review
-		TankStats = "Stats tank", -- Needs review
+		VersatilityInfo = "Versatility.  Increases damage dealt for damage characters, increases healing done by healing characters, and reduces damage taken for tank characters.", -- Requires localization
 		WeaponMainHandDps = "MH: DPS", -- Needs review
 		WeaponMainHandDpsInfo = "d\195\169g\195\162ts d arme par seconde, seulement pour les armes de main droite", -- Needs review
 		WeaponMainHandMaxDamage = "MH: d\195\169g\195\162ts max", -- Needs review
@@ -226,9 +222,11 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		Ap = "^%+?([%d%.,]+) \195\160 la puissance d'attaque$",
 		Armor = "^Armure\194\160: ([%d%.,]+)$", -- Needs review
 		Armor2 = "^UNUSED$",
+		Avoidance = "^%+([%d%.,]+) Evitement$", -- Needs review
 		Axe = "^Hache$",
 		BagSlots = "^Sac %d+ .+$",
 		BladesEdgeMountains = "^Les Tranchantes$",
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$", -- Requires localization
 		Bow = "^Arc$", -- Needs review
 		ChanceOnHit = "Chances quand vous touchez",
 		Charges = "^.+ Charges?$",
@@ -240,8 +238,6 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		Dagger = "^Dague$",
 		Design = "Dessin\194\160:",
 		DisenchantingRequires = "^L'enchantement requiert",
-		Dodge = "^%+?([%d%.,]+) Esquive$",
-		Dodge2 = "^%+?([%d%.,]+) \195\160 l'esquive$",
 		Dps = "^%(([%d%.,]+) d\195\169g\195\162ts par seconde%)$",
 		DpsAdd = "^Ajoute ([%d%.,]+) d\195\169g\195\162ts par seconde$",
 		Duration = "^Dur\195\169e\194\160:", -- Needs review
@@ -255,10 +251,8 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		EnchantmentPyriumWeaponChain = "^Dragonne en pyrium$",
 		EnchantmentTitaniumWeaponChain = "^Dragonne en titane$",
 		Equip = "\195\137quip\195\169\194\160:", -- Needs review
-		Expertise = "^%+?([%d%.,]+) Expertise$", -- Needs review
-		Expertise2 = "^%+?([%d%.,]+) \195\160 l'expertise$",
 		FistWeapon = "^Arme de pugilat$",
-		Flexible = "^Flexible$",
+		Flexible = "^Flexible$", -- Requires localization
 		Formula = "Formule\194\160:", -- Needs review
 		Gun = "^Arme \195\160 feu$",
 		Haste = "^%+?(%-?%d+) H\195\162te$", -- Needs review
@@ -269,28 +263,25 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		Heroic = "^H\195\169ro\195\175que$", -- Needs review
 		HeroicElite = "^H\195\169ro\195\175que \195\169lite$", -- Needs review
 		HeroicThunderforged = "^Foudroyant h\195\169ro\195\175que$", -- Needs review
-		HeroicWarforged = "^Heroic Warforged$",
-		Hit = "^%+?([%d%.,]+) Toucher$",
-		Hit2 = "^%+?([%d%.,]+) au toucher$",
-		Hit3 = "^%+?([%d%.,]+) au score de toucher$",
+		HeroicWarforged = "^Heroic Warforged$", -- Requires localization
 		Hp5 = " ^%+?([%d%.,]+) Points de [vV]ie [tT]outes les 5 [sS]%.?$", -- Needs review
 		Hp52 = "^Equip\195\169: Reconstitue([%d%.,]+) de vie par 5 sec%.$", -- Needs review
 		Hp53 = " ^%+?([%d%.,]+) Points de [vV]ie [tT]outes les 5 [sS]%.?$", -- Needs review
 		Hp54 = " ^%+?([%d%.,]+) [vV]ie [pP]ar 5 [sS]ec%.?$", -- Needs review
 		Intellect = "^%+?([-%d%.,]+) Intelligence$",
 		Leather = "^Cuir$",
+		Leech = "^%+([%d%.,]+) Vol de Vie$", -- Needs review
 		Mace = "^Masse$",
 		Mail = "^Mailles$",
 		Manual = "Manuel\194\160:", -- Needs review
 		Mastery = "^%+?([%d%.,]+) Ma\195\174trise$", -- Needs review
 		Mastery2 = "^%+?([%d%.,]+) \195\160 la ma\195\174trise$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xN\195\169cessite",
+		MovementSpeed = "^%+([%d%.,]+) Rapidit\195\169$", -- Needs review
 		MultiStatSeparator1 = "et",
+		Multistrike = "^%+([%d%.,]+) Frappes Multiples$", -- Needs review
 		NormalizationEnchant = "^Enchant\195\169\194\160: (.*)$", -- Needs review
-		NormalizationReforge = "^(.*) %(retouch\195\169 \195\160 partir de (.*)%)$", -- Needs review
 		OnlyFitsInMetaGemSlot = "^\"Ne peut \195\170tre serti que dans une ch\195\162sse de m\195\169ta-gemme.%.\"$",
-		Parry = "^%+?([%d%.,]+) Parade$",
-		Parry2 = "^%+?([%d%.,]+) \195\160 la parade$",
 		Pattern = "Patron\194\160:",
 		Plans = "Plans\194\160:",
 		Plate = "^Plaques$",
@@ -321,11 +312,12 @@ Pour plus d'information sur la Personnalisation de Pawn, regarder le fichier d'a
 		TemporaryBuffMinutes = "^.+%(%d+ min%)$", -- Needs review
 		TemporaryBuffSeconds = "^.+%(%d+ sec%)$", -- Needs review
 		Thunderforged = "^Foudroyant$", -- Needs review
-		Timeless = "^Timeless$",
+		Timeless = "^Timeless$", -- Requires localization
 		UpgradeLevel = "^Niveau d\226\128\153am\195\169lioration\194\160:",
 		Use = "Utiliser\194\160:", -- Needs review
+		Versatility = "^%+([%d%.,]+) Versatilit\195\169$", -- Needs review
 		Wand = "^Baguette$",
-		Warforged = "^Warforged$",
+		Warforged = "^Warforged$", -- Requires localization
 		WeaponDamage = "^D\195\169g\195\162ts\194\160: ([%d%.,]+) %- ([%d%.,]+)$",
 		WeaponDamageArcane = "^%+?([%d%.,]+) %- ([%d%.,]+) points de d\195\169g\195\162ts %(Arcanes%)$",
 		WeaponDamageEnchantment = "^%+?([%d%.,]+) aux d\195\169g\195\162ts de l'arme$",
@@ -355,7 +347,6 @@ Les poids de stat Wowhead sont utilis\195\169s avec permission\226\128\148S'il v
 		CompareHeader = "Compare les items en utilisant %s", -- Needs review
 		CompareMetaSockets = "M\195\169ta ch\195\162sse", -- Needs review
 		CompareOtherHeader = "Autre", -- Needs review
-		CompareReforgingPotential = "Potentiel de retouche", -- Needs review
 		CompareShaTouchedSockets = "Touch\195\169 par les sha", -- Needs review
 		CompareSlotEmpty = "(pas d item)", -- Needs review
 		CompareSocketBonus = "Bonus de sertissage", -- Needs review
@@ -437,6 +428,12 @@ raccourcis:\
 /pawn debug on\
 /pawn debug off", -- Needs review
 		OptionsHeader = "Ajuste les options de Pawn", -- Needs review
+		OptionsIgnoreGemsWhileLevelingCheck = "Ignorer les douilles sur les \195\169l\195\169ments bas niveau", -- Needs review
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = "Activez cette option pour que le pion ignorer les douilles sur les \195\169l\195\169ments bas niveau lors du calcul des valeurs de l'\195\169l\195\169ment, \195\169tant donn\195\169 que la plupart des gens ne vont pas \195\160 l'effort ou les frais d'embo\195\174tement des articles tout en nivelant encore. Un \195\169l\195\169ment de \194\171 bas niveau \194\187 est l'un plus faible que ce qui peut \195\170tre obtenu dans un donjon h\195\169ro\195\175que \195\160 la limite de niveau.\
+\
+Si coch\195\169e, conseiller embo\195\174tement du pion propose toujours gemmes appropri\195\169s pour les \195\169l\195\169ments de bas niveau, mais prises seront ignor\195\169s dans les calculs et demi-pont \195\169l\195\169ments n'apparaissent pas comme des mises \195\160 jour aussi souvent.\
+\
+Si non coch\195\169, pion calculera les valeurs pour les \195\169l\195\169ments comme s'ils \195\169taient encastr\195\169s de la mani\195\168re qui maximise la valeur de l'\195\169l\195\169ment, quel que soit le niveau.", -- Needs review
 		OptionsInventoryIcon = "Affiche les ic\195\180nes d'inventaire", -- Needs review
 		OptionsInventoryIconTooltip = "Permet cette option pour afficher l'ic\195\180ne d'inventaire \195\160 cot\195\169 de la fen\195\170tre de lien de l item", -- Needs review
 		OptionsItemIDs = "Affiche les ID des items", -- Needs review
@@ -448,8 +445,6 @@ Chaque item dans World of Warcraft a un num\195\169ro d ID associ\195\169 \195\1
 		OptionsOtherHeader = "Autres options", -- Needs review
 		OptionsQuestUpgradeAdvisor = "Affiche les suggestions de qu\195\170te pouvant am\195\169lior\195\169", -- Needs review
 		OptionsQuestUpgradeAdvisorTooltip = "Dans votre journal de qu\195\170tes et quand vous parlez \195\160 des NPCs, si un des choix de r\195\169compense de qu\195\170tes est une am\195\169lioration pour votre tenue actuelle, Pawn affichera en ic\195\180ne une fl\195\168che verte sur cet item. Si aucun des items n'est une am\195\169lioration, Pawn affichera une pile de monnaies sur l item qui vaut le plus quand vendu \195\160 un vendeur", -- Needs review
-		OptionsReforgingAdvisor = "Affiche la suggestion de retouche", -- Needs review
-		OptionsReforgingAdvisorTooltip = "Quand vous visitez un retoucheur arcanique, Pawn affichera une fen\195\170tre sugg\195\169rant quels stats \195\160 changer pour maximiser la puissance de l item", -- Needs review
 		OptionsResetUpgrades = "Re-scan la tenue", -- Needs review
 		OptionsResetUpgradesTooltip = "Pawn oubliera ce qu il connait sur les meilleurs items que vous avez \195\169quip\195\169 et re-scannera votre tenue pour fournir des informations d am\195\169lioration plus \195\160 jour dans le futur.\
 \
@@ -484,7 +479,6 @@ si valid\195\169, vous pourriez \195\170tre en train d utiliser une arme \195\16
 \
 si non valid\195\169, \195\169quip\195\169 une arme \195\160 deux mains empechera Pawn d afficher vos am\195\169liorations pour les items tenu \195\160 une main et vice-versa.", -- Needs review
 		OptionsWelcome = "Configurez Pawn de la fa\195\167on vous aimez. Les changements prendront effets imm\195\169diatement.", -- Needs review
-		ReforgingAdvisorHeader = "Suggestion d'am\195\169lioration de Pawn:", -- Needs review
 		ScaleChangeColor = "change la couleur", -- Needs review
 		ScaleChangeColorTooltip = "Change la couleur avec laquelle apparait le nom et la valeur dans l infobulle d un item", -- Needs review
 		ScaleCopy = "copie", -- Needs review
@@ -514,6 +508,7 @@ cette commande ne peut etre d\195\169faite!", -- Needs review
 		ScaleWelcome = "Les \195\169chelles sont des ensembles de stats et de valeurs qui sont utilis\195\169es pour assigner des valeurs en points aux items. Vous pouvez personnaliser la votre ou utiliser ceux qu'ont cr\195\169er d autres personnes.", -- Needs review
 		SocketingAdvisorButtonTooltip = "Clic pour ouvrir l onglet Gemmes de Pawn, ou vous pouvez trouver plus d informations sur les gemmes que Pawn recommende.", -- Needs review
 		SocketingAdvisorHeader = "suggestions de Pawn pour les ch\195\162sses:", -- Needs review
+		SocketingAdvisorIgnoreThisItem = "Ne vous emb\195\170tez pas gemmes ajout \195\160 ce point de bas niveau. Mais si vous le faites, les utiliser :", -- Needs review
 		ValuesDoNotShowUpgradesFor1H = "Ne pas afficher d'am\195\169lioration pour les items a 1 main", -- Needs review
 		ValuesDoNotShowUpgradesFor2H = "Ne pas afficher d'am\195\169lioration pour les items a 2 mains", -- Needs review
 		ValuesDoNotShowUpgradesTooltip = "Permet cette option pour cacher les am\195\169liorations de ce type d item. par exemple, m\195\170me si les tanks paladin peuvent utiliser des armes a deux mains, une arme \195\160 deux mains n est jamais une \"am\195\169lioration\" pour un ensemble de paladin tank, aussi Pawn ne devrait pas afficher informations d am\195\169lioration pour eux. De m\195\170me, les Paladin Vindicte peuvent utiliser des armes a une main, mais ce n'est jamais une am\195\169lioration.", -- Needs review
@@ -534,7 +529,7 @@ cette commande ne peut etre d\195\169faite!", -- Needs review
 	Wowhead = {
 		DeathKnightBloodTank = "DK: sang",
 		DeathKnightFrostDps = "DK: givre",
-		DeathKnightUnholyDps = "DK: impie",
+		DeathKnightUnholyDps = "DK: impie", -- Needs review
 		DruidBalance = "Druide: equilibre",
 		DruidFeralDps = "Druide: feral",
 		DruidFeralTank = "Druide: ours",
@@ -555,6 +550,7 @@ cette commande ne peut etre d\195\169faite!", -- Needs review
 		PriestHoly = "Pr\195\170tre: sacr\195\169",
 		PriestShadow = "Pr\195\170tre: ombre",
 		Provider = "echelles Wowhead ", -- Needs review
+		ProviderStarter = "D\195\169marreur", -- Needs review
 		RogueAssassination = "Voleur: assassinat",
 		RogueCombat = "Voleur: combat",
 		RogueSubtlety = "Voleur: finesse",

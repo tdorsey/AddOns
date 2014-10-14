@@ -77,11 +77,6 @@ function AskMrRobot.RegisterItemInfoCallback(itemId, callback)
 	end
 end
 
-function AskMrRobot.getItemIdFromLink(item)
-	if not item then return 0 end
-	local id = tonumber (item:match ("item:(%d+):%d+:%d+:%d+:%d+:%d+:%-?%d+:%-?%d+:%d+:%d+"))
-	return (id and id ~= 0 and id or 0)
-end
 
 -- initialize the Frame class (inherit from a dummy frame)
 AskMrRobot.Frame = AskMrRobot.inheritsFrom(CreateFrame("Frame"))
@@ -96,38 +91,4 @@ function AskMrRobot.Frame:new(name, parentFrame, inheritsFrame)
 
 	-- return the instance of the Frame
 	return o
-end
-
-local MAINHAND = nil
-local OFFHAND = nil
-
-AskMrRobot.slotNames = {"HeadSlot", "NeckSlot", "ShoulderSlot", "BackSlot", "ChestSlot", "ShirtSlot", "TabardSlot", "WristSlot", "HandsSlot", "WaistSlot", "LegsSlot", "FeetSlot", "Finger0Slot", "Finger1Slot", "Trinket0Slot", "Trinket1Slot", "MainHandSlot", "SecondaryHandSlot", "AmmoSlot" };
-AskMrRobot.OptimizationSlots = {}
-AskMrRobot.slotIdToSlotNum = {}
-AskMrRobot.slotIds = {};
-for slotNum = 1, #AskMrRobot.slotNames do
-	local slotId = GetInventorySlotInfo(AskMrRobot.slotNames[slotNum])
-	AskMrRobot.slotIds[slotNum] = slotId
-	AskMrRobot.slotIdToSlotNum[slotId] = slotNum
-	local slotName = AskMrRobot.slotNames[slotNum]
-	if slotName == "MainHandSlot" then
-		MAINHAND = slotNum
-	end
-	if slotName == "SecondaryHandSlot" then
-		OFFHAND = slotNum
-	end
-	if slotName ~= "TabardSlot" and slotName ~= "AmmoSlot" and slotName ~= "ShirtSlot" then
-		AskMrRobot.OptimizationSlots[slotNum] = true
-	end
-
-end
-
-AskMrRobot.sortedSlots = {[MAINHAND] = 1, [OFFHAND] = 2}
-
-local i = 3
-for slotNum = 1, #AskMrRobot.slotNames do
-	if slotNum ~= MAINHAND and slotNum ~= OFFHAND then
-		AskMrRobot.sortedSlots[slotNum] = i
-		i = i + 1
-	end
 end

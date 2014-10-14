@@ -1,0 +1,705 @@
+------------------------------------------------------------------------
+r12050 | funkydude | 2014-10-14 18:32:26 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   A /tags/r12050-release (from /trunk:12049)
+
+Tagging as r12050-release
+------------------------------------------------------------------------
+r12049 | funkydude | 2014-10-14 18:26:31 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/BigWigs.toc
+   M /trunk/Core/BigWigs_Core.toc
+   M /trunk/EndlessSpring/BigWigs_EndlessSpring.toc
+   M /trunk/HeartOfFear/BigWigs_HeartOfFear.toc
+   M /trunk/Mogushan/BigWigs_Mogushan.toc
+   M /trunk/Options/BigWigs_Options.toc
+   M /trunk/Pandaria/BigWigs_Pandaria.toc
+   M /trunk/Plugins/BigWigs_Plugins.toc
+   M /trunk/SiegeOfOrgrimmar/BigWigs_SiegeOfOrgrimmar.toc
+   M /trunk/ThroneOfThunder/BigWigs_ThroneOfThunder.toc
+
+toc > 60000
+------------------------------------------------------------------------
+r12048 | funkydude | 2014-10-14 09:32:47 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+Loader: bump DBM faker.
+------------------------------------------------------------------------
+r12047 | funkydude | 2014-10-14 09:17:35 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/SpoilsOfPandaria.lua
+
+SpoilsOfPandaria: tweaks
+------------------------------------------------------------------------
+r12046 | funkydude | 2014-10-14 00:34:24 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Options/Options.lua
+
+Options: Be dynamic with the statistics pane.
+------------------------------------------------------------------------
+r12045 | funkydude | 2014-10-14 00:20:24 +0000 (Tue, 14 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+
+BossPrototype: Fix berserk icon texture being green.
+------------------------------------------------------------------------
+r12044 | funkydude | 2014-10-13 22:24:39 +0000 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+   M /trunk/Loader.lua
+
+BossPrototype: tweaks
+------------------------------------------------------------------------
+r12043 | funkydude | 2014-10-13 22:23:10 +0000 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/SpoilsOfPandaria.lua
+
+SpoilsOfPandaria: Add berserk timer.
+------------------------------------------------------------------------
+r12042 | funkydude | 2014-10-13 13:33:58 +0000 (Mon, 13 Oct 2014) | 2 lines
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: Disables mouse interaction when locked which allows click-through, closes #338
+Certain proximity modes no longer "break" the volume and close buttons, proximity can always be closed now.
+------------------------------------------------------------------------
+r12041 | funkydude | 2014-10-13 12:41:28 +0000 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Core/Locales/common.enUS.lua
+   M /trunk/Locales/enUS.lua
+   M /trunk/Options/Options.lua
+
+Options: Show new and old statistics side-by-side for appropriate dungeons (SoO). Others will show only their respective new or old statistics pane.
+------------------------------------------------------------------------
+r12040 | funkydude | 2014-10-13 10:19:57 +0000 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Statistics.lua
+
+Statistics: Plumbing for recording new difficulties.
+------------------------------------------------------------------------
+r12039 | funkydude | 2014-10-13 09:41:35 +0000 (Mon, 13 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Bars.lua
+
+Bars: Remove workaround for break timers.
+------------------------------------------------------------------------
+r12038 | funkydude | 2014-10-12 18:57:30 +0000 (Sun, 12 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Thogar.lua
+   M /trunk/Loader.lua
+   M /trunk/Plugins/Bars.lua
+   M /trunk/Plugins/Locales/enUS.lua
+   M /trunk/Plugins/Messages.lua
+   M /trunk/ThroneOfThunder/Durumu.lua
+   M /trunk/ThroneOfThunder/Trash.lua
+
+Messages: add "grow upwards" option, implements #587.
+------------------------------------------------------------------------
+r12037 | funkydude | 2014-10-10 23:35:44 +0000 (Fri, 10 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Bars.lua
+
+Bars: Tweaks
+------------------------------------------------------------------------
+r12036 | funkydude | 2014-10-10 23:16:03 +0000 (Fri, 10 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: The ability tooltip will now only show if you're mousing over the header/ability name, rather than the entire proximity window. Fixes #477.
+------------------------------------------------------------------------
+r12035 | funkydude | 2014-10-10 21:31:27 +0000 (Fri, 10 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Bars.lua
+
+Bars: Bars now start inside the anchor rather than above/below it, which allows greater placement precision. Implements #687.
+------------------------------------------------------------------------
+r12034 | funkydude | 2014-10-09 16:10:45 +0000 (Thu, 09 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/ThroneOfThunder/Locales/esES.lua
+   M /trunk/ThroneOfThunder/Locales/itIT.lua
+
+Locale cleanups
+------------------------------------------------------------------------
+r12033 | pettigrow | 2014-10-08 20:45:47 +0000 (Wed, 08 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Locales/frFR.lua
+   M /trunk/EndlessSpring/Locales/frFR.lua
+   M /trunk/HeartOfFear/Locales/frFR.lua
+   M /trunk/Highmaul/Locales/frFR.lua
+   M /trunk/ThroneOfThunder/Locales/frFR.lua
+
+frFR Update
+------------------------------------------------------------------------
+r12032 | funkydude | 2014-10-08 09:35:38 +0000 (Wed, 08 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+Loader: fix for the packager removing escape codes.
+------------------------------------------------------------------------
+r12031 | funkydude | 2014-10-08 09:20:53 +0000 (Wed, 08 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+
+Bump to force a re-zip.
+------------------------------------------------------------------------
+r12030 | funkydude | 2014-10-07 20:36:04 +0000 (Tue, 07 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+
+BossPrototype: minor tweaks
+------------------------------------------------------------------------
+r12029 | funkydude | 2014-10-07 20:21:39 +0000 (Tue, 07 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+   M /trunk/Locales/enUS.lua
+
+Loader: tweak out of date warning.
+------------------------------------------------------------------------
+r12028 | funkydude | 2014-10-05 20:35:22 +0000 (Sun, 05 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Locales/enUS.lua
+
+Bars: Fix some locale strings, also fixed on wowace. (this is why you clear the "needs review" section, translators, so you can see if something has changed.)
+------------------------------------------------------------------------
+r12027 | funkydude | 2014-10-05 17:06:00 +0000 (Sun, 05 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+   M /trunk/Plugins/Bars.lua
+
+DBM will use a flag called "BT" when they implement proper break timer support. Send a sync message with that also.
+------------------------------------------------------------------------
+r12026 | funkydude | 2014-10-05 14:14:09 +0000 (Sun, 05 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/BigWigs.toc
+   M /trunk/Loader.lua
+   M /trunk/Plugins/Bars.lua
+
+Bars: The break timer now restores itself between UI reloads, player relogs, and restarting the WoW client. This allows people to swap characters/etc during a break whilst easily keeping track of the time remaining.
+------------------------------------------------------------------------
+r12025 | funkydude | 2014-10-05 00:18:17 +0000 (Sun, 05 Oct 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Bars.lua
+
+Bars: typo fix
+------------------------------------------------------------------------
+r12024 | funkydude | 2014-10-05 00:10:43 +0000 (Sun, 05 Oct 2014) | 2 lines
+Changed paths:
+   M /trunk/Locales/enUS.lua
+   M /trunk/Options/Options.lua
+   M /trunk/Plugins/Bars.lua
+   M /trunk/Plugins/Locales/enUS.lua
+
+Bars: Implement proper break functionality via /break, will be expanded on later. Related localization is on wowace.
+Allow break & pull whilst solo.
+------------------------------------------------------------------------
+r12022 | funkydude | 2014-09-30 23:09:16 +0000 (Tue, 30 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+Loader: add everbloom id.
+------------------------------------------------------------------------
+r12021 | funkydude | 2014-09-30 20:18:45 +0000 (Tue, 30 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: UnitPosition returns y/x, not x/y (cosmetic fix).
+------------------------------------------------------------------------
+r12020 | nebula169 | 2014-09-30 17:16:40 +0000 (Tue, 30 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: fix GetMapData() table
+------------------------------------------------------------------------
+r12019 | nebula169 | 2014-09-30 15:40:40 +0000 (Tue, 30 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: remove hard coded map sizes
+------------------------------------------------------------------------
+r12018 | funkydude | 2014-09-29 23:35:35 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Plugins/Proximity.lua
+   M /trunk/Sounds/12345_countdown_license.txt
+
+Proximity: another sqrt removal
+------------------------------------------------------------------------
+r12017 | funkydude | 2014-09-29 17:53:21 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: More tweaks
+------------------------------------------------------------------------
+r12016 | funkydude | 2014-09-29 17:04:35 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: micro optimizations for updater functions.
+------------------------------------------------------------------------
+r12015 | jongt23 | 2014-09-29 17:00:19 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/Locales/esES.lua
+
+esES update
+------------------------------------------------------------------------
+r12014 | funkydude | 2014-09-29 16:33:16 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+
+BossPrototype: Also support :Range(player1, player2) using WoD UnitPosition.
+------------------------------------------------------------------------
+r12013 | funkydude | 2014-09-29 16:03:02 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: First run at using UnitPosition in WoD, removes all WoD map data.
+------------------------------------------------------------------------
+r12012 | funkydude | 2014-09-29 12:29:32 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+
+BossPrototype: Modify our :Range API to return sqrt(UnitDistanceSquared) values on WoD for now, until I figure out how best to approach it.
+------------------------------------------------------------------------
+r12011 | dreamtears1 | 2014-09-29 05:28:15 +0000 (Mon, 29 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Locales/koKR.lua
+
+koKR update
+------------------------------------------------------------------------
+r12010 | nebula169 | 2014-09-28 10:04:40 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Thogar: add some mythic train datas and fallback to yells, always warn on Cauterizing Bolt
+------------------------------------------------------------------------
+r12009 | pettigrow | 2014-09-28 09:39:51 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/BigWigs_BlackrockFoundry.toc
+   M /trunk/Draenor/BigWigs_Draenor.toc
+   M /trunk/Highmaul/BigWigs_Highmaul.toc
+   M /trunk/SiegeOfOrgrimmar/Locales/frFR.lua
+
+frFR Update
+------------------------------------------------------------------------
+r12008 | nebula169 | 2014-09-28 09:11:56 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Draenor/Tarlna.lua
+
+Draenor/Tarlna: another MAGIC -> magic fix
+------------------------------------------------------------------------
+r12007 | nebula169 | 2014-09-28 06:23:30 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheIronMaidens.lua
+
+TheIronMaidens: flag Convulsive Shadows DISPEL, fixes
+------------------------------------------------------------------------
+r12006 | nebula169 | 2014-09-28 06:21:27 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Darmac.lua
+   M /trunk/BlackrockFoundry/Kromog.lua
+   M /trunk/Highmaul/Koragh.lua
+   M /trunk/Highmaul/Margok.lua
+
+MAGIC -> magic
+------------------------------------------------------------------------
+r12005 | nebula169 | 2014-09-28 02:44:30 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Thogar: debuff bar for Delayed Siege Bomb and adjust lane warnings
+------------------------------------------------------------------------
+r12004 | nebula169 | 2014-09-28 02:39:50 +0000 (Sun, 28 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Darmac.lua
+
+Darmac: sound tweaks
+------------------------------------------------------------------------
+r12003 | nebula169 | 2014-09-27 23:01:56 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheIronMaidens.lua
+
+TheIronMaidens: fix stopping bars on death
+------------------------------------------------------------------------
+r12002 | nebula169 | 2014-09-27 22:56:47 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheIronMaidens.lua
+
+TheIronMaidens: rework the module
+------------------------------------------------------------------------
+r12001 | nebula169 | 2014-09-27 22:44:22 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Darmac.lua
+
+Darmac: add Pin Down say, increase Call the Pack cd
+------------------------------------------------------------------------
+r12000 | funkydude | 2014-09-27 20:25:57 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+   M /trunk/Options/Options.lua
+
+Loader: Allow /bwv when not in a group to print your own version.
+------------------------------------------------------------------------
+r11999 | funkydude | 2014-09-27 19:46:47 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+   M /trunk/Options/Options.lua
+
+Loader: Proper fix for SVN users not loading LoD addons (LittleWigs).
+------------------------------------------------------------------------
+r11998 | funkydude | 2014-09-27 15:17:40 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/BigWigs.toc
+   M /trunk/Plugins/Sound.lua
+   D /trunk/Sounds/Victory.mp3
+   A /trunk/Sounds/Victory.ogg
+   A /trunk/Sounds/Victory.wav
+   D /trunk/Sounds/VictoryLong.mp3
+   A /trunk/Sounds/VictoryLong.ogg
+   A /trunk/Sounds/VictoryLong.wav
+
+Convert our final (victory) sounds to ogg.
+------------------------------------------------------------------------
+r11997 | funkydude | 2014-09-27 14:58:30 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Bars.lua
+   M /trunk/Plugins/Emphasize.lua
+
+Fix playing the countdown sounds.
+------------------------------------------------------------------------
+r11996 | nebula169 | 2014-09-27 11:09:55 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Locales/deDE.lua
+   M /trunk/BlackrockFoundry/Locales/esES.lua
+   M /trunk/BlackrockFoundry/Locales/frFR.lua
+   M /trunk/BlackrockFoundry/Locales/itIT.lua
+   M /trunk/BlackrockFoundry/Locales/koKR.lua
+   M /trunk/BlackrockFoundry/Locales/ptBR.lua
+   M /trunk/BlackrockFoundry/Locales/ruRU.lua
+   M /trunk/BlackrockFoundry/Locales/zhCN.lua
+   M /trunk/BlackrockFoundry/Locales/zhTW.lua
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Thogar: flash if you're in a lane about to be hit, remove deforester damage warning
+------------------------------------------------------------------------
+r11995 | nebula169 | 2014-09-27 09:12:40 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Darmac.lua
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Darmac: more fixes, less flash
+------------------------------------------------------------------------
+r11994 | nebula169 | 2014-09-27 08:15:35 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Thogar: disable train warnings for LFR and commented out hc stuff (apparently my OBLITERATION spell went away)
+------------------------------------------------------------------------
+r11993 | nebula169 | 2014-09-27 06:32:31 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Darmac.lua
+
+Darmac: fixes
+------------------------------------------------------------------------
+r11992 | funkydude | 2014-09-27 05:19:59 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Plugins/Sound.lua
+   A /trunk/Sounds/Info.ogg
+   D /trunk/Sounds/VictoryClassic.mp3
+   A /trunk/Sounds/VictoryClassic.ogg
+   A /trunk/Sounds/VictoryClassic.wav
+   D /trunk/Sounds/VictoryClassic_Orig.mp3
+
+More ogg sound conversion.
+------------------------------------------------------------------------
+r11991 | funkydude | 2014-09-27 03:09:37 +0000 (Sat, 27 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   M /trunk/Plugins/Sound.lua
+   D /trunk/Sounds/1.mp3
+   A /trunk/Sounds/1.ogg
+   A /trunk/Sounds/12345_countdown_license.txt
+   A /trunk/Sounds/12345_countdown_source.wav
+   D /trunk/Sounds/2.mp3
+   A /trunk/Sounds/2.ogg
+   D /trunk/Sounds/3.mp3
+   A /trunk/Sounds/3.ogg
+   D /trunk/Sounds/4.mp3
+   A /trunk/Sounds/4.ogg
+   D /trunk/Sounds/5.mp3
+   A /trunk/Sounds/5.ogg
+   D /trunk/Sounds/Alarm.mp3
+   A /trunk/Sounds/Alarm.ogg
+   D /trunk/Sounds/Alert.mp3
+   A /trunk/Sounds/Alert.ogg
+   D /trunk/Sounds/Long.mp3
+   A /trunk/Sounds/Long.ogg
+
+Convert some of our sounds from mp3 to ogg so they work on WoD beta. Increased file size, but meh.
+------------------------------------------------------------------------
+r11990 | funkydude | 2014-09-26 22:13:11 +0000 (Fri, 26 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+   A /trunk/Options/Libs
+
+Add UBRS id.
+------------------------------------------------------------------------
+r11989 | funkydude | 2014-09-24 22:37:52 +0000 (Wed, 24 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/Malkorok.lua
+
+SiegeOfOrgrimmar/Malkorok: Cleanup the seismic slam/adds code, add blood rage duration bar.
+------------------------------------------------------------------------
+r11987 | funkydude | 2014-09-24 00:28:31 +0000 (Wed, 24 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BigWigs.toc
+
+bump version
+------------------------------------------------------------------------
+r11986 | nebula169 | 2014-09-23 06:57:39 +0000 (Tue, 23 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/GarroshHellscream.lua
+
+GarroshHellscream: show malice duration for everyone, fix Manifest Rage time and update it more liberally
+------------------------------------------------------------------------
+r11985 | nebula169 | 2014-09-22 12:52:56 +0000 (Mon, 22 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Kromog.lua
+
+Kromog: fix Thundering Blows bar
+------------------------------------------------------------------------
+r11984 | nebula169 | 2014-09-22 12:15:57 +0000 (Mon, 22 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/HansgarAndFranzok.lua
+   M /trunk/BlackrockFoundry/Kagraz.lua
+   M /trunk/BlackrockFoundry/Kromog.lua
+
+BlackrockFoundry: fixes
+------------------------------------------------------------------------
+r11983 | funkydude | 2014-09-22 11:58:02 +0000 (Mon, 22 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Mogushan/Locales/ptBR.lua
+   M /trunk/Mogushan/WillOfTheEmperor.lua
+
+ptBR update
+------------------------------------------------------------------------
+r11982 | funkydude | 2014-09-21 21:47:29 +0000 (Sun, 21 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/SiegecrafterBlackfuse.lua
+
+SiegeOfOrgrimmar/SiegecrafterBlackfuse: Shorten the say message from "laser PEW PEW" to "laser" so the speech bubble isn't obtrusively big.
+------------------------------------------------------------------------
+r11981 | funkydude | 2014-09-21 19:55:59 +0000 (Sun, 21 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Mogushan/WillOfTheEmperor.lua
+
+Mogushan/WillOfTheEmperor: add ZONE_CHANGED_NEW_AREA.
+------------------------------------------------------------------------
+r11980 | funkydude | 2014-09-21 19:26:11 +0000 (Sun, 21 Sep 2014) | 2 lines
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/SpoilsOfPandaria.lua
+
+SiegeOfOrgrimmar/SpoilsOfPandaria: Also register ZONE_CHANGED_NEW_AREA for mod enabling, as being summoned directly to the room wont fire ZONE_CHANGED_INDOORS.
+Use ENCOUNTER_END for wipe/kill detection.
+------------------------------------------------------------------------
+r11979 | funkydude | 2014-09-21 15:46:48 +0000 (Sun, 21 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/.pkgmeta
+   A /trunk/Libs/CallbackHandler-1.0
+   A /trunk/Libs/CallbackHandler-1.0/CallbackHandler-1.0.lua
+   M /trunk/embeds.xml
+
+Stop grabbing CallbackHandler from the Ace3 repo (wtf?), probably bad copy paste.
+------------------------------------------------------------------------
+r11978 | nebula169 | 2014-09-20 15:48:24 +0000 (Sat, 20 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Kromog.lua
+
+Kromog: tweak timers (probably still shit)
+------------------------------------------------------------------------
+r11977 | funkydude | 2014-09-20 14:04:07 +0000 (Sat, 20 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Kromog.lua
+
+BlackrockFoundry/Kromog: Don't hide berserk on LFR, though it will probably be extended like they always do.
+------------------------------------------------------------------------
+r11976 | funkydude | 2014-09-20 13:53:19 +0000 (Sat, 20 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Kagraz.lua
+
+BlackrockFoundry/Kagraz: fix typo
+------------------------------------------------------------------------
+r11974 | nebula169 | 2014-09-19 02:14:47 +0000 (Fri, 19 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+WoD guid fix
+------------------------------------------------------------------------
+r11973 | funkydude | 2014-09-18 21:01:51 +0000 (Thu, 18 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+   M /trunk/Core/Core.lua
+   M /trunk/Loader.lua
+
+WoD guid fixes
+------------------------------------------------------------------------
+r11972 | nebula169 | 2014-09-18 05:38:08 +0000 (Thu, 18 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Core/BossPrototype.lua
+   M /trunk/Core/Core.lua
+
+guids are - delimited now?
+------------------------------------------------------------------------
+r11971 | funkydude | 2014-09-17 17:11:40 +0000 (Wed, 17 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/GarroshHellscream.lua
+
+SiegeOfOrgrimmar/GarroshHellscream: tweaks
+------------------------------------------------------------------------
+r11970 | nebula169 | 2014-09-17 02:37:08 +0000 (Wed, 17 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/GarroshHellscream.lua
+
+GarroshHellscream: start checking health after first intermission, fix whirl add mark scanning if you have shaman marking off, tweak Malicious Blast warning
+------------------------------------------------------------------------
+r11969 | funkydude | 2014-09-16 21:37:08 +0000 (Tue, 16 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/GarroshHellscream.lua
+
+SiegeOfOrgrimmar/GarroshHellscream: Re-print the hopeless message if someone gets the buff after it was first printed.
+------------------------------------------------------------------------
+r11968 | funkydude | 2014-09-16 14:28:01 +0000 (Tue, 16 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: fix unitList being nil.
+------------------------------------------------------------------------
+r11967 | funkydude | 2014-09-16 12:27:34 +0000 (Tue, 16 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+Loader: Add Skyreach id.
+------------------------------------------------------------------------
+r11966 | ananhaid | 2014-09-16 03:14:49 +0000 (Tue, 16 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/BigWigs_BlackrockFoundry.toc
+   M /trunk/Draenor/BigWigs_Draenor.toc
+   M /trunk/Highmaul/BigWigs_Highmaul.toc
+
+- initial zhCN update.
+------------------------------------------------------------------------
+r11965 | nebula169 | 2014-09-14 07:53:40 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Highmaul/KargathBladefist.lua
+
+KargathBladefist: switch self damage sounds so the fixate effects don't share them
+------------------------------------------------------------------------
+r11964 | nebula169 | 2014-09-14 07:49:44 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheBlastFurnace.lua
+
+TheBlastFurnace: typo fix
+------------------------------------------------------------------------
+r11963 | nebula169 | 2014-09-14 07:48:32 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheBlastFurnace.lua
+
+TheBlastFurnace: always warn on Repair, stop the Bomb bar when you use it
+------------------------------------------------------------------------
+r11962 | nebula169 | 2014-09-14 07:24:13 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Oregorger.lua
+   M /trunk/BlackrockFoundry/TheBlastFurnace.lua
+
+Oregorger: add tank debuff
+------------------------------------------------------------------------
+r11961 | dreamtears1 | 2014-09-14 04:15:39 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Locales/koKR.lua
+
+koKR update.
+------------------------------------------------------------------------
+r11960 | nebula169 | 2014-09-14 00:10:48 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheBlastFurnace.lua
+
+TheBlastFurnace: don't SAY on Volatile Fire in LFR
+------------------------------------------------------------------------
+r11959 | nebula169 | 2014-09-14 00:08:12 +0000 (Sun, 14 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Oregorger.lua
+
+Oregorger: tweaks
+------------------------------------------------------------------------
+r11958 | nebula169 | 2014-09-13 11:33:37 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Highmaul/Brackenspore.lua
+
+Brackenspore: fix mythic warnings
+------------------------------------------------------------------------
+r11957 | nebula169 | 2014-09-13 11:20:41 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Loader.lua
+
+Loader: GetAddOnInfo takes names again!
+------------------------------------------------------------------------
+r11956 | nebula169 | 2014-09-13 11:04:50 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Thogar.lua
+
+Thogar: shorten Prototype Pulse Grenade to Grenade, mythic train data plumbing
+------------------------------------------------------------------------
+r11955 | funkydude | 2014-09-13 10:58:17 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/Plugins/Proximity.lua
+
+Proximity: Fix support for party so it works with LittleWigs again.
+------------------------------------------------------------------------
+r11954 | nebula169 | 2014-09-13 10:50:22 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Locales/deDE.lua
+   M /trunk/BlackrockFoundry/Locales/esES.lua
+   M /trunk/BlackrockFoundry/Locales/frFR.lua
+   M /trunk/BlackrockFoundry/Locales/itIT.lua
+   M /trunk/BlackrockFoundry/Locales/koKR.lua
+   M /trunk/BlackrockFoundry/Locales/ptBR.lua
+   M /trunk/BlackrockFoundry/Locales/ruRU.lua
+   M /trunk/BlackrockFoundry/Locales/zhCN.lua
+   M /trunk/BlackrockFoundry/Locales/zhTW.lua
+   M /trunk/BlackrockFoundry/Oregorger.lua
+
+Oregorger: berserk message on Earthshaking Stomp, make Explosive Shard melee only and add another option to countdown the explosion
+------------------------------------------------------------------------
+r11953 | nebula169 | 2014-09-13 08:58:21 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/TheBlastFurnace.lua
+
+TheBlastFurnace: fix Volatile Fire and remove icons, change Repair in range test, misc fixes
+------------------------------------------------------------------------
+r11952 | nebula169 | 2014-09-13 08:47:38 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Gruul.lua
+
+Grrul: fix Petrifying Slam, don't spam Overhead Smash during Destructive Rampage, add Cave In damage warning, smarter timers (hopefully)
+------------------------------------------------------------------------
+r11951 | nebula169 | 2014-09-13 06:39:44 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BlackrockFoundry/Oregorger.lua
+
+Oregorger: fix Retched Blackrock target, FLASH on Explosive Shard, warn for Berserk when close to third roll phase
+------------------------------------------------------------------------
+r11950 | funkydude | 2014-09-13 00:52:42 +0000 (Sat, 13 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/BigWigs.toc
+   M /trunk/Loader.lua
+
+Loader: Iron Docks id.
+------------------------------------------------------------------------
+r11949 | funkydude | 2014-09-10 18:43:16 +0000 (Wed, 10 Sep 2014) | 1 line
+Changed paths:
+   M /trunk/SiegeOfOrgrimmar/Locales/esES.lua
+
+Revert esES update, these locale strings are on wowace.
+------------------------------------------------------------------------

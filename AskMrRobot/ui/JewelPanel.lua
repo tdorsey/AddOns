@@ -113,6 +113,12 @@ function AskMrRobot.JewelPanel:SetOptimizedGems(optimizedGems, showGems)
 		-- if there is a gem to add (or remove)
 		--if i <= #optimizedGems or currentGemLink then
 		if i <= #optimizedGems or currentGemLink then
+			local optimizedGemId = 0
+			if optimizedGems[i] > 0 then
+				optimizedGemId = AskMrRobot.ExtraGemData[optimizedGems[i]].id
+			end
+			--local currentGemId = AskMrRobot.ExtraGemData[showGems[i]].id
+
 			-- set the current gem icon / tooltip
 			currentIcon:SetItemLink(currentGemLink)
 
@@ -121,20 +127,28 @@ function AskMrRobot.JewelPanel:SetOptimizedGems(optimizedGems, showGems)
 			local optimizedGemLink = nil
 			if i <= #optimizedGems then
 				-- make a link for the optimized gem
-				optimizedGemLink = select(2, GetItemInfo(optimizedGems[i].id))
+				optimizedGemLink = select(2, GetItemInfo(optimizedGemId))
 
-				if not optimizedGemLink and optimizedGems[i].id and itemId then
-					AskMrRobot.RegisterItemInfoCallback(optimizedGems[i].id, function(name, link)
+				if not optimizedGemLink and optimizedGemId and itemId then
+					AskMrRobot.RegisterItemInfoCallback(optimizedGemId, function(name, link)
 						optimizedIcon:SetItemLink(link)
 					end)
 				end
 			end
 			
-			if showGems[i] and optimizedGems[i] and optimizedGems[i].color then
+
+			local mismatched = not AskMrRobot.AreGemsCompatible(optimizedGems[i], showGems[i])
+
+			--if showGems[i] and optimizedGems[i] and optimizedGems[i].color then
+			--if test and optimizedGems[i] and optimizedGems[i].color then
+			if mismatched and optimizedGems[i] > 0 then
 				gemCount = gemCount + 1
 				-- set the optimized gem text
 				text:SetTextColor(1,1,1)
-				text:SetText(AskMrRobot.alternateGemName[optimizedGems[i].id] or (optimizedGems[i].enchantId ~= 0 and AskMrRobot.getEnchantName(optimizedGems[i].enchantId)) or GetItemInfo(optimizedGems[i].id))
+				--text:SetText(AskMrRobot.alternateGemName[optimizedGemId] or (optimizedGems[i] ~= 0 and AskMrRobot.getEnchantName(optimizedGems[i])) or GetItemInfo(optimizedGemId))
+
+				text:SetText(AskMrRobot.ExtraGemData[optimizedGems[i]].text)
+
 				currentIcon:Show()
 
 				-- load the item image / tooltip
@@ -143,7 +157,8 @@ function AskMrRobot.JewelPanel:SetOptimizedGems(optimizedGems, showGems)
 				optimizedIcon:SetBackdropBorderColor(1,1,1)
 				currentIcon:SetBackdropBorderColor(1,1,1)
 			else
-				if optimizedGems[i] and optimizedGems[i].color then
+				--if optimizedGems[i] and optimizedGems[i].color then
+				if optimizedGems[i] then
 					text:SetText("no change")
 					text:SetTextColor(0.5,0.5,0.5)
 					currentIcon:Show()
@@ -156,8 +171,11 @@ function AskMrRobot.JewelPanel:SetOptimizedGems(optimizedGems, showGems)
 				optimizedIcon:Hide()
 			end
 
-			currentIcon:SetGemColor(optimizedGems[i] and optimizedGems[i].color)
-			optimizedIcon:SetGemColor(optimizedGems[i] and optimizedGems[i].color)
+			-- TODO highlight the socket color
+			local socketColorId = AskMrRobot.ExtraItemData[itemId].socketColors[i]
+			local socketName = AskMrRobot.socketColorIds[socketColorId];
+			currentIcon:SetGemColor(optimizedGems[i] and socketName)
+			optimizedIcon:SetGemColor(optimizedGems[i] and socketName)
 
 			-- show the gem row
 			text:Show()			

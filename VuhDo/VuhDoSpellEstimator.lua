@@ -45,10 +45,10 @@ VUHDO_SPELLS = {
 	[VUHDO_SPELL_ID.GUARDIAN_SPIRIT] = { ["isHot"] = true, ["nohelp"] = true, ["noselftarget"] = true	},
 	[VUHDO_SPELL_ID.ECHO_OF_LIGHT] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.SERENDIPITY] = { ["isHot"] = true, ["nodefault"] = true	},
+	[VUHDO_SPELL_ID.CLARITY_OF_WILL] = { ["isHot"] = true },
 
 	-- Shaman
 	[VUHDO_SPELL_ID.RIPTIDE] = { ["isHot"] = true	},
-	[VUHDO_SPELL_ID.BUFF_EARTHLIVING_WEAPON] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.GIFT_OF_THE_NAARU] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.BUFF_EARTH_SHIELD] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.BUFF_WATER_SHIELD] = { ["isHot"] = true },
@@ -60,6 +60,8 @@ VUHDO_SPELLS = {
 	[VUHDO_SPELL_ID.LIFEBLOOM] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.WILD_GROWTH] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.CENARION_WARD] = { ["isHot"] = true },
+	[VUHDO_SPELL_ID.GENESIS] = { ["isHot"] = true },
+	[VUHDO_SPELL_ID.GERMINATION] = { ["isHot"] = true },
 
 	-- Hunter
 	[VUHDO_SPELL_ID.MEND_PET] = { ["isHot"] = true },
@@ -69,7 +71,6 @@ VUHDO_SPELLS = {
 	[VUHDO_SPELL_ID.ENVELOPING_MIST] = {["isHot"] = true },
 	[VUHDO_SPELL_ID.RENEWING_MIST] = { ["isHot"] = true },
 	[VUHDO_SPELL_ID.ZEN_SPHERE] = { ["isHot"] = true },
-	[VUHDO_SPELL_ID.SERPENTS_ZEAL] = { ["isHot"] = true },
 
 	-- Mage
 	[VUHDO_SPELL_ID.ICE_BARRIER] = { ["isHot"] = true },
@@ -91,6 +92,10 @@ function VUHDO_initFromSpellbook()
 
 	if "PRIEST" == VUHDO_PLAYER_CLASS then
 		VUHDO_PLAYER_HOTS[#VUHDO_PLAYER_HOTS + 1] = VUHDO_SPELL_ID.ECHO_OF_LIGHT;
+	end
+
+	if "DRUID" == VUHDO_PLAYER_CLASS then
+		VUHDO_PLAYER_HOTS[#VUHDO_PLAYER_HOTS + 1] = VUHDO_SPELL_ID.GERMINATION;
 	end
 
 	twipe(VUHDO_ACTIVE_HOTS);

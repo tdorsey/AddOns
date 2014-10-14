@@ -23,7 +23,7 @@ do
 	--@end-alpha@]===]
 
 	-- This will (in ZIPs), be replaced by the highest revision number in the source tree.
-	myRevision = tonumber("12022")
+	myRevision = tonumber("12049")
 
 	-- If myRevision ends up NOT being a number, it means we're running a SVN copy.
 	if type(myRevision) ~= "number" then
@@ -108,7 +108,7 @@ end
 -- GLOBALS: ADDON_LOAD_FAILED, BigWigs, BigWigs3DB, BigWigs3IconDB, BigWigsLoader, BigWigsOptions, CreateFrame, CUSTOM_CLASS_COLORS, error, GetAddOnEnableState, GetAddOnInfo
 -- GLOBALS: GetAddOnMetadata, GetInstanceInfo, GetLocale, GetNumGroupMembers, GetRealmName, GetSpecialization, GetSpecializationRole, GRAY_FONT_COLOR, InCombatLockdown, INTERFACEOPTIONS_ADDONCATEGORIES
 -- GLOBALS: InterfaceOptionsFrameOkay, IsAddOnLoaded, IsAltKeyDown, IsControlKeyDown, IsEncounterInProgress, IsInGroup, IsInInstance, IsInRaid, IsPartyLFG, LFGDungeonReadyPopup
--- GLOBALS: LibStub, LoadAddOn, print, RAID_CLASS_COLORS, RaidNotice_AddMessage, RaidWarningFrame, RegisterAddonMessagePrefix, RolePollPopup, select, SetMapByID, strsplit
+-- GLOBALS: LibStub, LoadAddOn, message, print, RAID_CLASS_COLORS, RaidNotice_AddMessage, RaidWarningFrame, RegisterAddonMessagePrefix, RolePollPopup, select, SetMapByID, strsplit
 -- GLOBALS: tostring, tremove, type, UnitAffectingCombat, UnitClass, UnitGroupRolesAssigned, UnitIsDeadOrGhost, UnitName, UnitSetRole, unpack, SLASH_BigWigs1, SLASH_BigWigs2
 -- GLOBALS: SLASH_BigWigsVersion1, wipe, WorldMapFrame
 
@@ -371,6 +371,12 @@ function mod:PLAYER_LOGIN()
 				end
 			end
 		end
+
+		-- Break timer restoration
+		if BigWigs3DB.breakTime then
+			load(BigWigs, "BigWigs_Core")
+			BigWigs:Enable()
+		end
 	end
 	self:UpdateDBMFaking(nil, "fakeDBMVersion", self.isFakingDBM)
 
@@ -449,13 +455,17 @@ do
 
 	local timer = bwFrame:CreateAnimationGroup()
 	timer:SetScript("OnFinished", function()
-		for _, msg in ipairs(delayedMessages) do
+		local _, _, _, _, _, _, year = GetAchievementInfo(8482) -- Mythic Garrosh
+		if year == 13 and (L == "enUS" or L == "enGB") then
+			sysprint("We're looking for a new end-game raider to join our developer team! See [goo.gl/aajTfo] for more info.")
+		end
+		for _, msg in next, delayedMessages do
 			sysprint(msg)
 		end
 		delayedMessages = nil
 	end)
 	local anim = timer:CreateAnimation()
-	anim:SetDuration(5)
+	anim:SetDuration(11)
 	timer:Play()
 end
 
@@ -465,9 +475,9 @@ end
 
 do
 	-- This is a crapfest mainly because DBM's actual handling of versions is a crapfest, I'll try explain how this works...
-	local DBMdotRevision = "11593" -- The changing version of the local client, changes with every alpha revision using an SVN keyword.
-	local DBMdotReleaseRevision = "11593" -- This is manually changed by them every release, they use it to track the highest release version, a new DBM release is the only time it will change.
-	local DBMdotDisplayVersion = "5.4.19" -- Same as above but is changed between alpha and release cycles e.g. "N.N.N" for a release and "N.N.N alpha" for the alpha duration
+	local DBMdotRevision = "11766" -- The changing version of the local client, changes with every alpha revision using an SVN keyword.
+	local DBMdotReleaseRevision = "11766" -- This is manually changed by them every release, they use it to track the highest release version, a new DBM release is the only time it will change.
+	local DBMdotDisplayVersion = "6.0.0" -- Same as above but is changed between alpha and release cycles e.g. "N.N.N" for a release and "N.N.N alpha" for the alpha duration
 	function mod:DBM_VersionCheck(prefix, sender, revision, releaseRevision, displayVersion)
 		if prefix == "H" and (BigWigs and BigWigs.db.profile.fakeDBMVersion or self.isFakingDBM) then
 			SendAddonMessage("D4", "V\t"..DBMdotRevision.."\t"..DBMdotReleaseRevision.."\t"..DBMdotDisplayVersion.."\t"..GetLocale(), IsInGroup(2) and "INSTANCE_CHAT" or "RAID")
@@ -635,7 +645,7 @@ function mod:CHAT_MSG_ADDON(prefix, msg, channel, sender)
 		local dbmPrefix, arg1, arg2, arg3 = strsplit("\t", msg)
 		if dbmPrefix == "V" or dbmPrefix == "H" then
 			self:DBM_VersionCheck(dbmPrefix, Ambiguate(sender, "none"), arg1, arg2, arg3)
-		elseif dbmPrefix == "U" or dbmPrefix == "PT" or dbmPrefix == "M" then
+		elseif dbmPrefix == "U" or dbmPrefix == "PT" or dbmPrefix == "M" or dbmPrefix == "BT" then
 			public:SendMessage("DBM_AddonMessage", Ambiguate(sender, "none"), dbmPrefix, arg1, arg2, arg3)
 		end
 	end
@@ -651,10 +661,10 @@ do
 	local anim = timer:CreateAnimation()
 	anim:SetDuration(3)
 
-	local hasWarned, hasCritWarned = nil, nil
+	local hasWarned, hasReallyWarned, hasExtremelyWarned = nil, nil, nil
 	local function printOutOfDate(tbl, isAlpha)
-		if hasCritWarned then return end
-		local warnedOutOfDate, warnedExtremelyOutOfDate = 0, 0
+		if hasExtremelyWarned then return end
+		local warnedOutOfDate, warnedReallyOutOfDate, warnedExtremelyOutOfDate = 0, 0, 0
 		for k,v in next, tbl do
 			if (v-isAlpha) > MY_BIGWIGS_REVISION then
 				warnedOutOfDate = warnedOutOfDate + 1
@@ -663,11 +673,19 @@ do
 					sysprint(isAlpha == 10 and L.alphaOutdated or L.newReleaseAvailable)
 				end
 				if ((v-isAlpha) - MY_BIGWIGS_REVISION) > 120 then
-					warnedExtremelyOutOfDate = warnedExtremelyOutOfDate + 1
-					if warnedExtremelyOutOfDate > 1 and not hasCritWarned then
-						hasCritWarned = true
+					warnedReallyOutOfDate = warnedReallyOutOfDate + 1
+					if warnedReallyOutOfDate > 1 and not hasReallyWarned then
+						hasReallyWarned = true
 						sysprint(L.extremelyOutdated)
-						RaidNotice_AddMessage(RaidWarningFrame, L.extremelyOutdated, {r=1,g=1,b=1})
+						RaidNotice_AddMessage(RaidWarningFrame, (L.extremelyOutdated):gsub("|", "\124"), {r=1,g=1,b=1}) -- XXX wowace packager doesn't keep my escape codes and RW doesn't like pipes :(
+					end
+					if ((v-isAlpha) - MY_BIGWIGS_REVISION) > 300 then
+						warnedExtremelyOutOfDate = warnedExtremelyOutOfDate + 1
+						if warnedExtremelyOutOfDate > 1 and not hasExtremelyWarned then
+							hasExtremelyWarned = true
+							sysprint(L.severelyOutdated)
+							message(L.severelyOutdated)
+						end
 					end
 				end
 			end
@@ -682,7 +700,7 @@ do
 			end
 			message = tonumber(message)
 			-- XXX The > 13k check is a hack for now until I find out what addon is sending a stupidly large version (20032). This is probably being done to farm BW versions, when a version of 0 should be used.
-			if not message or message == 0 or message > 13000 then return end -- Allow addons to query Big Wigs versions by using a version of 0, but don't add them to the user list.
+			if not message or message == 0 or message > 13500 then return end -- Allow addons to query Big Wigs versions by using a version of 0, but don't add them to the user list.
 			usersRelease[sender] = message
 			usersAlpha[sender] = nil
 			if message > highestReleaseRevision then highestReleaseRevision = message end
@@ -696,7 +714,7 @@ do
 			end
 			message = tonumber(message)
 			-- XXX The > 13k check is a hack for now until I find out what addon is sending a stupidly large version (20032). This is probably being done to farm BW versions, when a version of 0 should be used.
-			if not message or message == 0 or message > 13000 then return end -- Allow addons to query Big Wigs versions by using a version of 0, but don't add them to the user list.
+			if not message or message == 0 or message > 13500 then return end -- Allow addons to query Big Wigs versions by using a version of 0, but don't add them to the user list.
 			usersAlpha[sender] = message
 			usersRelease[sender] = nil
 			if message > highestAlphaRevision then highestAlphaRevision = message end
@@ -782,7 +800,7 @@ do
 		-- Module loading
 		if enableZones[id] then
 			if enableZones[id] == "world" then
-				if BigWigs and not UnitIsDeadOrGhost("player") and (not BigWigsOptions or not BigWigsOptions:InConfigureMode()) then
+				if BigWigs and BigWigs:IsEnabled() and not UnitIsDeadOrGhost("player") and (not BigWigsOptions or not BigWigsOptions:InConfigureMode()) and (not BigWigs3DB or not BigWigs3DB.breakTime) then
 					BigWigs:Disable() -- Might be leaving an LFR and entering a world enable zone, disable first
 				end
 				bwFrame:RegisterEvent("UNIT_TARGET")
@@ -808,7 +826,7 @@ do
 			end
 		else
 			bwFrame:UnregisterEvent("UNIT_TARGET")
-			if BigWigs and not UnitIsDeadOrGhost("player") and (not BigWigsOptions or not BigWigsOptions:InConfigureMode()) then
+			if BigWigs and BigWigs:IsEnabled() and not UnitIsDeadOrGhost("player") and (not BigWigsOptions or not BigWigsOptions:InConfigureMode()) and (not BigWigs3DB or not BigWigs3DB.breakTime) then
 				BigWigs:Disable() -- Alive in a non-enable zone, disable
 			end
 		end
@@ -821,7 +839,7 @@ do
 				warnedThisZone[id] = true
 				local msg = L.missingAddOn:format(zoneAddon)
 				sysprint(msg)
-				RaidNotice_AddMessage(RaidWarningFrame, msg, {r=1,g=1,b=1})
+				RaidNotice_AddMessage(RaidWarningFrame, msg:gsub("|", "\124"), {r=1,g=1,b=1}) -- XXX wowace packager doesn't keep my escape codes and RW doesn't like pipes :(
 			end
 		end
 	end

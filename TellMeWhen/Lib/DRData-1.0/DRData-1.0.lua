@@ -1,9 +1,11 @@
 local major = "DRData-1.0"
-local minor = 1033
+local minor = 1037
 assert(LibStub, string.format("%s requires LibStub.", major))
 
 local Data = LibStub:NewLibrary(major, minor)
 if( not Data ) then return end
+
+local wow_600 = select(4, GetBuildInfo()) >= 60000
 
 local L = {
 	["Roots"] = "Roots",
@@ -20,11 +22,26 @@ local L = {
 	["Taunts"] = "Taunts",
 	["Roots (short)"] = "Roots (short)",
 	["Knockbacks"] = "Knockbacks",
+	["Incapacitates"] = "Incapacitates",
 }
 
 local locale = GetLocale()
 if locale == "deDE" then
-	
+	L["Cyclone"] = "Wirbelsturm" -- Needs review
+L["Disarms"] = "Entwaffnungseffekte" -- Needs review
+L["Fears"] = "Furchteffekte" -- Needs review
+L["Horrors"] = "Horroreffekte" -- Needs review
+L["Knockbacks"] = "Rückstoßeffekte" -- Needs review
+L["Mesmerizes"] = "Mesmerisiereneffekte" -- Needs review
+L["Mesmerizes (short)"] = "Mesmerisiereneffekte (kurz)" -- Needs review
+L["Mind Control"] = "Gedankenkontrolle" -- Needs review
+L["Roots"] = "Bewegungsunfähigkeitseffekte" -- Needs review
+L["Roots (short)"] = "Bewegungsunfähigkeitseffekte (kurz)" -- Needs review
+L["Silences"] = "Stilleeffekte" -- Needs review
+L["Stuns"] = "Betäubungseffekte" -- Needs review
+L["Stuns (short)"] = "Betäubungseffekte (kurz)" -- Needs review
+L["Taunts"] = "Spotteffekte" -- Needs review
+
 elseif locale == "esES" then
 	L["Cyclone"] = "Ciclón"
 L["Disarms"] = "Desarmes"
@@ -101,9 +118,25 @@ L["Taunts"] = "嘲諷"
 
 end
 
--- How long before DR resets
--- While everyone will tell you it's 15 seconds, it's actually 16 - 20 seconds with 18 being a decent enough average
-Data.RESET_TIME = 18
+-- How long before DR resets ?
+Data.resetTimes = {
+	-- The official delay is 15 seconds, but the server only checks this every 5 seconds, so it
+	-- actually ranges from 15 to 20 seconds, 18 is a good average.
+	default   = 18,
+	-- Knockbacks are a special case
+	knockback = 10,
+}
+Data.RESET_TIME = Data.resetTimes.default
+
+-- Successives diminished durations
+Data.diminishedDurations = {
+	-- Decreases by 50%, immune at the 4th application
+	default   = { 0.50, 0.25 },
+	-- Decreases by 35%, immune at the 5th application
+	taunt     = { 0.65, 0.42, 0.27 },
+	-- Immediately immune
+	knockback = {},
+}
 
 -- Spells and providers by categories
 --[[ Generic format:
@@ -116,7 +149,210 @@ Data.RESET_TIME = 18
 		debuffId = {spellId1, spellId2, ...}
 	}
 --]]
-local spellsAndProvidersByCategory = {
+local spellsAndProvidersByCategory = wow_600 and {
+-- Warlords of Draenor categories
+-- See http://blue.mmo-champion.com/topic/326364-diminishing-returns-in-warlords-of-draenor/
+-- The original thread on Blizzard forums is 404.
+
+	--[[ TAUNT ]]--
+	taunt = {
+		-- Death Knight
+		[ 56222] = true, -- Dark Command
+		[ 57603] = true, -- Death Grip
+		-- I have also seen these two spellIDs used for the Death Grip debuff in MoP.
+		-- I have not seen the first one here in any of my MoP testing, but it may still be valid.
+		[ 49560] = true, -- Death Grip
+		[ 51399] = true, -- Death Grip
+		-- Druid
+		[  6795] = true, -- Growl
+		-- Hunter
+		[ 20736] = true, -- Distracting Shot
+		-- Monk
+		[116189] = 115546, -- Provoke
+		[118635] = 115546, -- Provoke via the Black Ox Statue -- NEED TESTING
+		[118585] = 115543, -- Leer of the Ox -- NEED TESTING
+		-- Paladin
+		[ 62124] = true, -- Reckoning
+		-- Warlock
+		[ 17735] = true, -- Suffering (Voidwalker)
+		-- Warrior
+		[   355] = true, -- Taunt
+		-- Shaman
+		[ 36213] = true, -- Angered Earth (Earth Elemental)
+	},
+
+	--[[ INCAPACITATES ]]--
+	incapacitate = {
+		-- Druid
+		[    99] = true, -- Incapacitating Roar (talent)
+		-- Hunter
+		[  3355] = {1499, 60192}, -- Freezing Trap
+		[ 19386] = true, -- Wyvern Sting
+		-- Mage
+		[   118] = true, -- Polymorph
+		[ 28272] = true, -- Polymorph (pig)
+		[ 28271] = true, -- Polymorph (turtle)
+		[ 61305] = true, -- Polymorph (black cat)
+		[ 61025] = true, -- Polymorph (serpent) -- FIXME: gone ?
+		[ 61721] = true, -- Polymorph (rabbit)
+		[ 61780] = true, -- Polymorph (turkey)
+		[ 82691] = true, -- Ring of Frost
+		[ 31661] = true, -- Dragon's Breath
+		-- Monk
+		[115078] = true, -- Paralysis
+		[123393] = true, -- Breath of Fire (Glyphed)
+		[137460] = 116844, -- Ring of Peace -- FIXME: correct spellIDs?
+		-- Paladin
+		[ 20066] = true, -- Repentance
+		-- Priest
+		[   605] = true, -- Dominate Mind
+		[  9484] = true, -- Shackle Undead
+		[ 64044] = true, -- Psychic Horror (Horror effect)
+		[ 88625] = true, -- Holy Word: Chastise
+		-- Rogue
+		[  1776] = true, -- Gouge
+		[  6770] = true, -- Sap
+		-- Shaman
+		[ 51514] = true, -- Hex
+		-- Warlock
+		[   710] = true, -- Banish -- Glyph of Crimson Banish ?
+		[111397] = true, -- Blood Horror
+		[  6789] = true, -- Mortal Coil
+		-- Pandaren
+		[107079] = true, -- Quaking Palm
+	},
+
+	--[[ SILENCES ]]--
+	silence = {
+		-- Death Knight
+		[108194] = true, -- Asphyxiate (if target is immune to stun)
+		[ 47476] = true, -- Strangulate
+		-- Druid
+		[114237] = true, -- Glyph of Fae Silence
+		-- Mage
+		[102051] = true, -- Frostjaw
+		-- Paladin
+		[ 31935] = true, -- Avenger's Shield
+		-- Priest
+		[ 15487] = true, -- Silence
+		-- Rogue
+		[  1330] = true, -- Garrote
+		-- Blood Elf
+		[ 25046] = true, -- Arcane Torrent (Energy version)
+		[ 28730] = true, -- Arcane Torrent (Mana version)
+		[ 50613] = true, -- Arcane Torrent (Runic power version)
+		[ 69179] = true, -- Arcane Torrent (Rage version)
+		[ 80483] = true, -- Arcane Torrent (Focus version)
+	},
+
+	--[[ DISORIENTS ]]--
+	disorient = {
+		-- Druid
+		[ 33786] = true, -- Cyclone
+		-- Paladin
+		[105421] = true, -- Blinding Light -- FIXME: is this the right category? Its missing from blizzard's list
+		[ 10326] = true, -- Turn Evil
+		-- Priest
+		[  8122] = true, -- Psychic Scream
+		-- Rogue
+		[  2094] = true, -- Blind
+		-- Warlock
+		[  5782] = true, -- Fear
+		[118699] = 5782, -- Fear -- new SpellID in MoP, Blood Fear uses same ID
+		[  5484] = true, -- Howl of Terror
+		[115268] = true, -- Mesmerize (Shivarra)
+		[  6358] = true, -- Seduction (Succubus)
+		-- Warrior
+		[  5246] = true, -- Intimidating Shout (main target)
+	},
+
+	--[[ STUNS ]]--
+	ctrlstun = {
+		-- Death Knight
+		[108194] = true, -- Asphyxiate
+		[ 91800] = true, -- Gnaw (Ghoul)
+		[ 91797] = true, -- Monstrous Blow (Dark Transformation Ghoul)
+		[115001] = true, -- Remorseless Winter
+		-- Druid
+		[ 22570] = true, -- Maim
+		[  5211] = true, -- Mighty Bash
+		-- FIXME: Pounce
+		--[163505] = true, -- Rake (Stun from Prowl)
+		-- Hunter
+		[117526] = 109248, -- Binding Shot
+		[ 24394] = 19577, -- Intimidation
+		-- Mage
+		[ 44572] = true, -- Deep Freeze
+		-- Monk
+		[119392] =   true, -- Charging Ox Wave
+		[120086] = 113656, -- Fists of Fury
+		[119381] =   true, -- Leg Sweep
+		-- Paladin
+		[   853] = true, -- Hammer of Justice
+		[119072] = true, -- Holy Wrath
+		[105593] = true, -- Fist of Justice
+		-- Rogue
+		[  1833] = true, -- Cheap Shot
+		[   408] = true, -- Kidney Shot
+		-- Shaman
+		[118345] = true, -- Pulverize (Primal Earth Elemental)
+		[118905] = true, -- Static Charge (Capacitor Totem)
+		-- Warlock
+		[ 89766] = true, -- Axe Toss (Felguard)
+		[ 30283] = true, -- Shadowfury
+		[ 22703] = 1122, -- Summon Infernal
+		-- Warrior
+		[132168] = true, -- Shockwave
+		[132169] = true, -- Storm Bolt
+		-- Tauren
+		[ 20549] = true, -- War Stomp
+	},
+
+	--[[ ROOTS ]]--
+	ctrlroot = {
+		-- Death Knight
+		[ 96294] = true, -- Chains of Ice (Chilblains Root)
+		-- Druid
+		[   339] = true, -- Entangling Roots
+		[102359] = true, -- Mass Entanglement (talent)
+		[113770] = true, -- Entangling Roots (Treants)
+		-- Hunter
+		[ 53148] = 61685, -- Charge (Tenacity pet)
+		[135373] = true, -- Entrapment (passive)
+		[136634] = true, -- Narrow Escape (passive talent)
+		-- Mage
+		[   122] = true, -- Frost Nova
+		[ 33395] = true, -- Freeze (Water Elemental)
+		[111340] = true, -- Ice Ward
+		-- Monk
+		[116706] = 116095, -- Disable
+		-- Priest
+		[ 87194] = true, -- Glyph of Mind Blast
+		[114404] = true, -- Void Tendrils
+		-- Shaman
+		[ 63685] = true, -- Freeze (Frozen Power talent)
+		[ 64695] = true, -- Earthgrab Totem
+	},
+
+	--[[ KNOCKBACK ]]--
+	knockback = {
+		-- Death Knight
+		[108199] = true, -- Gorefiend's Grasp
+		-- Druid
+		[102793] = true, -- Ursol's Vortex
+		[132469] = true, -- Typhoon
+		-- Hunter
+		[119403] = true, -- Glyph of Explosive Trap
+		-- Shaman
+		[ 51490] = true, -- Thunderstorm
+		-- Warlock
+		[  6360] = true, -- Whiplash
+		[115770] = true, -- Fellash
+	},
+} or {
+-- Mists of Pandaria categories
+-- See http://us.battle.net/wow/en/forum/topic/10195910192
+
 	--[[ TAUNT ]]--
 	taunt = {
 		-- Death Knight
@@ -334,25 +570,8 @@ local spellsAndProvidersByCategory = {
 		[ 20549] = true, -- War Stomp
 	},
 
-	--[[ SHORT STUNS ]]--
-	-- cf.  http://us.battle.net/wow/en/forum/topic/10195910192#3
-	-- Notes: 1. this category does not share diminishing returns with the above Stuns category.
-	-- 2. Reuse the previously-used true category to avoid breaking addons.
-	rndstun = {
-		-- Rogue
-		[113953] = true, -- Paralysis (stun effect of Paralytic Poison)
-		-- Warrior
-		[118895] = true, -- Dragon Roar (talent)
-		-- Shaman
-		[ 77505] = true, -- Earthquake
-		-- Warrior
-		[   100] = true, -- Charge
-		[118000] = true, -- Dragon Roar
-	},
-
 	--[[ ROOTS ]]--
 	-- cf. http://us.battle.net/wow/en/forum/topic/10195910192#2
-
 	ctrlroot = {
 		-- Death Knight
 		[ 96294] = true, -- Chains of Ice (Chilblains Root)
@@ -392,7 +611,7 @@ local spellsAndProvidersByCategory = {
 		-- Hunter
 		[135373] = true, -- Entrapment (passive)
 		-- Mage
-		[111264] = true, -- Ice Ward -- ID NEED CONFIRMATION
+		[111340] = true, -- Ice Ward
 		-- Monk
 		[123407] = 115073, -- Spinning Fire Blossom
 		-- Shaman
@@ -441,14 +660,50 @@ local spellsAndProvidersByCategory = {
 	},
 }
 
+local categoryNames = {
+	ctrlroot       = L["Roots"],
+	shortroot      = L["Roots (short)"],
+	ctrlstun       = L["Stuns"],
+	cyclone        = L["Cyclone"],
+	disarm         = L["Disarms"],
+	disorient      = L["Mesmerizes"],
+	shortdisorient = L["Mesmerizes (short)"],
+	fear           = L["Fears"],
+	horror         = L["Horrors"],
+	mc             = L["Mind Control"],
+	rndstun        = L["Stuns (short)"],
+	silence        = L["Silences"],
+	taunt          = L["Taunts"],
+	incapacitate   = L["Incapacitates"],
+	knockback      = L["Knockbacks"]
+}
+
+local pveDR = {
+	ctrlstun = true,
+	rndstun  = true,
+	taunt    = true,
+	cyclone  = true
+}
+
 --- List of spellID -> DR category
 Data.spells = {}
 
 --- List of spellID => ProviderID
 Data.providers = {}
 
+--- DR Category names
+Data.categoryNames = {}
+
+--- Categories that have DR in PvE as well as PvP
+Data.pveDR = {}
+
 -- Dispatch the spells in the final tables
 for category, spells in pairs(spellsAndProvidersByCategory) do
+
+	-- Publish these categories as we have spells in it
+	Data.pveDR[category] = pveDR[category] or false
+	Data.categoryNames[category] = categoryNames[category] or category
+
 	for spell, provider in pairs(spells) do
 		Data.spells[spell] = category
 		if provider == true then -- "== true" is really needed
@@ -459,33 +714,6 @@ for category, spells in pairs(spellsAndProvidersByCategory) do
 		end
 	end
 end
-
--- DR Category names
-Data.categoryNames = {
-	["ctrlroot"] = L["Roots"],
-	["shortroot"] = L["Roots (short)"],
-	["ctrlstun"] = L["Stuns"],
-	["cyclone"] = L["Cyclone"],
-	["disarm"] = L["Disarms"],
-	["disorient"] = L["Mesmerizes"],
-	["shortdisorient"] = L["Mesmerizes (short)"],
-	["fear"] = L["Fears"],
-	["horror"] = L["Horrors"],
-	["mc"] = L["Mind Control"],
-	["rndstun"] = L["Stuns (short)"],
-	["silence"] = L["Silences"],
-	["taunt"] = L["Taunts"],
-	["knockback"] = L["Knockbacks"], -- NEEDS PROPER TESTING WITH DEPENDENT ADDONS
-}
-
--- Categories that have DR in PvE as well as PvP
-Data.pveDR = {
-	["ctrlstun"] = true,
-	["rndstun"] = true,
-	["taunt"] = true,
-	["cyclone"] = true,
-	-- ["bindelemental"] = true, -- Why was this added to pveDR? Just tested and it definitely does not have PvE DR.
-}
 
 -- Public APIs
 -- Category name in something usable
@@ -504,8 +732,8 @@ function Data:GetProviders()
 end
 
 -- Seconds before DR resets
-function Data:GetResetTime()
-	return Data.RESET_TIME
+function Data:GetResetTime(category)
+	return Data.resetTimes[category or "default"] or Data.resetTimes.default
 end
 
 -- Get the category of the spellID
@@ -523,14 +751,14 @@ function Data:GetCategories()
 	return Data.categoryNames
 end
 
--- Next DR, if it's 1.0, next is 0.50, if it's 0.[50] = "ctrlroot",next is 0.[25] = "ctrlroot",and such
-function Data:NextDR(diminished)
-	if( diminished == 1 ) then
-		return 0.50
-	elseif( diminished == 0.50 ) then
-		return 0.25
+-- Next DR
+function Data:NextDR(diminished, category)
+	local durations = Data.diminishedDurations[category or "default"] or Data.diminishedDurations.default
+	for i = 1, #durations do
+		if diminished > durations[i] then
+			return durations[i]
+		end
 	end
-
 	return 0
 end
 
@@ -606,8 +834,8 @@ local function debuffFaded(spellID, destName, destGUID, isEnemy, isPlayer)
 	local time = GetTime()
 	local tracked = trackedPlayers[destGUID][drCat]
 
-	tracked.reset = time + DRData:GetResetTime()
-	tracked.diminished = DRData:NextDR(tracked.diminished)
+	tracked.reset = time + DRData:GetResetTime(drCat)
+	tracked.diminished = DRData:NextDR(tracked.diminished, drCat)
 
 	-- Diminishing returns changed, now you can do an update
 end

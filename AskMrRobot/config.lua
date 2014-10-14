@@ -1,6 +1,4 @@
 local addonName, AskMrRobot = ...
-
---if not addon.healthCheck then return end
 local L = AskMrRobot.L
 
 local wow_ver = select(4, GetBuildInfo())
@@ -43,70 +41,39 @@ frame:SetScript("OnShow", function(frame)
 	subtitle:SetText(L.AMR_CONFIG_EXIMPORT)
 	subTitleWrapper:SetHeight(subtitle:GetHeight())
 
+    -- hide minimap icon
 	local autoPopup = newCheckbox(
 		L.AMR_CONFIG_CHECKBOX_MINIMAP_LABEL,
 		L.AMR_CONFIG_CHECKBOX_MINIMAP_TOOLTIP_TITLE,
 		L.AMR_CONFIG_CHECKBOX_MINIMAP_DESCRIPTION,
 		function(self, value) 
-			if AmrOptions.hideMapIcon then
-				AmrOptions.hideMapIcon = false
+			if AmrDb.Options.hideMapIcon then
+				AmrDb.Options.hideMapIcon = false
 			else
-				AmrOptions.hideMapIcon = true
+				AmrDb.Options.hideMapIcon = true
 			end
 			AskMrRobot.AmrUpdateMinimap();
 		end
 	)
-	autoPopup:SetChecked(not AmrOptions.hideMapIcon)
+	autoPopup:SetChecked(not AmrDb.Options.hideMapIcon)
 	autoPopup:SetPoint("TOPLEFT", subTitleWrapper, "BOTTOMLEFT", -2, -16)
 
-	local autoReforge = newCheckbox(
-		L.AMR_CONFIG_CHECKBOX_AUTOREFORGE_LABEL,
-		L.AMR_CONFIG_CHECKBOX_AUTOREFORGE_TOOLTIP_TITLE,
-		L.AMR_CONFIG_CHECKBOX_AUTOREFORGE_DESCRIPTION,
-		function(self, value) 
-			if AmrOptions.manualShowReforge then
-				AmrOptions.manualShowReforge = false
-			else
-				AmrOptions.manualShowReforge = true
-			end
-		end
-	)
-	autoReforge:SetChecked(not AmrOptions.manualShowReforge)
-	autoReforge:SetPoint("TOPLEFT", subTitleWrapper, "BOTTOMLEFT", -2, -52)
 
+    -- auto-show at auction house
 	local autoAh = newCheckbox(
 		L.AMR_CONFIG_CHECKBOX_AUTOAH_LABEL,
 		L.AMR_CONFIG_CHECKBOX_AUTOAH_TOOLTIP_TITLE,
 		L.AMR_CONFIG_CHECKBOX_AUTOAH_DESCRIPTION,
 		function(self, value) 
-			if AmrOptions.manualShowShop then
-				AmrOptions.manualShowShop = false
+			if AmrDb.Options.manualShowShop then
+				AmrDb.Options.manualShowShop = false
 			else
-				AmrOptions.manualShowShop = true
+				AmrDb.Options.manualShowShop = true
 			end
 		end
 	)
-	autoAh:SetChecked(not AmrOptions.manualShowShop)
-	autoAh:SetPoint("TOPLEFT", subTitleWrapper, "BOTTOMLEFT", -2, -88)
-
-	--[[
-	AmrOptions.autoLog = AmrOptions.autoLog or {}
-
-	local autoCombatLog = newCheckbox(
-		L.AMR_CONFIG_CHECKBOX_AUTOLOG_LABEL,
-		L.AMR_CONFIG_CHECKBOX_AUTOLOG_TOOLTIP_TITLE,
-		L.AMR_CONFIG_CHECKBOX_AUTOLOG_DESCRIPTION,
-		function(self, value)
-			if AmrOptions.autoLog[1136] then
-				AmrOptions.autoLog[1136] = false
-			else
-				AmrOptions.autoLog[1136] = true
-			end
-		end
-	)
-	autoCombatLog:SetChecked(AmrOptions.autoLog[1136])
-	autoCombatLog:SetPoint("TOPLEFT", subTitleWrapper, "BOTTOMLEFT", -2, -124)
-	]]
+	autoAh:SetChecked(not AmrDb.Options.manualShowShop)
+	autoAh:SetPoint("TOPLEFT", subTitleWrapper, "BOTTOMLEFT", -2, -58)
 
 	frame:SetScript("OnShow", nil)
 end)

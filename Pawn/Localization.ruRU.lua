@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -51,10 +51,6 @@ PawnLocal =
 	NoScalesDescription = "Для начала, импортируйте шкалу или начните новую.",
 	NoStatDescription = "Выберите стат из списка слева.",
 	Or = "или ",
-	ReforgeCappedStatWarning = "Используйте с осторожностью когда перековываете меткость или мастерство. Не допускайте увеличение шанса промаха больше 0%.",
-	ReforgeDebugMessage = "   -- Перековка даст +%g",
-	ReforgeInstructions = "Перековано %s в %s",
-	ReforgeInstructionsNoReforge = "Не перековано",
 	RenameScaleEnterName = "Введите новое имя шкалы %s:",
 	SocketBonusValueCalculationMessage = "   -- Гнездо оценивается как: %g",
 	StatNameText = "1 |cffffffff%s|r цениться:",
@@ -88,28 +84,27 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		ApInfo = "Сила Атаки.  Не присутствует на вещах.  Не включается в себя силу атаки полученную от Силы или Ловкости.",
 		ArmorInfo = "Броня, независимо от типа.",
 		ArmorTypes = "Типы брони",
-		CasterStats = "Кастерские статы",
+		AvoidanceInfo = "Avoidance.  Reduces the damage you take from area-of-effect attacks.", -- Requires localization
 		Cloth = "Ткань",
 		ClothInfo = "Значения для вещей из ткани",
 		Crit = "Критический удар",
 		CritInfo = "Критический удар.  Распространяется на ближний, дальний бой и заклинания.",
-		DodgeInfo = "Уклонение. Танковский стат.",
 		DpsInfo = "Урон от оружия в секунду",
-		ExpertiseInfo = "Мастерство. Стат для игнорирования значений уклонения и парирования противника.",
 		HasteInfo = "Скорость. Распростроняется на атаки ближнего, дальнего боя и заклинания",
-		Hit = "Меткость",
-		HitInfo = "Меткость. Распростроняется на атаки ближено, дальнего боя и заклинания",
-		HybridStats = "Гибридные статы",
+		IndestructibleInfo = "Indestructible.  Prevents your equipment from taking durability damage.", -- Requires localization
+		IndestructibleIs = "Being |cffffffffindestructible|r is worth:", -- Requires localization
 		IntellectInfo = "Первичный стат, интеллект.",
 		Leather = "Кожа",
 		LeatherInfo = "Очки присваиваются только если вещь - кожаные доспехи.",
+		LeechInfo = "Leech.  Causes your attacks and healing spells to restore your health.", -- Requires localization
 		Mail = "Кольчуга",
 		MailInfo = "Очки присваиваются только если вещь - кольчужные доспехи.",
 		MasteryInfo = "Искусность.  Улучшает уникальный бонус дерева талантов.",
 		MetaSocket = "Особое гнездо",
 		MetaSocketInfo = "Мета гнездо, пустое или нет.  Подсчитывается только дополнительный эффект.",
-		ParryInfo = "Парирование. Танковский стат.",
-		PhysicalStats = "Атакующие физические статы",
+		MinorStats = "Minor stats", -- Requires localization
+		MovementSpeedInfo = "Movement speed.  Causes your character to run faster.", -- Requires localization
+		MultistrikeInfo = "Multistrike.  Increases the chance that your attacks and healing spells will hit your target two extra times at reduced potency.", -- Requires localization
 		Plate = "Латы",
 		PlateInfo = "Очки присваиваются только если вещь - латные доспехи.",
 		PrimaryStats = "Первичные статы",
@@ -118,6 +113,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		PvPResilience = "PvP устойчивость",
 		PvPResilienceInfo = "PvP-устойчивость. Уменьшает урон получаемый от других игроков (но не существ)",
 		PvPStats = "PvP статы",
+		SecondaryStats = "Secondary stats", -- Requires localization
 		Shield = "Щит",
 		ShieldInfo = "Очки присваиваются только если вещь - щит.",
 		Sockets = "Гнезда",
@@ -132,7 +128,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		SpiritInfo = "Первичный стат, дух.",
 		StaminaInfo = "Первичный стат, выносливость.",
 		StrengthInfo = "Первичный стат, сила.",
-		TankStats = "Танковские статы",
+		VersatilityInfo = "Versatility.  Increases damage dealt for damage characters, increases healing done by healing characters, and reduces damage taken for tank characters.", -- Requires localization
 		WeaponMainHandDps = "Правая рука: УВС",
 		WeaponMainHandDpsInfo = "Урон от оружия в секунду. Только для оружия в правой руке.",
 		WeaponMainHandMaxDamage = "Правая рука: макс урон",
@@ -226,9 +222,11 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Ap = "^%+?([%d%.,]+) к силе атаки$",
 		Armor = "^Броня: %+?([%d%.,]+)$",
 		Armor2 = "^%+?([%d%.,]+) к броне$",
+		Avoidance = "^%+([%d%.,]+) Avoidance$", -- Requires localization
 		Axe = "^Топор$",
 		BagSlots = "^%d+ [Яя]чеек .+$",
 		BladesEdgeMountains = "^Острогорье$",
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$", -- Requires localization
 		Bow = "^Лук$",
 		ChanceOnHit = "Возможно при попадании:",
 		Charges = "^.+ зарядов?$",
@@ -240,8 +238,6 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Dagger = "^Кинжал$",
 		Design = "Эскиз:",
 		DisenchantingRequires = "^Требуется",
-		Dodge = "^%+?([%d%.,]+) к уклонению$",
-		Dodge2 = "^%+?([%d%.,]+) к показателю уклонения$",
 		Dps = "^%(([%d%.,]+) ед%. урона в секунду%)$",
 		DpsAdd = "^Добавляет ([%d%.,]+) ед%. урона в секунду$",
 		Duration = "^Срок действия:",
@@ -255,8 +251,6 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		EnchantmentPyriumWeaponChain = "^Колчедановая цепь для оружия$",
 		EnchantmentTitaniumWeaponChain = "^Титановая цепь для оружия$",
 		Equip = "Если на персонаже:",
-		Expertise = "^%+?([%d%.,]+) к мастерству$",
-		Expertise2 = "^%+?([%d%.,]+) к показателю мастерства$",
 		FistWeapon = "^Кистевое$",
 		Flexible = "^Гибкий$",
 		Formula = "Формула:",
@@ -270,27 +264,24 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		HeroicElite = "^Героический %(элитный%)$",
 		HeroicThunderforged = "^Создано в Кузне Грома %(героич%.%)$",
 		HeroicWarforged = "^Предмет закален в бою %(героич%.%)$",
-		Hit = "^%+?([%d%.,]+) к меткости$",
-		Hit2 = "^%+?([%d%.,]+) к показателю меткости$",
-		Hit3 = "^UNUSED$",
 		Hp5 = "^Восстанавливает ([%d%.,]+) здоровья каждые 5 сек%.$",
 		Hp52 = "^Восстанавливает ([%d%.,]+) здоровья за 5 сек%.$",
 		Hp53 = "^%+?([%d%.,]+) [зЗ]доровья [кК]аждые 5 [сС]ек%.?$",
 		Hp54 = "^%+?([%d%.,]+) [зЗ]здоровья [зЗ]а 5 [сС]ек%.?$",
 		Intellect = "^%+?([-%d%.,]+) к интеллекту$",
 		Leather = "^Кожа$",
+		Leech = "^%+([%d%.,]+) Leech$", -- Requires localization
 		Mace = "^Дробящее$",
 		Mail = "^Кольчуга$",
 		Manual = "Учебник:",
 		Mastery = "^%+?([%d%.,]+) к искусности$",
 		Mastery2 = "^%+?([%d%.,]+) к показателю искусности$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xТребуется",
+		MovementSpeed = "^%+([%d%.,]+) Speed$", -- Requires localization
 		MultiStatSeparator1 = "и",
+		Multistrike = "^%+([%d%.,]+) Multistrike$", -- Requires localization
 		NormalizationEnchant = "^Чары: (.*)$",
-		NormalizationReforge = "^(.*) %(перековано из бонуса (.*)%)$",
 		OnlyFitsInMetaGemSlot = "^\"Подходит только для особого гнезда%.\"$",
-		Parry = "^%+?([%d%.,]+) к парированию$",
-		Parry2 = "^%+?([%d%.,]+) к показателю парирования$",
 		Pattern = "Выкройка:",
 		Plans = "Чертеж:",
 		Plate = "^Латы$",
@@ -324,6 +315,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Timeless = "^Вневременной предмет$",
 		UpgradeLevel = "^Уровень улучшения:",
 		Use = "Используется:",
+		Versatility = "^%+([%d%.,]+) Versatility$", -- Requires localization
 		Wand = "^Жезл$",
 		Warforged = "^Предмет закален в бою$",
 		WeaponDamage = "^Урон: ([%d%.,]+) %- ([%d%.,]+)$",
@@ -332,8 +324,8 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		WeaponDamageEquip = "^%+?([%d%.,]+) к урону от оружия%.$",
 		WeaponDamageExact = "^Урон: %+?([%d%.,]+)$",
 		WeaponDamageFire = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от огня$",
-		WeaponDamageFrost = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от льда$",
-		WeaponDamageHoly = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от света$",
+		WeaponDamageFrost = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от магии льда$", -- Needs review
+		WeaponDamageHoly = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от магии света$", -- Needs review
 		WeaponDamageNature = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от сил природы$",
 		WeaponDamageShadow = "^%+?([%d%.,]+) %- ([%d%.,]+) ед%. урона от тьмы$",
 	},
@@ -355,7 +347,6 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		CompareHeader = "Сравнить вещи используя %s",
 		CompareMetaSockets = "Особые гнезда",
 		CompareOtherHeader = "Другое",
-		CompareReforgingPotential = "Потенциальная перековка",
 		CompareShaTouchedSockets = "Пораженное ша",
 		CompareSlotEmpty = "(нет вещи)",
 		CompareSocketBonus = "Бонусы от камней",
@@ -436,6 +427,12 @@ Pawn поставляется со шкалами с сайта Wowhead для �
 /pawn debug on
 /pawn debug off]=],
 		OptionsHeader = "Опции Pawn",
+		OptionsIgnoreGemsWhileLevelingCheck = "Игнорировать сокеты на низко-уровневых вещах", -- Needs review
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = [=[Включите данную опцию чтобы Pawn игнорировал сокеты на низко-уровневых вещах в процессе расчета значений, т.к. большинство игроков не прилагают усилий (либо слишком дорого) для использования ювелирных камней в процессе прокачки. "Низко-уровневая" вещь всегда слабее чем вещь полученная в героическом подземелье на высших уровнях.
+
+Если опция выбрана, Pawn будет по прежнему подбирать камни для низко-уровневых вещей, но сокеты будут игнорироваться при подсчете значений и вещи с сокетами не будут отображаться как улучшения.
+
+Если опция не выбрана, Pawn будет подсчитывать значения для вещей как будто в вещах стоят соответствующие ювелирные камни независимо от уровня персонажа.]=], -- Needs review
 		OptionsInventoryIcon = "Отображать иконку вещи",
 		OptionsInventoryIconTooltip = "Включите опцию для отображения иконки вещи.",
 		OptionsItemIDs = "Отображать ID вещи",
@@ -447,8 +444,6 @@ Every item in World of Warcraft has an ID number associated with it.  This infor
 		OptionsOtherHeader = "Другие опции",
 		OptionsQuestUpgradeAdvisor = "Отображать советы по улучшениям (квесты)",
 		OptionsQuestUpgradeAdvisorTooltip = "In your quest log and when talking to NPCs, if one of the quest reward choices is an upgrade for your current gear, Pawn will show a green arrow icon on that item.  If none of the items is an upgrade, Pawn will show a pile of coins on the item that is worth the most when sold to a vendor.",
-		OptionsReforgingAdvisor = "Отображать советы по перековке",
-		OptionsReforgingAdvisorTooltip = "When visiting an arcane reforger, Pawn will show a popup suggesting which stats to change to maximize the item's power.",
 		OptionsResetUpgrades = "Обновить вещи",
 		OptionsResetUpgradesTooltip = [=[Pawn will forget what it knows about the best items you've ever equipped and re-scan your gear in order to provide more up-to-date upgrade information in the future.
 
@@ -483,7 +478,6 @@ If checked, you could be using a two-handed weapon and still see clearly inferio
 
 If unchecked, equipping a two-handed weapon will prevent Pawn from showing you upgrades for one-handed items and vice-versa.]=],
 		OptionsWelcome = "Настройте Pawn на свой вкус.  Изменения применятся незамедлительно.",
-		ReforgingAdvisorHeader = "Pawn советник по перековке рекомендует:",
 		ScaleChangeColor = "Изменить цвет",
 		ScaleChangeColorTooltip = "Измените цвет шкалы в подсказках.",
 		ScaleCopy = "Копировать",
@@ -515,6 +509,7 @@ Shortcut: Shift+click a scale]=],
 		ScaleWelcome = "Шкала - это набор параметров и весовых значений.  Вы можете изменять значения шкал на выши или воспользоваться уже существующими.",
 		SocketingAdvisorButtonTooltip = "Нажмите для открытия закладки камней в Pawn",
 		SocketingAdvisorHeader = "Pawn советник по камням рекомендует:",
+		SocketingAdvisorIgnoreThisItem = "Не беспокойтесь о добавлении ювелирных камней на эту низко-уровневую вещь. Но если очень хочется то:", -- Needs review
 		ValuesDoNotShowUpgradesFor1H = "Не отображать улучшения для одноручного оружия",
 		ValuesDoNotShowUpgradesFor2H = "Не отображать улучшения для двуручного оружия",
 		ValuesDoNotShowUpgradesTooltip = "Enable this option to hide upgrades of this type of item.  For example, even though paladin tanks can use two-handed weapons, a two-handed weapon is never an \"upgrade\" for a paladin tanking set, so Pawn should not show upgrade notifications for them.  Similarly, retribution paladins can use one-handed weapons, but they are never upgrades.",
@@ -558,6 +553,7 @@ For more information on this setting, see the readme file.]=],
 		PriestHoly = "Прист: Свет",
 		PriestShadow = "Прист: Тень",
 		Provider = "Шкалы Wowhead",
+		ProviderStarter = "Начальные шкалы", -- Needs review
 		RogueAssassination = "Разбойник: Ликвидация",
 		RogueCombat = "Разбойник: Бой",
 		RogueSubtlety = "Разбойник: Скрытность",

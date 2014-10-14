@@ -36,10 +36,9 @@ function IconDragger:DropDownFunc()
 	local hasAddedOne = false
 
 	for i, handlerData in ipairs(IconDragger.Handlers) do
-		local info = UIDropDownMenu_CreateInfo()
+		local info = TMW.DD:CreateInfo()
 
 		info.notCheckable = true
-		info.tooltipOnButton = true
 		
 		local shouldAddButton = handlerData.dropdownFunc(IconDragger, info)
 		
@@ -51,10 +50,10 @@ function IconDragger:DropDownFunc()
 			local thisCentury = floor(handlerData.order/100) + 1
 
 			if hasAddedOne and lastAddedCentury < thisCentury then
-				TMW.AddDropdownSpacer()
+				TMW.DD:AddSpacer()
 			end
 
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 
 			lastAddedCentury = thisCentury
 			hasAddedOne = true
@@ -64,15 +63,13 @@ function IconDragger:DropDownFunc()
 	end	
 
 	if hasAddedOne then
-		TMW.AddDropdownSpacer()
+		TMW.DD:AddSpacer()
 	end
 	
-	local info = UIDropDownMenu_CreateInfo()
+	local info = TMW.DD:CreateInfo()
 	info.text = CANCEL
 	info.notCheckable = true
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-
-	UIDropDownMenu_JustifyText(self, "LEFT")
+	TMW.DD:AddButton(info)
 end
 
 function IconDragger:Start(icon)
@@ -116,18 +113,18 @@ function IconDragger:CompleteDrag(script, icon)
 				return
 			end
 
-			UIDropDownMenu_SetAnchor(IconDragger.DraggerFrame.Dropdown, 0, 0, "TOPLEFT", icon, "BOTTOMLEFT")
+			IconDragger.DraggerFrame.Dropdown:SetDropdownAnchor("TOPLEFT", icon, "BOTTOMLEFT", 0, 0)
 
 		else
 			IconDragger.desticon = nil
 			IconDragger.destFrame = icon -- not actually an icon. just some frame.
 			local cursorX, cursorY = GetCursorPosition()
 			local UIScale = UIParent:GetScale()
-			UIDropDownMenu_SetAnchor(IconDragger.DraggerFrame.Dropdown, cursorX/UIScale, cursorY/UIScale, nil, UIParent, "BOTTOMLEFT")
+			IconDragger.DraggerFrame.Dropdown:SetDropdownAnchor(nil, UIParent, "BOTTOMLEFT", cursorX/UIScale, cursorY/UIScale)
 		end
 
-		if not DropDownList1:IsShown() or UIDROPDOWNMENU_OPEN_MENU ~= IconDragger.DraggerFrame.Dropdown then
-			ToggleDropDownMenu(1, nil, IconDragger.DraggerFrame.Dropdown)
+		if not DropDownList1:IsShown() or TMW.DD.OPEN_MENU ~= IconDragger.DraggerFrame.Dropdown then
+			IconDragger.DraggerFrame.Dropdown:Toggle(1)
 		end
 	end
 end
@@ -254,6 +251,11 @@ IconDragger:RegisterIconDragHandler(3,	-- Swap
 )
 
 local function Split(IconDragger, domain)
+	if InCombatLockdown() then
+		-- Groups can't be added in combat
+		error("TMW: Can't create groups while in combat")
+	end
+
 	local group = TMW:Group_Add(domain)
 
 	-- back up the icon data of the source group
@@ -315,6 +317,13 @@ IconDragger:RegisterIconDragHandler(40,	-- Split to profile
 			info.text = L["ICONMENU_SPLIT"]
 			info.tooltipTitle = L["ICONMENU_SPLIT"]
 			info.tooltipText = L["ICONMENU_SPLIT_DESC"]
+
+			if InCombatLockdown() then
+				info.tooltipWhileDisabled = true
+				info.tooltipText = L["ICONMENU_SPLIT_NOCOMBAT_DESC"]
+				info.disabled = true
+			end
+
 			return true
 		end
 	end,
@@ -328,6 +337,13 @@ IconDragger:RegisterIconDragHandler(41,	-- Split to global
 			info.text = L["ICONMENU_SPLIT_GLOBAL"]
 			info.tooltipTitle = L["ICONMENU_SPLIT_GLOBAL"]
 			info.tooltipText = L["ICONMENU_SPLIT_DESC"] .. "\r\n\r\n" .. L["GLOBAL_GROUP_GENERIC_DESC"]
+
+			if InCombatLockdown() then
+				info.tooltipWhileDisabled = true
+				info.tooltipText = L["ICONMENU_SPLIT_NOCOMBAT_DESC"]
+				info.disabled = true
+			end
+
 			return true
 		end
 	end,
@@ -339,7 +355,7 @@ IconDragger:RegisterIconDragHandler(41,	-- Split to global
 ---------- Icon Handler ----------
 function IconDragger:Handler(method)
 	-- close the menu
-	CloseDropDownMenus()
+	TMW.DD:CloseDropDownMenus()
 
 	-- save misc. settings
 	TMW.IE:SaveSettings()

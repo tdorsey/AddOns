@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -37,7 +37,8 @@ end
 -- Turns a game constant into a regular expression but without the ^ and $ on the ends.
 function PawnGameConstantUnwrapped(Text)
 	-- REVIEW: This function seems like it might be pretty inefficient...
-	return gsub(gsub(Text, "%%", "%%%%"), "%-", "%%-")
+	local Ret1 = gsub(Text, "%%", "%%%%")
+	return gsub(Ret1, "%-", "%%-")
 end
 
 -- Turns a game constant with one "%s" placeholder into a pattern that can be used to match that string.

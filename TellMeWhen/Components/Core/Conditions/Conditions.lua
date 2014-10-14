@@ -89,6 +89,9 @@ CNDT.Condition_Defaults = {
 		Checked			= false,
 		Checked2   		= false,
 		Runes 	   		= {},
+
+		-- IMPORTANT: This setting can be a number OR a table.
+		BitFlags		= 0x0, -- may also be a table.
 	},
 }
 setmetatable(CNDT.Condition_Defaults["**"], {
@@ -490,6 +493,12 @@ CNDT.Env = {
 	huge = math.huge,
 	epsilon = 1e-255,
 
+	bit = bit,
+	bit_band = bit.band,
+	bit_bor = bit.bor,
+	bit_lshift = bit.lshift,
+
+
 	TMW = TMW,
 	GCDSpell = TMW.GCDSpell,
 	GUIDToOwner = TMW.GUIDToOwner,
@@ -497,7 +506,7 @@ CNDT.Env = {
 	SemicolonConcatCache = setmetatable(
 	{}, {
 		__index = function(t, i)
-			if not i then return end
+			if not i then return ";;" end
 
 			local o = ";" .. strlowerCache[i] .. ";"
 			
@@ -508,6 +517,9 @@ CNDT.Env = {
 			return o
 		end,
 	}),
+
+	-- Stores references to BitFlags settings tables.
+	TABLES = setmetatable({}, {__mode='kv'}),
 	
 	-- These are here as a primitive security measure to prevent some of the most basic forms of malicious Lua conditions.
 	-- This list isn't even exhaustive, and it is in no way cracker-proof, but its a start.
@@ -595,7 +607,60 @@ function CNDT:GROUP_ROSTER_UPDATE()
 end
 
 
+function CNDT:GetTableSubstitution(tbl)
+	if type(tbl) ~= "table" then
+		error("not a table")
+	end
+
+	local address = tostring(tbl)
+	if not address:match("^table: [0-9A-F]*$") then
+		error("can't substitute tables with __tostring metamethods")
+	end
+
+	local var = address:gsub(": ", "_")
+	CNDT.Env.TABLES[var] = tbl
+
+	return "TABLES." .. var
+end
+
 CNDT.Substitutions = {
+
+{	src = "BITFLAGSMAPANDCHECK(%b())",
+	rep = function(conditionData, conditionSettings, name, name2)
+		if type(conditionSettings.BitFlags) == "table" then
+			if conditionSettings.Checked then
+				return [[ not c.BitFlags[%1] ]]
+			else
+				return [[ c.BitFlags[%1] ]]
+			end
+		else
+			if conditionSettings.Checked then
+				return [[bit_band(bit_lshift(1, (%1 or 1) - 1), c.BitFlags) == 0]]
+			else
+				return [[bit_bor(bit_lshift(1, (%1 or 1) - 1), c.BitFlags) == c.BitFlags]]
+			end
+		end
+	end,
+},{	src = "c.BitFlags",
+	rep = function(conditionData, conditionSettings, name, name2)
+		if type(conditionSettings.BitFlags) == "table" then
+			return CNDT:GetTableSubstitution(conditionSettings.BitFlags)
+		else
+			return conditionSettings.BitFlags
+		end
+	end,
+},
+
+{	src = "BOOLCHECK(%b())",
+	rep = function(conditionData, conditionSettings, name, name2)
+		if conditionSettings.Level == 0 then
+			return [[%1]]
+		else
+			return [[not %1]]
+		end
+	end,
+},
+
 {	src = "c.Level",
 	rep = function(conditionData, conditionSettings, name, name2)
 		return conditionData.percent and conditionSettings.Level/100 or conditionSettings.Level
@@ -620,12 +685,13 @@ CNDT.Substitutions = {
 {
 	src = "c.NameFirst2",
 	rep = function(conditionData, conditionSettings, name, name2)
-		return strWrap(TMW:GetSpellNames(name2, nil, 1))
+		return strWrap(TMW:GetSpells(name2).First)
+
 	end,
 },{
-	src = "c.NameName2",
+	src = "c.NameString2",
 	rep = function(conditionData, conditionSettings, name, name2)
-		return strWrap(TMW:GetSpellNames(name2, nil, 1, 1))
+		return strWrap(TMW:GetSpells(name2).FirstString)
 	end,
 },{
 	src = "c.ItemID2",
@@ -645,12 +711,12 @@ CNDT.Substitutions = {
 {
 	src = "c.NameFirst",
 	rep = function(conditionData, conditionSettings, name, name2)
-		return strWrap(TMW:GetSpellNames(name, nil, 1))
+		return strWrap(TMW:GetSpells(name).First)
 	end,
 },{
-	src = "c.NameName",
+	src = "c.NameString",
 	rep = function(conditionData, conditionSettings, name, name2)
-		return strWrap(TMW:GetSpellNames(name, nil, 1, 1))
+		return strWrap(TMW:GetSpells(name).FirstString)
 	end,
 },{
 	src = "c.ItemID",
@@ -693,7 +759,8 @@ CNDT.Substitutions = {
 {
 	src = "c.GCDReplacedNameFirst2",
 	rep = function(conditionData, conditionSettings, name, name2)
-		local name = TMW:GetSpellNames(name2, nil, 1)
+
+		local name = TMW:GetSpells(name2).First
 		if name == "gcd" then
 			name = TMW.GCDSpell
 		end
@@ -702,7 +769,7 @@ CNDT.Substitutions = {
 },{
 	src = "c.GCDReplacedNameFirst",
 	rep = function(conditionData, conditionSettings, name, name2)
-		local name = TMW:GetSpellNames(name, nil, 1)
+		local name = TMW:GetSpells(name).First
 		if name == "gcd" then
 			name = TMW.GCDSpell
 		end
@@ -730,7 +797,7 @@ CNDT.Substitutions = {
 },
 
 {
-	src = "LOWER%((.-)%)",
+	src = "LOWER(%b())",
 	rep = function() return strlower end,
 },}
 
@@ -942,8 +1009,7 @@ function CNDT:GetConditionObject(parent, conditionSettings)
 	
 	if conditionString and conditionString ~= "" then
 		local instances = TMW.Classes.ConditionObject.instances
-		for i = 1, #instances do
-			local instance = instances[i]
+		for i, instance in pairs(instances) do
 			if instance.conditionString == conditionString then
 				return instance
 			end

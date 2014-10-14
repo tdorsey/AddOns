@@ -27,6 +27,29 @@ if LibStub("LibButtonFacade", true) and select(6, GetAddOnInfo("Masque")) == "MI
 	TMW.Warn("TellMeWhen no longer supports ButtonFacade. If you wish to continue to skin your icons, please upgrade to ButtonFacade's successor, Masque.")
 end
 
+
+local function GetLMBGroup(icon)
+	if icon.group.Domain == "global" then
+		return LMB:Group("TellMeWhen", L["DOMAIN_GLOBAL"] .. " " .. L["fGROUP"]:format(icon.group:GetID()))
+	else
+		return LMB:Group("TellMeWhen", L["fGROUP"]:format(icon.group:GetID()))
+	end
+end
+
+--- Static method to check if a given icon will be skinned.
+function IconContainer_Masque:IsIconSkinned(icon)
+	self:AssertSelfIsClass()
+
+	if not LMB then
+		return false
+	end
+
+	local lmbGroup = GetLMBGroup(icon)
+	return lmbGroup.Disabled or (lmbGroup.db and lmbGroup.db.Disabled)
+end
+
+
+
 if not LMB then
 	IconContainer_Masque.isDefaultSkin = 1
 	-- IconModule_IconContainer_Masque will just be a clone of IconModule_IconContainer at this point.
@@ -34,12 +57,40 @@ if not LMB then
 	return
 end
 
+
+
+
+
+if LMB.GetSpellAlert then
+	-- Copied (and slightly modified) from masque so that TMW's activation borders will get skinned properly when they aren't square.
+	IconContainer_Masque:PostHookMethod("ShowOverlayGlow", function(self)
+		local self = self.container
+		local Overlay = self.overlay
+		if not Overlay or not Overlay.spark then return end
+		if Overlay.__MSQ_Shape ~= self.__MSQ_Shape then
+			local Shape = self.__MSQ_Shape
+
+			local Glow, Ants
+			if Shape then
+				Glow, Ants = LMB:GetSpellAlert(Shape)
+			end
+			if not (Shape and (Glow or Ants)) then
+				Glow, Ants = LMB:GetSpellAlert("Square")
+			end
+
+			Overlay.innerGlow:SetTexture(Glow)
+			Overlay.innerGlowOver:SetTexture(Glow)
+			Overlay.outerGlow:SetTexture(Glow)
+			Overlay.outerGlowOver:SetTexture(Glow)
+			Overlay.spark:SetTexture(Glow)
+			Overlay.ants:SetTexture(Ants)
+			Overlay.__MSQ_Shape = self.__MSQ_Shape
+		end
+	end)
+end
+
 function IconContainer_Masque:OnNewInstance_IconContainer_Masque(icon)
-	if icon.group.Domain == "global" then
-		self.lmbGroup = LMB:Group("TellMeWhen", L["DOMAIN_GLOBAL"] .. " " .. L["fGROUP"]:format(icon.group:GetID()))
-	else
-		self.lmbGroup = LMB:Group("TellMeWhen", L["fGROUP"]:format(icon.group:GetID()))
-	end
+	self.lmbGroup = GetLMBGroup(icon)
 end
 
 function IconContainer_Masque:SetupForIcon(icon)
@@ -51,6 +102,8 @@ function IconContainer_Masque:SetupForIcon(icon)
 		end
 	end
 end
+
+
 
 IconContainer_Masque:PostHookMethod("OnEnable", function(self)
 	local icon = self.icon

@@ -36,7 +36,7 @@ local clientVersion = select(4, GetBuildInfo())
 local wow_501 = clientVersion >= 50100
 
 
--- GLOBALS: UIDROPDOWNMENU_MENU_LEVEL, UIDropDownMenu_AddButton, UIDropDownMenu_CreateInfo
+
 
 local DogTag = LibStub("LibDogTag-3.0")
 
@@ -179,10 +179,14 @@ function Announcements:HandleEvent(icon, eventSettings)
 				if Channel == "WHISPER" then
 					Announcements.kwargs.link = false
 					Location = DogTag:Evaluate(Location, TMW.DOGTAG.nsList, Announcements.kwargs)
-					Location = Location:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "") -- strip color codes
-					Location = Location:trim()
+					if Location then
+						Location = Location:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "") -- strip color codes
+						Location = Location:trim()
+					end
 				end
-				SendChatMessage(Text, Channel, nil, Location)
+				if Location then
+					SendChatMessage(Text, Channel, nil, Location)
+				end
 			end
 		end
 
@@ -251,7 +255,7 @@ Announcements:RegisterEventHandlerDataNonSpecific(24, "BATTLEGROUND", {
 	wow_501 and 
 		function(icon, data, Text)
 			if UnitInBattleground("player") then
-				SendChatMessage(Text, TMW.CONST.CHAT_TYPE_INSTANCE_CHAT)
+				SendChatMessage(Text, "INSTANCE_CHAT")
 			end
 		end
 	or nil,
@@ -262,7 +266,7 @@ Announcements:RegisterEventHandlerDataNonSpecific(25, "INSTANCE_CHAT", {
 	hidden = not wow_501,
 	handler = function(icon, data, Text)
 		if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-			SendChatMessage(Text, TMW.CONST.CHAT_TYPE_INSTANCE_CHAT)
+			SendChatMessage(Text, "INSTANCE_CHAT")
 		end
 	end,
 })
@@ -275,7 +279,7 @@ Announcements:RegisterEventHandlerDataNonSpecific(30, "SMART", {
 		function(icon, data, Text)
 			local channel = "SAY"
 			if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-				channel = TMW.CONST.CHAT_TYPE_INSTANCE_CHAT
+				channel = "INSTANCE_CHAT"
 			elseif IsInRaid(LE_PARTY_CATEGORY_HOME) then
 				channel = "RAID"
 			elseif IsInGroup() then
@@ -312,13 +316,13 @@ Announcements:RegisterEventHandlerDataNonSpecific(40, "CHANNEL", {
 			local num, name = select(i, GetChannelList())
 			if not num then break end
 
-			local info = UIDropDownMenu_CreateInfo()
+			local info = TMW.DD:CreateInfo()
 			info.func = Announcements.Location_DropDown_OnClick
 			info.text = name
 			info.arg1 = name
 			info.value = name
 			info.checked = name == EVENTS:GetEventSettings().Location
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 		end
 	end,
 	ddtext = function(value)
@@ -373,13 +377,13 @@ Announcements:RegisterEventHandlerDataNonSpecific(70, "FRAME", {
 			local _, _, _, _, _, _, shown, _, docked = FCF_GetChatWindowInfo(i);
 			if shown or docked then
 				local name = _G["ChatFrame"..i].name
-				local info = UIDropDownMenu_CreateInfo()
+				local info = TMW.DD:CreateInfo()
 				info.func = Announcements.Location_DropDown_OnClick
 				info.text = name
 				info.arg1 = name
 				info.value = name
 				info.checked = name == EVENTS:GetEventSettings().Location
-				UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+				TMW.DD:AddButton(info)
 			end
 			i = i + 1
 		end
@@ -482,13 +486,13 @@ Announcements:RegisterEventHandlerDataNonSpecific(81, "SCT", {
 	dropdown = function()
 		if not SCT then return end
 		for id, name in pairs(Announcements.AllSubHandlersByIdentifier.SCT.frames) do
-			local info = UIDropDownMenu_CreateInfo()
+			local info = TMW.DD:CreateInfo()
 			info.func = Announcements.Location_DropDown_OnClick
 			info.text = name
 			info.arg1 = info.text
 			info.value = id
 			info.checked = id == EVENTS:GetEventSettings().Location
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 		end
 	end,
 	ddtext = function(value)
@@ -519,13 +523,13 @@ Announcements:RegisterEventHandlerDataNonSpecific(83, "MSBT", {
 	defaultlocation = "Notification",
 	dropdown = function()
 		for scrollAreaKey, scrollAreaName in MikSBT:IterateScrollAreas() do
-			local info = UIDropDownMenu_CreateInfo()
+			local info = TMW.DD:CreateInfo()
 			info.text = scrollAreaName
 			info.value = scrollAreaKey
 			info.checked = scrollAreaKey == EVENTS:GetEventSettings().Location
 			info.func = Announcements.Location_DropDown_OnClick
 			info.arg1 = scrollAreaName
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 		end
 	end,
 	ddtext = function(value)
@@ -558,13 +562,13 @@ Announcements:RegisterEventHandlerDataNonSpecific(85, "PARROT", {
 	dropdown = function()
 		local areas = Parrot.GetScrollAreasChoices and Parrot:GetScrollAreasChoices() or Parrot:GetScrollAreasValidate()
 		for k, n in pairs(areas) do
-			local info = UIDropDownMenu_CreateInfo()
+			local info = TMW.DD:CreateInfo()
 			info.text = n
 			info.value = k
 			info.func = Announcements.Location_DropDown_OnClick
 			info.arg1 = n
 			info.checked = k == EVENTS:GetEventSettings().Location
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+			TMW.DD:AddButton(info)
 		end
 	end,
 	ddtext = function(value)

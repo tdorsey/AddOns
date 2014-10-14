@@ -13,7 +13,58 @@ function AskMrRobot.format(fmt, ...)
     return f:format(unpack(order))
 end
 
+-- stat strings for e.g. displaying gem/enchant abbreviations
+L.AMR_STAT_SHORT_STRINGS = {
+    ["Strength"] = "Str",
+    ["Agility"] = "Agi",
+    ["Intellect"] = "Int",
+    ["CriticalStrike"] = "Crit",
+    ["Haste"] = "Haste",
+    ["Mastery"] = "Mastery",
+    ["Multistrike"] = "Multi",
+    ["Versatility"] = "Vers",
+    ["BonusArmor"] = "Armor",
+    ["Spirit"] = "Spirit",
+    ["Dodge"] = "Dodge",
+    ["Parry"] = "Parry",
+    ["MovementSpeed"] = "Speed",
+    ["Avoidance"] = "Avoid",
+    ["Stamina"] = "Stam",
+    ["Armor"] = "Armor",
+    ["AttackPower"] = "AP",
+    ["SpellPower"] = "SP",
+    ["PvpResilience"] = "PvP Res",
+    ["PvpPower"] = "PvP Pow",
+}
+
+-- AskMrRobot.lua
+L.AMR_IMPORT_ERROR_EMPTY = "The data string is empty."
+L.AMR_IMPORT_ERROR_FORMAT = "The data string is not in the correct format."
+L.AMR_IMPORT_ERROR_VERSION = "The data string is from an old version of the addon.  Please go to the website and generate a new one."
+L.AMR_IMPORT_ERROR_CHAR = "The data string is for %s, but you are %s!"
+L.AMR_IMPORT_ERROR_RACE = "It looks your race may have changed.  Please go the website and re-optimize."
+L.AMR_IMPORT_ERROR_FACTION = "It looks your faction may have changed.  Please go the website and re-optimize."
+L.AMR_IMPORT_ERROR_LEVEL = "It looks your level may have changed.  Please go the website and re-optimize."
+L.AMR_IMPORT_ERROR_SPEC = "Please change your spec to %s to view this optimization."
+L.AMR_IMPORT_ERROR_TALENT = "It looks like your talents may have changed.  Please go the website and re-optimize."
+L.AMR_IMPORT_ERROR_GLYPH = "It looks like your glyphs may have changed.  Please go the website and re-optimize."
+--SlashCmdList.AMR
+L.AMR_SLASH_COMMAND_TEXT_1 = 'Available AskMrRobot slash commands:\n'
+L.AMR_SLASH_COMMAND_TEXT_2 = '  /amr show   -- show the main window\n'
+L.AMR_SLASH_COMMAND_TEXT_3 = '  /amr hide   -- hide the main window\n'
+L.AMR_SLASH_COMMAND_TEXT_4 = '  /amr toggle -- toggle the main window\n'
+L.AMR_SLASH_COMMAND_TEXT_5 = '  /amr wipe   -- logs a raid wipe.  Used to ignore events in the fight after this point\n'
+L.AMR_SLASH_COMMAND_TEXT_6 = '  /amr unwipe -- undo the last wipe command\n'
+L.AMR_SLASH_COMMAND_TEXT_7 = '  /amr export -- export character, bag, and bank data (opens the export copy/paste window)'
+
 --AskMrRobotUi.lua
+
+--createMainMenu
+L.AMR_UI_MENU_EXPORT = "Export"
+L.AMR_UI_MENU_GEAR = "Load a Gear Set"
+L.AMR_UI_MENU_COMBAT_LOG = "Combat Log"
+L.AMR_UI_MENU_HELP = "Help"
+
 --validateInput
 L.AMR_UI_IMPORT_ERROR_IMPROPER = "Oops, you didn't have proper import text"
 L.AMR_UI_IMPORT_ERROR_IMPROPER_GOTO = "Please go back to AskMrRobot.com and grab optimizations for this character"
@@ -29,30 +80,21 @@ L.AMR_UI_IMPORT_ERROR_SPEC = "WARNING! Please check your character before procee
 L.AMR_UI_IMPORT_ERROR_SPEC_CHANGE = "Change your spec to %s."
 L.AMR_UI_IMPORT_ERROR_SPEC_UNEXPECTED = "AskMrRobot.com did not expect to see a specialization."
 --createImportDetailsErrorTab
-L.AMR_UI_IMPORT_ERROR_NO_IMPORT = 'You have no optimizations imported. Click the "Import" tab to get started.'
+L.AMR_UI_IMPORT_ERROR_NO_IMPORT = 'You have no optimizations imported. Click the |c00ffd100Load|r tab to get started.'
 L.AMR_UI_IMPORT_ERROR_CANT_OPTIMIZE = "I can't optimize yet. Please go to the summary tab for more information."
---createTabButtons
-L.AMR_UI_BUTTON_IMPORT = "Import"
+
+L.AMR_UI_BUTTON_IMPORT = "Load"
 L.AMR_UI_BUTTON_SUMMARY = "Summary"
 L.AMR_UI_BUTTON_GEMS = "Gems"
 L.AMR_UI_BUTTON_ENCHANTS = "Enchants"
-L.AMR_UI_BUTTON_REFORGES = "Reforges"
 L.AMR_UI_BUTTON_SHOPPING_LIST = "Shopping List"
-L.AMR_UI_BUTTON_BEST_IN_BAGS = "Best in Bags"
 L.AMR_UI_BUTTON_COMBAT_LOG = "Combat Log"
 L.AMR_UI_BUTTON_HELP = "Help"
 --AskMrRobot.lua
 --eventListener:OnEvent
-L.AMR_ON_EVENT_LOADED = "Loaded Ask Mr. Robot %s"
+L.AMR_ON_EVENT_LOADED = "Loaded Ask Mr. Robot v%s"
 L.AMR_ON_EVENT_TOOLTIP = "Left Click to open the Ask Mr. Robot window.\n\nShift + Left Click to export your bag and bank data.\n\nCtrl + Left Click to mark a fight as a wipe."
---SlashCmdList.AMR
-L.AMR_SLASH_COMMAND_TEXT_1 = 'Available AskMrRobot slash commands:\n'
-L.AMR_SLASH_COMMAND_TEXT_2 = '  /amr show   -- show the main window\n'
-L.AMR_SLASH_COMMAND_TEXT_3 = '  /amr hide   -- hide the main window\n'
-L.AMR_SLASH_COMMAND_TEXT_4 = '  /amr toggle -- toggle the main window\n'
-L.AMR_SLASH_COMMAND_TEXT_5 = '  /amr wipe   -- logs a raid wipe.  Used to ignore events in the fight after this point\n'
-L.AMR_SLASH_COMMAND_TEXT_6 = '  /amr unwipe -- undo the last wipe command\n'
-L.AMR_SLASH_COMMAND_TEXT_7 = '  /amr export -- export bag and bank data (uses your last selected method and either opens the copy/paste window, or saves and reloads ui)'
+
 --config.lua
 --frame:SetScript
 L.AMR_CONFIG_EXIMPORT = "Mr. Robot's addon can export your item information to his website, and import your optimizations into the game."
@@ -404,21 +446,14 @@ L.AMR_ENCHANTTAB_SLOT = "Slot"
 L.AMR_ENCHANTTAB_CURRENT = "Current"
 L.AMR_ENCHANTTAB_OPTIMIZED = "Optimized"
 L.AMR_ENCHANTTAB_TESTSLOT = "TestSlot"
+L.AMR_ENCHANTTAB_NOTE = "Hit and expertise have been removed from gear, gems and enchants. If you had hit or expertise anywhere, it has automatically been replaced with another stat."
 --ui/ExportTab.lua
-L.AMR_EXPORTTAB_EXPORT_BB = "Export Gear for Best in Bags"
-L.AMR_EXPORTTAB_COPY_PASTE = "Copy/Paste"
-L.AMR_EXPORTTAB_AMR_CLIENT = "AMR Client"
-L.AMR_EXPORTTAB_COPY_PASTE_EXPORT = "COPY/PASTE EXPORT"
+L.AMR_EXPORTTAB_EXPORT_TITLE = "Export your character to AskMrRobot.com"
 L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_1 = "1. Open your bank"
 L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_2 = "2. Copy the text below by pressing Ctrl+C (or Cmd+C on a Mac)"
-L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_3 = "3. Go to AskMrRobot.com and paste into the IMPORT window"
-L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_4 = "(located to the right of your character name near the top of the web page, see screenshot)"
+L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_3 = "3. Go to |c00ffd100AskMrRobot.com|r and click the green '|c0000ff00Import from Armory|r' button found just above your character name.  Paste the text into the window that pops up."
 L.AMR_EXPORTTAB_COPY_PASTE_EXPORT_NOTE = "NOTE: If you change something while this window is open, press the Update button below to generate a new export string."
-L.AMR_EXPORTTAB_AMR_CLIENT_EXPORT = "AMR CLIENT EXPORT"
-L.AMR_EXPORTTAB_AMR_CLIENT_EXPORT_1 = "1. Open your bank"
-L.AMR_EXPORTTAB_AMR_CLIENT_EXPORT_2 = "2. Press the button below to update your AskMrRobot.lua file"
-L.AMR_EXPORTTAB_AMR_CLIENT_EXPORT_3 = "3. Go to AskMrRobot.com and press REFRESH"
-L.AMR_EXPORTTAB_AMR_CLIENT_EXPORT_4 = "(located to the right of your character name near the top of the web page, see screenshot:)"
+
 --ui/GemTab.lua
 --popup autogem finished
 L.AMR_GEMTAB_FINISHED = "Mr. Robot finished auto-gemming. \rIf some items aren't gemmed, you may need to acquire more gems. \rIf your belt isn't gemmed, you may still need to buy a belt buckle."
@@ -434,41 +469,33 @@ L.AMR_GEMTAB_PREFER_PERFECT = "Prefer Perfect"
 L.AMR_GEMTAB_SLOT = "Slot"
 L.AMR_GEMTAB_CURRENT = "Current"
 L.AMR_GEMTAB_OPTIMIZED = "Optimized"
+L.AMR_GEMTAB_NOTE = "Hit and expertise have been removed from gear, gems and enchants. If you had hit or expertise anywhere, it has automatically been replaced with another stat."
 --Update
 L.AMR_GEMTAB_TO_OPTIMIZE = "You have %d \1244gem:gems; to optimize"
 --ui/HelpTab.lua
 L.AMR_HELPTAB_TITLE = "Help"
-L.AMR_HELPTAB_LINK = "Visit |c003333ffhttp://blog.askmrrobot.com/addon/|r  for a full tutorial and to ask questions.\r\r"
-L.AMR_HELPTAB_Q1 = "|c00999999Q:|r Do I have to get a new text-string every time I need to optimize?\r"
-L.AMR_HELPTAB_A1 = '|c0066dd66A:|r Yes. Go to the website and click the green "Update from Armory" button to the left of your character to make sure you have the most up-to-date gear. Optimize your gear and then click the "Export to Addon" button to get your new text-string.\r\r'
-L.AMR_HELPTAB_Q2 = "|c00999999Q:|r The belt buckle didn't show up in my list.\r"
-L.AMR_HELPTAB_A2 = "|c0066dd66A:|r Correct, it's actually quite hard to detect it's status in-game, believe it or not. But we're working on a clever way to detect it!\r\r"
-L.AMR_HELPTAB_Q3 = "|c00999999Q:|r My cogwheels/tinkers didn't show up.\r"
-L.AMR_HELPTAB_A3 = "|c0066dd66A:|r Correct, we're working on adding those into the list as well... the problem is Mr. Robot has been using them to build other robots...\r\r"
-L.AMR_HELPTAB_Q4 = "|c00999999Q:|r Can I send my shopping list to an alt?\r"
-L.AMR_HELPTAB_A4 = '|c0066dd66A:|r Yes, go to the shopping list tab and select the "mail" option in the drop down. You can mail the list to your alt.\r\r'
-L.AMR_HELPTAB_Q5 = "|c00999999Q:|r I am in the middle of a raid and just won a piece of loot. Can I optimize really quick\r"
-L.AMR_HELPTAB_A5= "|c0066dd66A:|r Yes! You'll want to read the tutorial on that here: |c003333ffhttp://blog.askmrrobot.com/addon#raid|r"
+L.AMR_HELPTAB_LINK = "Visit |c003333ffhttp://blog.askmrrobot.com/addon/|r  for a full tutorial and to ask questions.\r"
+L.AMR_HELPTAB_Q1 = "|c00999999Q:|r The armory won’t update my character on your website. Is there a workaround?"
+L.AMR_HELPTAB_A1 = "|c0066dd66A:|r Yes. Go to the |c00ffd100Export|r section of this addon. Copy the text in the box.  Then go to our |c00ffd100website|r, load your character, and click the green '|c0000ff00Import (from addon)|r' button, found just above your character name.  Paste the text there. That process takes a snapshot of your current in-game character and imports it to the website!"
+L.AMR_HELPTAB_Q2 = "|c00999999Q:|r Do I have to get a new text-string every time I need to optimize?"
+L.AMR_HELPTAB_A2 = "|c0066dd66A:|r Yes. Go to the |c00ffd100website|r and click the green '|c0000ff00Update from Armory|r' button found just above your character name, to make sure you have updated gear. Optimize your gear and then click the blue '|c0018C0F7Export to Addon|r' button found to the right of your gear, in the purple '|c00BF28D6Now What?|r section.  Return to this |c00ffd100addon|r, go to the '|c00ffd100Load a Gear Set|r' tab and paste the text in the box."
+L.AMR_HELPTAB_Q3 = "|c00999999Q:|r Can I send my shopping list to an alt?"
+L.AMR_HELPTAB_A3 = '|c0066dd66A:|r Yes, go to the shopping list tab and select the "mail" option in the drop down. You can mail the list to your alt.'
+L.AMR_HELPTAB_Q4 = "|c00999999Q:|r I am in the middle of a raid and just won a piece of loot. Can I optimize really quick"
+L.AMR_HELPTAB_A4 = "|c0066dd66A:|r Yes! You'll want to read the tutorial on that here: \r|c003333ffhttp://blog.askmrrobot.com/addon#raid"
+L.AMR_HELPTAB_Q5 = "|c00999999Q:|r Where is auto gemming?"
+L.AMR_HELPTAB_A5 = "|c0066dd66A:|r We have temporarily removed it.  We plan to bring it back for WoD"
+L.AMR_HELPTAB_Q6 = "|c00999999Q:|r Is Mr. Robot updated?"
+L.AMR_HELPTAB_A6 = "|c0066dd66A:|r Yes! For more info, go to \r|c003333ffhttp://blog.askmrrobot.com/2014/10/what-to-do-for-6-0-2/"
 --ui/ImportTab.lua
 --new
-L.AMR_IMPORTTAB_BUTTON = "Import!"
-L.AMR_IMPORTTAB_TITLE = "Import Mr. Robot's optimizations"
-L.AMR_IMPORTTAB_INSTRUCTIONS_1 = "1. Go to our website, optimize, then click the 'export to addon' button found just above the stats section."
-L.AMR_IMPORTTAB_INSTRUCTIONS_2 = "2. A window will popup, copy the text from that window.\r\r3. Return here and paste the text into the window below. To paste it, hold ctrl + v, or on a mac apple + v.\r\r4. Click the 'Import' button below"
-L.AMR_IMPORTTAB_INSTRUCTIONS_3 = "Paste text from AskMrRobot.com here."
---ui/ReforgesTab.lua
---popup open reforge
-L.AMR_REFORGESTAB_OPEN_WINDOW = "You need to open the reforge window for this to work"
-L.AMR_REFORGESTAB_BUTTON_OK = "Ok"
---new
-L.AMR_REFORGESTAB_TITLE = "Reforges"
-L.AMR_REFORGESTAB_OPTIMAL = "Your reforges are 100% optimal!"
-L.AMR_REFORGESTAB_INSTRUCTION = 'Open a reforge window, then click the "Reforge!" button to do it automatically.'
-L.AMR_REFORGESTAB_BUTTON = "Reforge!"
-L.AMR_REFORGESTAB_SLOT = "Slot"
-L.AMR_REFORGESTAB_OPTIMAL_REFORGE = "Optimal Reforge"
-L.AMR_REFORGESTAB_RESTORE_THEN = 'Restore, then '
-L.AMR_REFORGESTAB_TOTAL_COST = "Total reforge cost: ~%d Gold"
+L.AMR_IMPORTTAB_BUTTON = "Load Gear"
+L.AMR_IMPORTTAB_TITLE = "Load a gear set from the website"
+L.AMR_IMPORTTAB_INSTRUCTIONS_1 = "1. Click the blue '|c0018C0F7Send to Addon|r' button on our |c00BF28D6website|r.  It's found on the right side in the '|c33ffffffNow What?|r' section.  Copy the text in the box that pops up.|n|c00999999To copy, press ctrl + c (or cmd + c on a mac)|r"
+L.AMR_IMPORTTAB_INSTRUCTIONS_2 = "2. Then return to this window in the |c00ffd100addon|r.  Paste the text in the box below, then click the 'Load Gear' button.|n|c00999999To paste, press ctrl + v in the window (or cmd + v on a mac)|r"
+L.AMR_IMPORTTAB_EXPORT_INSTRUCTIONS_1 = "1. Select the text in the box below and copy it.|n|c00999999To copy, press ctrl + c (or cmd + c on a mac)|r"
+L.AMR_IMPORTTAB_EXPORT_INSTRUCTIONS_2 = "2. Open your character on our |c00ffd100website|r.  Click the green 'import' button found to the left of your characters name.  Paste the text in the box the pops up.|n|c00999999To paste: press ctrl + v (or cmd + v on a mac)|r"
+L.AMR_IMPORTTAB_EXPORT_NOTE = "NOTE: if you change something while this window is open, press the Update button below to generate a new export string.  Make sure you’re recently opened your bags & bank so the addon can scan them."
 --ui/ShoppingListTab
 --popup mail
 L.AMR_SHOPPINGLISTTAB_OPEN_MAIL = "You need to open the mail window for this to work"
@@ -500,7 +527,7 @@ L.AMR_SHOPPINGLISTTAB_CHAT_ROBOT_MESSAGE = "Mr. Robot says I need"
 --ui/SummaryTab.lua
 L.AMR_SUMMARYTAB_TITLE = "Summary"
 L.AMR_SUMMARYTAB_NO_IMPORT = "You have no optimizations imported."
-L.AMR_SUMMARYTAB_GET_STARTED = 'Click the "Import" tab to get started.'
+L.AMR_SUMMARYTAB_GET_STARTED = 'Click the |c00ffd100Load|r tab to get started.'
 L.AMR_SUMMARYTAB_GO_UPGRADE = "Please upgrade the following items:"
 L.AMR_SUMMARYTAB_SLOT = "Slot"
 L.AMR_SUMMARYTAB_ITEM_NAME = "Item Name"
@@ -510,10 +537,9 @@ L.AMR_SUMMARYTAB_OPTIMIZATIONS_TO_GO = "You have ? optimizations to make:"
 L.AMR_SUMMARYTAB_GEMS_TO_GO = "? gems"
 L.AMR_SUMMARYTAB_ENCHANTS_TO_GO = "? enchants"
 L.AMR_SUMMARYTAB_REFORGES_TO_GO = "? reforges"
-L.AMR_SUMMARYTAB_VIEW_TABS = "View the Gem, Enchant and Reforge tabs for suggested optimizations."
+L.AMR_SUMMARYTAB_VIEW_TABS = "View the Gem and Enchant tabs for suggested optimizations."
 L.AMR_SUMMARYTAB_GEMCOUNT = "%d \1244gem:gems;"
 L.AMR_SUMMARYTAB_ENCHANTCOUNT = "%d \1244enchant:enchants;"
-L.AMR_SUMMARYTAB_REFORGECOUNT = "%d \1244reforge:reforges;"
 L.AMR_SUMMARYTAB_OPTIMIZATIONCOUNT = "You have %d \1244optimization:optimizations; to make:"
 L.AMR_SUMMARYTAB_LAST_IMPORT_1 = "Last import: %s\rThese optimizations are for %s"
 L.AMR_SUMMARYTAB_LAST_IMPORT_2 = "Last import: %s\rThese optimizations are for %s's..."

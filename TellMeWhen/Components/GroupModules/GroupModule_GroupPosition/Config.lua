@@ -151,6 +151,33 @@ TMW.Classes.GroupModule_GroupPosition:RegisterConfigTable("args.position.args", 
 			min = 0.6,
 			softMax = 10,
 			bigStep = 0.01,
+
+
+			set = function(info, val)
+				local group = FindGroupFromInfo(info)
+
+
+				local oldScale = group:GetScale()
+				local newScale = val
+				local newX = group:GetLeft() * oldScale / newScale
+				local newY = group:GetTop() * oldScale / newScale
+
+
+				group:ClearAllPoints()
+				group:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", newX, newY)
+
+				group:GetSettings().Scale = val
+				group:SetScale(val)
+
+				local GroupModule_GroupPosition = group:GetModuleOrModuleChild("GroupModule_GroupPosition")
+				GroupModule_GroupPosition:UpdatePositionAfterMovement()
+				
+				if GroupModule_GroupPosition then
+					GroupModule_GroupPosition:SetPos()
+				end
+			end,
+
+
 		},
 		Level = {
 			name = L["UIPANEL_LEVEL"],
@@ -218,10 +245,10 @@ TMW.Classes.SharableDataType.types.group:RegisterMenuBuilder(10, function(Item_g
 	local IMPORTS, EXPORTS = Item_group:GetEditBox():GetAvailableImportExportTypes()
 
 	-- copy group position
-	local info = UIDropDownMenu_CreateInfo()
+	local info = TMW.DD:CreateInfo()
 	info.text = L["COPYGROUP"] .. " - " .. L["COPYPOSSCALE"]
 	info.func = function()
-		CloseDropDownMenus()
+		TMW.DD:CloseDropDownMenus()
 		local destgroup = IMPORTS.group_overwrite
 		local destgs = destgroup:GetSettings()
 		
@@ -239,6 +266,6 @@ TMW.Classes.SharableDataType.types.group:RegisterMenuBuilder(10, function(Item_g
 	end
 	info.notCheckable = true
 	info.disabled = not IMPORTS.group_overwrite
-	UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+	TMW.DD:AddButton(info)
 end)
 

@@ -1,11 +1,15 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
 -- English resources
 ------------------------------------------------------------
+
+-- Strings that have been updated here but not CurseForge yet (Pawn 1.9):
+-- STATS: AgilityInfo, ArmorInfo, CritInfo, HasteInfo, IntellectInfo, SpeedBaselineInfo, SpellPowerInfo, SpiritInfo, StaminaInfo, StrengthInfo
+-- UI: HelpText, OptionsCurrentValueTooltip
 
 local function PawnUseThisLocalization()
 PawnLocal =
@@ -51,10 +55,6 @@ PawnLocal =
 	NoScalesDescription = "To begin, import a scale or start a new one.",
 	NoStatDescription = "Choose a stat from the list on the left.",
 	Or = "or ",
-	ReforgeCappedStatWarning = "Use care when reforging Hit or Expertise.  Don't let your miss chance go above 0%.",
-	ReforgeDebugMessage = "   -- Reforge item to gain +%g",
-	ReforgeInstructions = "Reforge %s into %s",
-	ReforgeInstructionsNoReforge = "Do not reforge",
 	RenameScaleEnterName = "Enter a new name for %s:",
 	SocketBonusValueCalculationMessage = "   -- Socket bonus would be worth: %g",
 	StatNameText = "1 |cffffffff%s|r is worth:",
@@ -84,33 +84,32 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 	ValueCalculationMessage = "   %g %s x %g each = %g",
 	VisibleScalesHeader = "%s's scales",
 	Stats = {
-		AgilityInfo = "The primary stat, Agility.",
+		AgilityInfo = "Agility.  Increases attack power for some classes.",
 		Ap = "Attack power",
 		ApInfo = "Attack power.  Not present on most items directly.  Does not include attack power that you will receive from Strength or Agility.",
-		ArmorInfo = "Armor, regardless of item type.  Does not distinguish between base armor and bonus armor since items with bonus armor are obsolete.",
+		ArmorInfo = "Armor, regardless of item type.  Includes the base armor value on all armor, as well as bonus armor on tank-specific armor.",
 		ArmorTypes = "Armor types",
-		CasterStats = "Caster stats",
+		AvoidanceInfo = "Avoidance.  Reduces the damage you take from area-of-effect attacks.",
 		Cloth = "Cloth",
 		ClothInfo = "Points to be assigned if the item is cloth.",
 		Crit = "Crit",
-		CritInfo = "Critical strike.  Affects melee attacks, ranged attacks, and spells.",
-		DodgeInfo = "Tank stat.",
+		CritInfo = "Critical strike.  Increases the chance that your attacks and healing spells will hit with increased potency.",
 		DpsInfo = "Weapon damage per second.  (If you want to value DPS differently for different types of weapons, see the \"Special weapon stats\" section.)",
-		ExpertiseInfo = "Expertise.  Negates your enemy's Dodge and Parry stats.",
-		HasteInfo = "Haste.  Affects melee attacks, ranged attacks, and spells.",
-		Hit = "Hit",
-		HitInfo = "Hit.  Affects melee attacks, ranged attacks, and spells.",
-		HybridStats = "Hybrid stats",
-		IntellectInfo = "The primary stat, Intellect.",
+		HasteInfo = "Haste.  Increases the speed at which your spells cast and resources regenerate.",
+		IndestructibleInfo = "Indestructible.  Prevents your equipment from taking durability damage.",
+		IndestructibleIs = "Being |cffffffffindestructible|r is worth:",
+		IntellectInfo = "Intellect.  Increases spell power for some classes.",
 		Leather = "Leather",
 		LeatherInfo = "Points to be assigned if the item is leather.",
+		LeechInfo = "Leech.  Causes your attacks and healing spells to restore your health.",
 		Mail = "Mail",
 		MailInfo = "Points to be assigned if the item is mail.",
 		MasteryInfo = "Mastery.  Improves the unique bonus of your class specialization.",
 		MetaSocket = "Meta socket",
 		MetaSocketInfo = "A meta socket, whether empty or full.  Assign extra points to helms that have a meta socket here to compensate for the special effects on meta gems.",
-		ParryInfo = "Tank stat.",
-		PhysicalStats = "Physical damage stats",
+		MinorStats = "Minor stats",
+		MovementSpeedInfo = "Movement speed.  Causes your character to run faster.",
+		MultistrikeInfo = "Multistrike.  Increases the chance that your attacks and healing spells will hit your target two extra times at reduced potency.",
 		Plate = "Plate",
 		PlateInfo = "Points to be assigned if the item is plate.",
 		PrimaryStats = "Primary stats",
@@ -119,21 +118,22 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		PvPResilience = "PvP resilience",
 		PvPResilienceInfo = "PvP resilience.  Reduces the damage you take from other players' attacks.  Only effective versus other players.",
 		PvPStats = "PvP stats",
+		SecondaryStats = "Secondary stats",
 		Shield = "Shield",
 		ShieldInfo = "Points to be assigned if the item is a shield.",
 		Sockets = "Sockets",
 		SpecialWeaponStats = "Special weapon stats",
 		SpeedBaseline = "Speed baseline",
-		SpeedBaselineInfo = "Not an actual stat, per se.  This number is subtracted from the Speed stat before multiplying it by the scale value.",
+		SpeedBaselineInfo = "Not an actual stat that appears on weapons, this number is subtracted from the Speed stat before multiplying it by the scale value.",
 		SpeedBaselineIs = "|cffffffffSpeed baseline|r is:",
 		SpeedInfo = "Weapon speed, in seconds per swing.  (If you prefer fast weapons, this number should be negative.  See also: \"speed baseline\" in the \"Special weapon stats\" section.)",
 		SpeedIs = "1 second |cffffffffswing speed|r is worth:",
 		SpellPower = "Spell power",
-		SpellPowerInfo = "Spell power.  Present on caster weapons but not most armor.  Does not include the spell power that you will receive from Intellect.",
-		SpiritInfo = "The primary stat, Spirit.",
-		StaminaInfo = "The primary stat, Stamina.",
-		StrengthInfo = "The primary stat, Strength.",
-		TankStats = "Tank stats",
+		SpellPowerInfo = "Spell power.  Present on caster weapons.  Increases the damage and healing from your spells.  Does not include the spell power that you will receive from Intellect.",
+		SpiritInfo = "Spirit.  Increases mana regeneration for healers.",
+		StaminaInfo = "Stamina.  Increases your health.",
+		StrengthInfo = "Strength.  Increases attack power for some classes.",
+		VersatilityInfo = "Versatility.  Increases damage dealt for damage characters, increases healing done by healing characters, and reduces damage taken for tank characters.",
 		WeaponMainHandDps = "MH: DPS",
 		WeaponMainHandDpsInfo = "Weapon damage per second, only for main hand weapons.",
 		WeaponMainHandMaxDamage = "MH: max damage",
@@ -227,9 +227,11 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Ap = "^%+?([%d%.,]+) Attack Power$",
 		Armor = "^%+?([%d%.,]+) Armor$",
 		Armor2 = "^UNUSED$",
+		Avoidance = "^%+([%d%.,]+) Avoidance$",
 		Axe = "^Axe$",
 		BagSlots = "^%d+ Slot .+$",
 		BladesEdgeMountains = "^Blade's Edge Mountains$",
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$",
 		Bow = "^Bow$",
 		ChanceOnHit = "Chance on hit:",
 		Charges = "^.+ Charges?$",
@@ -241,8 +243,6 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Dagger = "^Dagger$",
 		Design = "Design:",
 		DisenchantingRequires = "^Disenchanting requires",
-		Dodge = "^%+?([%d%.,]+) Dodge$",
-		Dodge2 = "^UNUSED$",
 		Dps = "^%(([%d%.,]+) damage per second%)$",
 		DpsAdd = "^Adds ([%d%.,]+) damage per second$",
 		Duration = "^Duration:",
@@ -256,8 +256,6 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		EnchantmentPyriumWeaponChain = "^Pyrium Weapon Chain$",
 		EnchantmentTitaniumWeaponChain = "^Titanium Weapon Chain$",
 		Equip = "Equip:",
-		Expertise = "^%+?([%d%.,]+) Expertise$",
-		Expertise2 = "^UNUSED$",
 		FistWeapon = "^Fist Weapon$",
 		Flexible = "^Flexible$",
 		Formula = "Formula:",
@@ -271,27 +269,24 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		HeroicElite = "^Heroic Elite$",
 		HeroicThunderforged = "^Heroic Thunderforged$",
 		HeroicWarforged = "^Heroic Warforged$",
-		Hit = "^%+?([%d%.,]+) Hit$",
-		Hit2 = "^UNUSED$",
-		Hit3 = "^UNUSED$",
 		Hp5 = "^Equip: Restores ([%d%.,]+) health every 5 sec%.$",
 		Hp52 = "^Equip: Restores ([%d%.,]+) health per 5 sec%.$",
 		Hp53 = "^Restores %+?([%d%.,]+) [hH]ealth [pP]er 5 [sS]ec%.?$",
 		Hp54 = "^UNUSED$",
 		Intellect = "^%+?([-%d%.,]+) Intellect$",
 		Leather = "^Leather$",
+		Leech = "^%+([%d%.,]+) Leech$",
 		Mace = "^Mace$",
 		Mail = "^Mail$",
 		Manual = "Manual:",
 		Mastery = "^%+?([%d%.,]+) Mastery$",
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xRequires",
+		MovementSpeed = "^%+([%d%.,]+) Speed$",
 		MultiStatSeparator1 = "and",
+		Multistrike = "^%+([%d%.,]+) Multistrike$",
 		NormalizationEnchant = "^Enchanted: (.*)$",
-		NormalizationReforge = "^(.*) %(Reforged from (.*)%)$",
 		OnlyFitsInMetaGemSlot = "^\"Only fits in a meta gem slot%.\"$",
-		Parry = "^%+?([%d%.,]+) Parry$",
-		Parry2 = "^UNUSED$",
 		Pattern = "Pattern:",
 		Plans = "Plans:",
 		Plate = "^Plate$",
@@ -325,6 +320,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		Timeless = "^Timeless$",
 		UpgradeLevel = "^Upgrade Level:",
 		Use = "Use:",
+		Versatility = "^%+([%d%.,]+) Versatility$",
 		Wand = "^Wand$",
 		Warforged = "^Warforged$",
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) Damage$",
@@ -346,7 +342,7 @@ For more information on customizing Pawn, please see the help file (Readme.htm) 
 		AboutVersion = "Version %s",
 		AboutWebsite = [=[For other mods by Vger, visit vgermods.com.
 
-Wowhead stat weights used with permission—please direct feedback on the default scale values to Wowhead.]=],
+I made up the default scale values based on rough guesses.  I'll return to using stat weights from Wowhead once they update.]=],
 		CompareClearItems = "Clear",
 		CompareClearItemsTooltip = "Remove both comparison items.",
 		CompareCogwheelSockets = "Cogwheel sockets",
@@ -356,7 +352,6 @@ Wowhead stat weights used with permission—please direct feedback on the defaul
 		CompareHeader = "Compare items using %s",
 		CompareMetaSockets = "Meta sockets",
 		CompareOtherHeader = "Other",
-		CompareReforgingPotential = "Reforging potential",
 		CompareShaTouchedSockets = "Sha-Touched",
 		CompareSlotEmpty = "(no item)",
 		CompareSocketBonus = "Socket bonus",
@@ -394,13 +389,12 @@ Each item will get one score for each “scale” that is active for your charac
  • You can turn a scale on or off by shift-clicking it in the list on the Scale tab.
 
 
-Pawn comes with scales from Wowhead for each class and spec.  You can also create your own by assigning point values to each stat, import scales from the internet or simulation tools, or share scales with guildmates.
+Pawn comes with pre-made scales for each class and spec.  You can also create your own by assigning point values to each stat, import scales from the internet or simulation tools, or share scales with guildmates.
 
 
 |cff8ec3e6Try out these features once you learn the basics:|r
  • Compare the stats of two items by using Pawn's Compare tab.
  • Right-click on an item link window to see how it compares to your current item.
- • Shift-right-click an item with sockets to have Pawn suggest gems for it.
  • Make a copy of one of your scales on the Scale tab, and customize the stat values on the Values tab.
  • Find more scales for your class on the internet.
  • Check out the readme file to learn more about Pawn's advanced features.]=],
@@ -426,7 +420,7 @@ Pawn comes with scales from Wowhead for each class and spec.  You can also creat
 		OptionsColorBorder = "Color tooltip border of upgrades",
 		OptionsColorBorderTooltip = "Enable this option to change the color of the tooltip border of items that are upgrades to green.  Disable this option if it interferes with other mods that change tooltip borders.",
 		OptionsCurrentValue = "Show both current and base values",
-		OptionsCurrentValueTooltip = [=[Enable this option to have Pawn show two values for items: the current value, which reflects the current state of an item with the actual gems, enchantments, and reforging that the item has at the moment, with empty sockets providing no benefit, in addition to the base value, which is what Pawn normally displays.  The current value will be displayed before the base value.  This option has no effect unless you turn on item value display on tooltips.
+		OptionsCurrentValueTooltip = [=[Enable this option to have Pawn show two values for items: the current value, which reflects the current state of an item with the actual gems and enchantments that the item has at the moment, with empty sockets providing no benefit, in addition to the base value, which is what Pawn normally displays.  The current value will be displayed before the base value.  This option has no effect unless you turn on item value display on tooltips.
 
 You should still use the base value for determining between two items at endgame, but the current value can be helpful when leveling and to make it easier to decide whether it's worth immediately equipping a new item before it has gems or enchantments.]=],
 		OptionsDebug = "Show debug info",
@@ -438,6 +432,12 @@ Shortcuts:
 /pawn debug on
 /pawn debug off]=],
 		OptionsHeader = "Adjust Pawn options",
+		OptionsIgnoreGemsWhileLevelingCheck = "Ignore sockets on low-level items",
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = [=[Enable this option to have Pawn ignore sockets on low-level items when calculating item values, since most people do not go to the effort or expense of socketing items while still leveling.  A "low-level" item is one weaker than what can be obtained in a heroic dungeon at the level cap.
+
+If checked, Pawn's socketing advisor will still suggest appropriate gems for low-level items, but sockets will be ignored in calculations and socketed items will not show up as upgrades as often.
+
+If unchecked, Pawn will calculate values for items as if they were socketed in the way that maximizes the item's value, regardless of the item's level.]=],
 		OptionsInventoryIcon = "Show inventory icons",
 		OptionsInventoryIconTooltip = "Enable this option to show inventory icons next to item link windows.",
 		OptionsItemIDs = "Show item IDs",
@@ -449,8 +449,6 @@ Every item in World of Warcraft has an ID number associated with it.  This infor
 		OptionsOtherHeader = "Other options",
 		OptionsQuestUpgradeAdvisor = "Show quest upgrade advisor",
 		OptionsQuestUpgradeAdvisorTooltip = "In your quest log and when talking to NPCs, if one of the quest reward choices is an upgrade for your current gear, Pawn will show a green arrow icon on that item.  If none of the items is an upgrade, Pawn will show a pile of coins on the item that is worth the most when sold to a vendor.",
-		OptionsReforgingAdvisor = "Show reforging advisor",
-		OptionsReforgingAdvisorTooltip = "When visiting an arcane reforger, Pawn will show a popup suggesting which stats to change to maximize the item's power.",
 		OptionsResetUpgrades = "Re-scan gear",
 		OptionsResetUpgradesTooltip = [=[Pawn will forget what it knows about the best items you've ever equipped and re-scan your gear in order to provide more up-to-date upgrade information in the future.
 
@@ -485,7 +483,6 @@ If checked, you could be using a two-handed weapon and still see clearly inferio
 
 If unchecked, equipping a two-handed weapon will prevent Pawn from showing you upgrades for one-handed items and vice-versa.]=],
 		OptionsWelcome = "Configure Pawn the way you like it.  Changes will take effect immediately.",
-		ReforgingAdvisorHeader = "Pawn Reforging Advisor suggests:",
 		ScaleChangeColor = "Change color",
 		ScaleChangeColorTooltip = "Change the color that this scale's name and value appear in on item tooltips.",
 		ScaleCopy = "Copy",
@@ -517,6 +514,7 @@ Shortcut: Shift+click a scale]=],
 		ScaleWelcome = "Scales are sets of stats and values that are used to assign point values to items.  You can customize your own or use scale values that others have created.",
 		SocketingAdvisorButtonTooltip = "Click to open Pawn's Gems tab, where you can see more information about the gems that Pawn recommends.",
 		SocketingAdvisorHeader = "Pawn Socketing Advisor suggests:",
+		SocketingAdvisorIgnoreThisItem = "Don't bother adding gems to this low-level item.  But if you do, use these:",
 		ValuesDoNotShowUpgradesFor1H = "Don't show upgrades for 1H items",
 		ValuesDoNotShowUpgradesFor2H = "Don't show upgrades for 2H items",
 		ValuesDoNotShowUpgradesTooltip = "Enable this option to hide upgrades of this type of item.  For example, even though paladin tanks can use two-handed weapons, a two-handed weapon is never an \"upgrade\" for a paladin tanking set, so Pawn should not show upgrade notifications for them.  Similarly, retribution paladins can use one-handed weapons, but they are never upgrades.",
@@ -560,6 +558,7 @@ For more information on this setting, see the readme file.]=],
 		PriestHoly = "Priest: holy",
 		PriestShadow = "Priest: shadow",
 		Provider = "Wowhead scales",
+		ProviderStarter = "Starter scales",
 		RogueAssassination = "Rogue: assassination",
 		RogueCombat = "Rogue: combat",
 		RogueSubtlety = "Rogue: subtlety",

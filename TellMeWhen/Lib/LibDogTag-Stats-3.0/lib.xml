@@ -13,6 +13,7 @@
 	<Script file="Categories\Regen.lua" />
 	<Script file="Categories\Spell.lua" />
 	<Script file="Categories\Stats.lua" />
+	<Script file="Categories\Enhancements.lua" />
 	
 	<Script file="Cleanup.lua" />
 </Ui>

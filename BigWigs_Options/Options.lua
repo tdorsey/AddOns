@@ -213,39 +213,46 @@ local acOptions = {
 			order = 44,
 			width = "full",
 		},
+		slashDescBreak = {
+			type = "description",
+			name = "  ".. L.slashDescBreak,
+			fontSize = "medium",
+			order = 45,
+			width = "full",
+		},
 		slashDescBar = {
 			type = "description",
 			name = "  ".. L.slashDescRaidBar,
 			fontSize = "medium",
-			order = 45,
+			order = 46,
 			width = "full",
 		},
 		slashDescLocalBar = {
 			type = "description",
 			name = "  ".. L.slashDescLocalBar,
 			fontSize = "medium",
-			order = 46,
+			order = 47,
 			width = "full",
 		},
 		slashDescRange = {
 			type = "description",
 			name = "  ".. L.slashDescRange,
 			fontSize = "medium",
-			order = 47,
+			order = 48,
 			width = "full",
 		},
 		slashDescVersion = {
 			type = "description",
 			name = "  ".. L.slashDescVersion,
 			fontSize = "medium",
-			order = 48,
+			order = 49,
 			width = "full",
 		},
 		slashDescConfig = {
 			type = "description",
 			name = "  ".. L.slashDescConfig,
 			fontSize = "medium",
-			order = 49,
+			order = 50,
 			width = "full",
 		},
 	},
@@ -874,168 +881,295 @@ local function populateToggleOptions(widget, module)
 	if module.encounterId and module.zoneId and BigWigs:GetPlugin("Statistics").db.profile.enabled and sDB and sDB[module.zoneId] and sDB[module.zoneId][module.encounterId] then
 		sDB = sDB[module.zoneId][module.encounterId]
 
-		-- Create statistics table
-		local statGroup = AceGUI:Create("InlineGroup")
-		statGroup:SetTitle(L.statistics)
-		statGroup:SetLayout("Flow")
-		statGroup:SetFullWidth(true)
-		scrollFrame:AddChild(statGroup)
+		if sDB.LFR or sDB.normal or sDB.heroic or sDB.mythic then -- Create NEW statistics table
+			local statGroup = AceGUI:Create("InlineGroup")
+			statGroup:SetTitle(L.statistics)
+			statGroup:SetLayout("Flow")
+			statGroup:SetFullWidth(true)
+			scrollFrame:AddChild(statGroup)
 
-		local statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText("")
-		statGroup:AddChild(statistics)
+			local statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.norm25)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.lfr)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.heroic25)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.normal)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.norm10)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.heroic)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.heroic10)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.mythic)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.lfr)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.flex)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.wipes)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetFullWidth(true)
-		statistics:SetText("")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.LFR and sDB.LFR.wipes or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.wipes)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.normal and sDB.normal.wipes or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25"] and sDB["25"].wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.heroic and sDB.heroic.wipes or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25h"] and sDB["25h"].wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.mythic and sDB.mythic.wipes or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10"] and sDB["10"].wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10h"] and sDB["10h"].wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.kills)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.lfr and sDB.lfr.wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.LFR and sDB.LFR.kills or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.flex and sDB.flex.wipes or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.normal and sDB.normal.kills or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetFullWidth(true)
-		statistics:SetText("")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.heroic and sDB.heroic.kills or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.kills)
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.mythic and sDB.mythic.kills or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25"] and sDB["25"].kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25h"] and sDB["25h"].kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(L.best)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10"] and sDB["10"].kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.LFR and sDB.LFR.best and SecondsToTime(sDB.LFR.best) or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10h"] and sDB["10h"].kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.normal and sDB.normal.best and SecondsToTime(sDB.normal.best) or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.lfr and sDB.lfr.kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.heroic and sDB.heroic.best and SecondsToTime(sDB.heroic.best) or "-")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.flex and sDB.flex.kills or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(100)
+			statistics:SetText(sDB.mythic and sDB.mythic.best and SecondsToTime(sDB.mythic.best) or "-")
+			statGroup:AddChild(statistics)
+		end -- End NEW statistics table
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetFullWidth(true)
-		statistics:SetText("")
-		statGroup:AddChild(statistics)
+		---------------------------------------------------------------------------
+		---------------------------------------------------------------------------
+		---------------------------------------------------------------------------
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(L.best)
-		statGroup:AddChild(statistics)
+		if sDB["25"] or sDB["25h"] or sDB["10"] or sDB["10h"] or sDB.lfr or sDB.flex then -- Create OLD statistics table
+			local statGroup = AceGUI:Create("InlineGroup")
+			statGroup:SetTitle(L.statistics)
+			statGroup:SetLayout("Flow")
+			statGroup:SetFullWidth(true)
+			scrollFrame:AddChild(statGroup)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25"] and sDB["25"].best and SecondsToTime(sDB["25"].best) or "-")
-		statGroup:AddChild(statistics)
+			local statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["25h"] and sDB["25h"].best and SecondsToTime(sDB["25h"].best) or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.norm25)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10"] and sDB["10"].best and SecondsToTime(sDB["10"].best) or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.heroic25)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB["10h"] and sDB["10h"].best and SecondsToTime(sDB["10h"].best) or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.norm10)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.lfr and sDB.lfr.best and SecondsToTime(sDB.lfr.best) or "-")
-		statGroup:AddChild(statistics)
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.heroic10)
+			statGroup:AddChild(statistics)
 
-		statistics = AceGUI:Create("Label")
-		statistics:SetWidth(77)
-		statistics:SetText(sDB.flex and sDB.flex.best and SecondsToTime(sDB.flex.best) or "-")
-		statGroup:AddChild(statistics)
-		-- End statistics table
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.lfr)
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.flex)
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.wipes)
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25"] and sDB["25"].wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25h"] and sDB["25h"].wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10"] and sDB["10"].wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10h"] and sDB["10h"].wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.lfr and sDB.lfr.wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.flex and sDB.flex.wipes or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.kills)
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25"] and sDB["25"].kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25h"] and sDB["25h"].kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10"] and sDB["10"].kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10h"] and sDB["10h"].kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.lfr and sDB.lfr.kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.flex and sDB.flex.kills or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetFullWidth(true)
+			statistics:SetText("")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(L.best)
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25"] and sDB["25"].best and SecondsToTime(sDB["25"].best) or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["25h"] and sDB["25h"].best and SecondsToTime(sDB["25h"].best) or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10"] and sDB["10"].best and SecondsToTime(sDB["10"].best) or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB["10h"] and sDB["10h"].best and SecondsToTime(sDB["10h"].best) or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.lfr and sDB.lfr.best and SecondsToTime(sDB.lfr.best) or "-")
+			statGroup:AddChild(statistics)
+
+			statistics = AceGUI:Create("Label")
+			statistics:SetWidth(77)
+			statistics:SetText(sDB.flex and sDB.flex.best and SecondsToTime(sDB.flex.best) or "-")
+			statGroup:AddChild(statistics)
+		end -- End OLD statistics table
 	end
 
 	if module.SetupOptions then module:SetupOptions() end

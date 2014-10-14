@@ -83,7 +83,7 @@ function AskMrRobot.SummaryTab:new(parent)
 	itemText:Hide()
 	tab.upgradeItemHeader = itemText
 
-	for i = 1, #AskMrRobot.slotNames do
+	for i = 1, #AskMrRobot.slotIds do
 		local itemText = tab:CreateFontString("AmrBadItemSlot" .. i, "ARTWORK", "GameFontWhite")
 		itemText:SetPoint("TOPLEFT", "AmrBadItemSlot" .. (i-1), "BOTTOMLEFT", 0, -5)
 		itemText:SetPoint("TOPRIGHT", "AmrBadItemSlot" .. (i-1), "BOTTOMRIGHT", 0, -5)
@@ -102,7 +102,7 @@ function AskMrRobot.SummaryTab:new(parent)
 
 	tab.upgradeItemSlots = {}
 	tab.upgradeItemNames = {}
-	for i = 1, #AskMrRobot.slotNames do
+	for i = 1, #AskMrRobot.slotIds do
 		local itemText = tab:CreateFontString(nil, "ARTWORK", "GameFontWhite")
 		if i == 1 then
 			itemText:SetPoint("TOPLEFT", tab.upgradeSlotHeader, "BOTTOMLEFT", 0, -5)
@@ -167,13 +167,8 @@ function AskMrRobot.SummaryTab:new(parent)
 	tab.enchantCount:SetText(L.AMR_SUMMARYTAB_ENCHANTS_TO_GO)
 	tab.enchantCount:Hide()
 
-	tab.reforgeCount = tab:CreateFontString(nil, "ARTWORK", "GameFontWhite")
-	tab.reforgeCount:SetPoint("TOPLEFT", tab.enchantCount, "BOTTOMLEFT", 0, -5)
-	tab.reforgeCount:SetText(L.AMR_SUMMARYTAB_REFORGES_TO_GO)
-	tab.reforgeCount:Hide()
-
 	tab.instructions = tab:CreateFontString(nil, "ARTWORK", "GameFontWhite")
-	tab.instructions:SetPoint("TOPLEFT", tab.reforgeCount, "BOTTOMLEFT", 0, -15)
+	tab.instructions:SetPoint("TOPLEFT", tab.enchantCount, "BOTTOMLEFT", 0, -15)
 	tab.instructions:SetText(L.AMR_SUMMARYTAB_VIEW_TABS)
 	tab.instructions:Hide()
 
@@ -191,17 +186,17 @@ function AskMrRobot.SummaryTab:getSpecIcon(specId)
 end
 
 function AskMrRobot.SummaryTab:showBadItems()
-	local badItems = AskMrRobot.itemDiffs.items
-
 	local i = 2
 
-	-- for all the bad items
-	for slotNum, badItem in AskMrRobot.sortSlots(badItems) do
-		if not badItem.needsUpgrade then
-			self.badItemSlots[i]:SetText(_G[strupper(AskMrRobot.slotNames[slotNum])])
+	-- for all slots
+	for iSlot = 1, #AskMrRobot.slotIds do
+		local slotId = AskMrRobot.slotIds[iSlot]
+		local badItem = AskMrRobot.ComparisonResult.items[slotId]
+		if badItem ~= nil and not badItem.needsUpgrade then
+			self.badItemSlots[i]:SetText(AskMrRobot.slotDisplayText[slotId])
 			self.badItemSlots[i]:Show()
 			if badItem.optimized then
-				self.badItemNames[i]:SetItemId(badItem.optimized.itemId, badItem.optimized.upgradeId, badItem.optimized.suffixId)
+				self.badItemNames[i]:SetItemId(badItem.optimized.id, badItem.optimized.upgradeId, badItem.optimized.suffixId)
 			else
 				self.badItemNames[i]:SetItemId(nil, 0, 0)
 			end
@@ -212,12 +207,14 @@ function AskMrRobot.SummaryTab:showBadItems()
 
     -- for all the upgrade items
     local j = 1
-	for slotNum, badItem in AskMrRobot.sortSlots(badItems) do
-		if badItem.needsUpgrade then
-			self.upgradeItemSlots[j]:SetText(_G[strupper(AskMrRobot.slotNames[slotNum])])
+	for iSlot = 1, #AskMrRobot.slotIds do
+		local slotId = AskMrRobot.slotIds[iSlot]
+		local badItem = AskMrRobot.ComparisonResult.items[slotId]
+		if badItem ~= nil and badItem.needsUpgrade then
+			self.upgradeItemSlots[j]:SetText(AskMrRobot.slotDisplayText[slotId])
 			self.upgradeItemSlots[j]:Show()
 			if badItem.optimized then
-				self.upgradeItemNames[j]:SetItemId(badItem.optimized.itemId, badItem.optimized.upgradeId, badItem.optimized.suffixId)
+				self.upgradeItemNames[j]:SetItemId(badItem.optimized.id, badItem.optimized.upgradeId, badItem.optimized.suffixId)
 			else
 				self.upgradeItemNames[j]:SetItemId(nil, 0, 0)
 			end
@@ -236,46 +233,42 @@ function AskMrRobot.SummaryTab:showBadItems()
 		self.optimizationSummary:Show()
 		self.gemCount:Show()
 		self.enchantCount:Show()
-		self.reforgeCount:Show()
 		self.instructions:Show()
 		self.specText:Show()
 
 		local gemCount = 0
-		for slotNum, badGems in pairs(AskMrRobot.itemDiffs.gems) do
-			for k, v in pairs(badGems.badGems) do
-				gemCount = gemCount + 1
+		for slotNum, badGems in pairs(AskMrRobot.ComparisonResult.gems) do
+			--for k, v in pairs(badGems.badGems) do
+				--gemCount = gemCount + 1
+			--end
+			for g = 1, 3 do
+				if not AskMrRobot.AreGemsCompatible(badGems.current[g], badGems.optimized[g]) then
+					gemCount = gemCount + 1
+				end
 			end
 		end
 
 		self.gemCount:SetFormattedText(L.AMR_SUMMARYTAB_GEMCOUNT, gemCount)
 
 		local enchantCount = 0
-		for slotNum, badEnchant in pairs(AskMrRobot.itemDiffs.enchants) do
+		for slotNum, badEnchant in pairs(AskMrRobot.ComparisonResult.enchants) do
 			enchantCount = enchantCount + 1
 		end
 
 		self.enchantCount:SetFormattedText(L.AMR_SUMMARYTAB_ENCHANTCOUNT, enchantCount)
 
-		local reforgeCount = 0
-		for slotNum, badReforge in pairs(AskMrRobot.itemDiffs.reforges) do
-			reforgeCount = reforgeCount + 1
-		end
+		self.optimizationSummary:SetFormattedText(L.AMR_SUMMARYTAB_OPTIMIZATIONCOUNT, gemCount + enchantCount)
 
-		self.reforgeCount:SetFormattedText(L.AMR_SUMMARYTAB_REFORGECOUNT, reforgeCount)
-		self.optimizationSummary:SetFormattedText(L.AMR_SUMMARYTAB_OPTIMIZATIONCOUNT, gemCount + enchantCount + reforgeCount)
-
-		if gemCount + enchantCount + reforgeCount == 0 then
+		if gemCount + enchantCount == 0 then
 			self.stamp:Show()
 			self.optimizationSummary:Hide()
 			self.enchantCount:Hide()
-			self.reforgeCount:Hide()
 			self.instructions:Hide()
 			self.gemCount:Hide()
 		else
 			self.stamp:Hide()
 			self.optimizationSummary:Show()
 			self.enchantCount:Show()
-			self.reforgeCount:Show()
 			self.instructions:Show()
 			self.gemCount:Show()
 		end
@@ -283,9 +276,9 @@ function AskMrRobot.SummaryTab:showBadItems()
 		local activeSpecGroup = GetActiveSpecGroup()
 
 		if activeSpecGroup == nil then
-			self.importInfo:SetFormattedText(L.AMR_SUMMARYTAB_LAST_IMPORT_1, self.importDate, UnitName("player"))
+			self.importInfo:SetFormattedText(L.AMR_SUMMARYTAB_LAST_IMPORT_1, AmrDb.LastCharacterImportDate, UnitName("player"))
 		else
-			self.importInfo:SetFormattedText(L.AMR_SUMMARYTAB_LAST_IMPORT_2, self.importDate, UnitName("player"))
+			self.importInfo:SetFormattedText(L.AMR_SUMMARYTAB_LAST_IMPORT_2, AmrDb.LastCharacterImportDate, UnitName("player"))
 			local spec = GetSpecialization(false, false, group);
 			if spec then
 				local _, name, _, icon = GetSpecializationInfo(spec);
@@ -307,7 +300,6 @@ function AskMrRobot.SummaryTab:showBadItems()
 		self.optimizationSummary:Hide()
 		self.gemCount:Hide()
 		self.enchantCount:Hide()
-		self.reforgeCount:Hide()
 		self.instructions:Hide()
 		self.specText:Hide()		
 	end
@@ -403,7 +395,6 @@ function AskMrRobot.SummaryTab:showImportError(text, text2)
 	self.stamp:Hide()
 	self.gemCount:Hide()
 	self.instructions:Hide()
-	self.reforgeCount:Hide()
 	self.enchantCount:Hide()
 	self.optimizationSummary:Hide()
 	if text then
@@ -423,11 +414,11 @@ function AskMrRobot.SummaryTab:showImportError(text, text2)
 		self.errorText2:Hide()
 		self.importInfo:Show()
 	end
-	for i = 1, #AskMrRobot.slotNames + 1 do
+	for i = 1, #self.badItemSlots do
 		self.badItemSlots[i]:Hide()
 		self.badItemNames[i]:Hide()
 	end
-	for i = 1, #AskMrRobot.slotNames do
+	for i = 1, #self.upgradeItemSlots do
 		self.upgradeItemSlots[i]:Hide()
 		self.upgradeItemNames[i]:Hide()
 	end	
@@ -438,7 +429,6 @@ function AskMrRobot.SummaryTab:showImportWarning (text, text2)
 	self.hasImportError = false
 	self.gemCount:Hide()
 	self.instructions:Hide()
-	self.reforgeCount:Hide()
 	self.enchantCount:Hide()
 	self.specIcon:Hide()
 	self.specText:Hide()

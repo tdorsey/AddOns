@@ -36,8 +36,11 @@ local GetPetActionInfo, GetNumTrackingTypes, GetTrackingInfo =
 	  
 local ConditionCategory = CNDT:GetCategory("ATTRIBUTES_PLAYER", 2, L["CNDTCAT_ATTRIBUTES_PLAYER"], true, false)
 
-ConditionCategory:RegisterCondition(1,	 "INSTANCE", {
+ConditionCategory:RegisterCondition(1,	 "INSTANCE", {	-- old
 	text = L["CONDITIONPANEL_INSTANCETYPE"],
+
+	old = true,
+
 	min = 0,
 	max = 11,
 	unit = false,
@@ -98,8 +101,124 @@ ConditionCategory:RegisterCondition(1,	 "INSTANCE", {
 			ConditionObject:GenerateNormalEventString("PLAYER_DIFFICULTY_CHANGED")
 	end,
 })
-ConditionCategory:RegisterCondition(2,	 "GROUP", {
+ConditionCategory:RegisterCondition(1,	 "INSTANCE2", {
+	text = L["CONDITIONPANEL_INSTANCETYPE"],
+
+	unit = false,
+	bitFlagTitle = L["CONDITIONPANEL_BITFLAGS_CHOOSEMENU_TYPES"],
+	bitFlags = {
+		[ 1  ] = L["CONDITIONPANEL_INSTANCETYPE_NONE"],											
+		[ 2  ] = BATTLEGROUND,																	
+		[ 3  ] = ARENA,																			
+		[ 4  ] = DUNGEON_DIFFICULTY_5PLAYER,														
+		[ 5  ] = DUNGEON_DIFFICULTY_5PLAYER_HEROIC,												
+		[ 6  ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_DIFFICULTY_10PLAYER),		
+		[ 7  ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_DIFFICULTY_25PLAYER),		
+		[ 8  ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_DIFFICULTY_10PLAYER_HEROIC),	
+		[ 9  ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_DIFFICULTY_25PLAYER_HEROIC),	
+		[ 10 ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_FINDER),						
+		[ 11 ] = CHALLENGE_MODE,																	
+		[ 12 ] = L["CONDITIONPANEL_INSTANCETYPE_LEGACY"]:format(RAID_DIFFICULTY_40PLAYER),		
+		[ 13 ] = HEROIC_SCENARIO,																	
+		[ 14 ] = GUILD_CHALLENGE_TYPE4,								-- (regular scenario)
+		[ 15 ] = format("%s (%s)", PLAYER_DIFFICULTY1, FLEX_RAID),	-- (Warlords Normal Flex)
+		[ 16 ] = format("%s (%s)", PLAYER_DIFFICULTY2, FLEX_RAID),	-- (Warlords Heroic Flex)
+		[ 17 ] = PLAYER_DIFFICULTY6,								-- (Warlords Mythic)
+		[ 18 ] = format("%s (%s)", PLAYER_DIFFICULTY3, FLEX_RAID),	-- (Warlords LFR Flex)
+	},
+
+	icon = "Interface\\Icons\\Spell_Frost_Stun",
+	tcoords = CNDT.COMMON.standardtcoords,
+	Env = {
+		GetZoneType2 = function()
+			local _, z = IsInInstance()
+			local instanceDifficulty
+			
+			if wow_502 then
+				_, _, instanceDifficulty = GetInstanceInfo()
+			else
+				instanceDifficulty = GetInstanceDifficulty() - 1
+			end
+			
+			if z == "pvp" then
+				-- Battleground (2)
+				return 2
+			elseif z == "arena" then
+				-- Arena (3)
+				return 3
+			elseif instanceDifficulty == 0 then
+				-- None (1)
+				return 1
+			else
+				-- 5 man normal (4)
+				-- 5 man heroic (5)
+				-- 10 man normal (6)
+				-- 25 man normal (7)
+				-- 10 man heroic (8)
+				-- 25 man heroic (9)
+				-- LFR (10)
+				-- Challenge Mode (11)
+				-- 40 man (12)
+				if instanceDifficulty <= 9 then
+					return 3 + instanceDifficulty -- 4-12
+				end
+
+				-- heroic scenario (13)
+				-- scenario (14)
+				if instanceDifficulty <= 12 then
+					return 2 + instanceDifficulty --13-14
+				end
+
+				-- Normal Flex (15)
+				-- Heroic Flex (16)
+				-- Mythic (17)
+				-- LFR Flex (18)
+				return 1 + instanceDifficulty
+			end
+		end,
+	},
+	funcstr = [[BITFLAGSMAPANDCHECK(GetZoneType2())]],
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED_NEW_AREA"),
+			ConditionObject:GenerateNormalEventString("PLAYER_DIFFICULTY_CHANGED")
+	end,
+})
+
+ConditionCategory:RegisterCondition(1.5, "ZONEPVP", {
+	text = L["CONDITIONPANEL_ZONEPVP"],
+
+	unit = false,
+	bitFlagTitle = L["CONDITIONPANEL_BITFLAGS_CHOOSEMENU_TYPES"],
+	bitFlags = {
+	    arena = rawget(L, "CONDITIONPANEL_ZONEPVP_FFA") or FREE_FOR_ALL_TERRITORY:trim("()（）"), -- Only use the TMW translation if it exists.
+	    combat = COMBAT_ZONE:trim("()（）"),
+	    contested = CONTESTED_TERRITORY:trim("()（）"),
+	    friendly = FACTION_CONTROLLED_TERRITORY:format(FRIENDLY):trim("()（）"),
+	    hostile = FACTION_CONTROLLED_TERRITORY:format(HOSTILE):trim("()（）"),
+	    sanctuary = SANCTUARY_TERRITORY:trim("()（）"),
+	    none = NONE,
+	},
+
+	icon = "Interface\\Icons\\inv_bannerpvp_01",
+	tcoords = CNDT.COMMON.standardtcoords,
+	Env = {
+		GetZonePVPInfo = GetZonePVPInfo,
+	},
+	funcstr = [[BITFLAGSMAPANDCHECK( GetZonePVPInfo() or "none" )]],
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED_NEW_AREA"),
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED_INDOORS"),
+			ConditionObject:GenerateNormalEventString("ZONE_CHANGED")
+	end,
+})
+
+
+ConditionCategory:RegisterCondition(2,	 "GROUP", {		-- old
 	text = L["CONDITIONPANEL_GROUPTYPE"],
+	old = true,
+
 	min = 0,
 	max = 2,
 	midt = true,
@@ -117,6 +236,47 @@ ConditionCategory:RegisterCondition(2,	 "GROUP", {
 			ConditionObject:GenerateNormalEventString("GROUP_ROSTER_UPDATE")
 	end,
 })
+ConditionCategory:RegisterCondition(2,	 "GROUP2", {
+	text = L["CONDITIONPANEL_GROUPTYPE"],
+
+	unit = false,
+	bitFlagTitle = L["CONDITIONPANEL_BITFLAGS_CHOOSEMENU_TYPES"],
+	bitFlags = {
+		[1] = SOLO,
+		[2] = PARTY,
+		[3] = RAID,
+	},
+
+	icon = "Interface\\Calendar\\MeetingIcon",
+	tcoords = CNDT.COMMON.standardtcoords,
+	Env = {
+		IsInRaid = IsInRaid,
+		IsInGroup = IsInGroup,
+	},
+	funcstr = [[BITFLAGSMAPANDCHECK( ((IsInRaid() and 3) or (IsInGroup() and 2) or 1) )]],
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("GROUP_ROSTER_UPDATE")
+	end,
+})
+
+ConditionCategory:RegisterCondition(2.1, "GROUPSIZE", {
+	text = L["CONDITIONPANEL_GROUPSIZE"],
+	tooltip = L["CONDITIONPANEL_GROUPSIZE_DESC"],
+	min = 0,
+	max = 40,
+	icon = "Interface\\Icons\\spell_deathknight_armyofthedead",
+	tcoords = CNDT.COMMON.standardtcoords,
+	Env = {
+		GetInstanceInfo = GetInstanceInfo,
+	},
+	funcstr = [[select(9, GetInstanceInfo()) c.Operator c.Level]],
+	events = function(ConditionObject, c)
+		return
+			ConditionObject:GenerateNormalEventString("INSTANCE_GROUP_SIZE_CHANGED"),
+			ConditionObject:GenerateNormalEventString("UPDATE_INSTANCE_INFO")
+	end,
+})
 
 ConditionCategory:RegisterSpacer(2.5)
 
@@ -132,7 +292,7 @@ ConditionCategory:RegisterCondition(3,	 "MOUNTED", {
 	Env = {
 		IsMounted = IsMounted,
 	},
-	funcstr = [[c.1nil == IsMounted()]],
+	funcstr = [[BOOLCHECK( IsMounted() )]],
 })
 ConditionCategory:RegisterCondition(4,	 "SWIMMING", {
 	text = L["CONDITIONPANEL_SWIMMING"],
@@ -146,7 +306,7 @@ ConditionCategory:RegisterCondition(4,	 "SWIMMING", {
 	Env = {
 		IsSwimming = IsSwimming,
 	},
-	funcstr = [[c.1nil == IsSwimming()]],
+	funcstr = [[BOOLCHECK( IsSwimming() )]],
 	--events = absolutely no events (SPELL_UPDATE_USABLE is close, but not close enough)
 })
 ConditionCategory:RegisterCondition(5,	 "RESTING", {
@@ -161,7 +321,7 @@ ConditionCategory:RegisterCondition(5,	 "RESTING", {
 	Env = {
 		IsResting = IsResting,
 	},
-	funcstr = [[c.1nil == IsResting()]],
+	funcstr = [[BOOLCHECK( IsResting() )]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("PLAYER_UPDATE_RESTING"),
@@ -180,7 +340,7 @@ ConditionCategory:RegisterCondition(5.2, "INPETBATTLE", {
 	Env = {
 		IsInBattle = C_PetBattles.IsInBattle,
 	},
-	funcstr = [[c.True == IsInBattle()]],
+	funcstr = [[BOOLCHECK( IsInBattle() )]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("PET_BATTLE_OPENING_START"),
@@ -202,17 +362,16 @@ local FirstStances = {
 	DRUID = 5487, 		-- Bear Form
 	PRIEST = 15473, 	-- Shadowform
 	ROGUE = 1784, 		-- Stealth
-	HUNTER = 13165, 	-- Aspect of the Fox
 	DEATHKNIGHT = 48263,-- Blood Presence
 	PALADIN = 105361, 	-- Seal of Command
 	WARLOCK = 103958, 	-- Metamorphosis
 	MONK = 103985, 		-- Fierce Tiger
 }
 ConditionCategory:RegisterCondition(6,	 "STANCE", {
-	text = 	pclass == "HUNTER" and L["ASPECT"] or
-			pclass == "PALADIN" and L["SEAL"] or
+	text = 	pclass == "PALADIN" and L["SEAL"] or
 			pclass == "DEATHKNIGHT" and L["PRESENCE"] or
 			pclass == "DRUID" and L["SHAPESHIFT"] or
+			-- pclass == "HUNTER" and L["ASPECT"] or -- aspects aren't stances anymore.
 			--pclass == "WARRIOR" and L["STANCE"] or
 			--pclass == "MONK" and L["STANCE"] or
 			L["STANCE"],
@@ -250,7 +409,7 @@ ConditionCategory:RegisterCondition(6,	 "STANCE", {
 			end
 		end
 	},
-	funcstr = [[c.1nil == (strfind(c.Name, SemicolonConcatCache[GetShapeshiftForm() or ""]) and 1)]],
+	funcstr = [[BOOLCHECK( (strfind(c.Name, SemicolonConcatCache[GetShapeshiftForm() or ""]) and 1) )]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("UPDATE_SHAPESHIFT_FORM")
@@ -342,14 +501,16 @@ ConditionCategory:RegisterCondition(8.1, "TREEROLE", {
 
 ConditionCategory:RegisterSpacer(8.9)
 
-
 CNDT.Env.TalentMap = {}
 function CNDT:PLAYER_TALENT_UPDATE()
-	for talent = 1, MAX_NUM_TALENTS do
-		local name, _, _, _, selected = GetTalentInfo(talent)
-		local lower = name and strlowerCache[name]
-		if lower then
-			Env.TalentMap[lower] = selected and 1 or nil
+	for tier = 1, MAX_TALENT_TIERS do
+		for column = 1, NUM_TALENT_COLUMNS do
+			local id, name, _, selected = GetTalentInfo(tier, column, GetActiveSpecGroup())
+			local lower = name and strlowerCache[name]
+			if lower then
+				Env.TalentMap[lower] = selected and 1 or nil
+				Env.TalentMap[id] = selected and 1 or nil
+			end
 		end
 	end
 end
@@ -362,7 +523,7 @@ ConditionCategory:RegisterCondition(9,	 "TALENTLEARNED", {
 	unit = PLAYER,
 	name = function(editbox) TMW:TT(editbox, "SPELLTOCHECK", "CNDT_ONLYFIRST") editbox.label = L["SPELLTOCHECK"] end,
 	useSUG = "talents",
-	icon = function() return select(2, GetTalentInfo(1)) end,
+	icon = function() return select(3, GetTalentInfo(1, 1, 1)) end,
 	tcoords = CNDT.COMMON.standardtcoords,
 	funcstr = function(ConditionObject, c)
 		-- this is handled externally because TalentMap is so extensive a process,
@@ -371,7 +532,7 @@ ConditionCategory:RegisterCondition(9,	 "TALENTLEARNED", {
 		CNDT:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED", "PLAYER_TALENT_UPDATE")
 		CNDT:PLAYER_TALENT_UPDATE()
 	
-		return [[TalentMap[LOWER(c.NameName)] == c.1nil]]
+		return [[BOOLCHECK( TalentMap[LOWER(c.NameFirst)] )]]
 	end,
 	events = function(ConditionObject, c)
 		return
@@ -379,24 +540,9 @@ ConditionCategory:RegisterCondition(9,	 "TALENTLEARNED", {
 			ConditionObject:GenerateNormalEventString("ACTIVE_TALENT_GROUP_CHANGED")
 	end,
 })
-ConditionCategory:RegisterCondition(10,	 "PTSINTAL", {
-	-- THIS CONDITION IS OUTDATED, BUT DON'T DELETE IT!
-	-- IT HANDLES UPGRADES TO THE MOP VERSION OF IT!
+ConditionCategory:RegisterCondition(9,	 "PTSINTAL", {
 	text = L["UIPANEL_PTSINTAL"],
-	min = 0,
-	max = 5,
-	hidden = true,
-	funcstr = function(c)
-		-- Hack that will automatically upgrade to the MOP version of the condition when it is processed.
-		-- This upgrade is kinda bad because we went from a number comparison to a boolean check, but we should at least put the level down to a valid value.
-		-- Users are going to need to redo their conditions anyway for gameplay reasons, so I'm not to worried about a poor upgrade here.
-		
-		c.Type = "TALENTLEARNED"
-		if c.Level > 1 then
-			c.Level = 0
-		end
-		return CNDT.ConditionsByType.TALENTLEARNED.funcstr
-	end,
+	funcstr = "DEPRECATED",
 })
 
 
@@ -440,7 +586,7 @@ ConditionCategory:RegisterCondition(11,	 "GLYPH", {
 		CNDT:RegisterEvent("GLYPH_UPDATED",  "GLYPH_UPDATED")
 		CNDT:GLYPH_UPDATED()
 	
-		return [[GlyphLookup[c.NameFirst] == c.1nil]]
+		return [[BOOLCHECK( GlyphLookup[c.NameFirst] )]]
 	end,
 	Env = {
 		GlyphLookup = {},
@@ -471,7 +617,7 @@ ConditionCategory:RegisterCondition(12,	 "AUTOCAST", {
 	Env = {
 		GetSpellAutocast = GetSpellAutocast,
 	},
-	funcstr = [[select(2, GetSpellAutocast(c.NameName)) == c.1nil]],
+	funcstr = [[BOOLCHECK( select(2, GetSpellAutocast(c.NameString)) )]],
 	events = function(ConditionObject, c)
 		return
 			ConditionObject:GenerateNormalEventString("PET_BAR_UPDATE")
@@ -568,9 +714,10 @@ ConditionCategory:RegisterSpacer(15.5)
 
 Env.Tracking = {}
 function CNDT:MINIMAP_UPDATE_TRACKING()
+	wipe(Env.Tracking)
 	for i = 1, GetNumTrackingTypes() do
 		local name, _, active = GetTrackingInfo(i)
-		Env.Tracking[strlower(name)] = active
+		Env.Tracking[strlower(name)] = active and 1 or nil
 	end
 end
 ConditionCategory:RegisterCondition(16,	 "TRACKING", {
@@ -589,7 +736,7 @@ ConditionCategory:RegisterCondition(16,	 "TRACKING", {
 		CNDT:RegisterEvent("MINIMAP_UPDATE_TRACKING")
 		CNDT:MINIMAP_UPDATE_TRACKING()
 	
-		return [[Tracking[c.NameName] == c.1nil]]
+		return [[BOOLCHECK( Tracking[c.NameString] )]]
 	end,
 	events = function(ConditionObject, c)
 		return
@@ -617,7 +764,7 @@ ConditionCategory:RegisterCondition(18,	 "BLIZZEQUIPSET", {
 	Env = {
 		GetEquipmentSetInfoByName = GetEquipmentSetInfoByName,
 	},
-	funcstr = [[select(3, GetEquipmentSetInfoByName(c.NameRaw)) == c.True]],
+	funcstr = [[BOOLCHECK( select(3, GetEquipmentSetInfoByName(c.NameRaw)) )]],
 	events = function(ConditionObject, c)
 		return
 			--ConditionObject:GenerateNormalEventString("EQUIPMENT_SWAP_FINISHED") -- this doesn't fire late enough to get updated returns from GetEquipmentSetInfoByName

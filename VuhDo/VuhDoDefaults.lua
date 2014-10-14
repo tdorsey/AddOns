@@ -173,7 +173,7 @@ local VUHDO_CLASS_DEFAULT_SPELL_ASSIGNMENT = {
 
 	["PRIEST"] = {
 		["1"] = {"", "1", VUHDO_SPELL_ID.FLASH_HEAL},
-		["2"] = {"", "2", VUHDO_SPELL_ID.GREATER_HEAL},
+		["2"] = {"", "2", VUHDO_SPELL_ID.HEAL},
 		["3"] = {"", "3", VUHDO_SPELL_ID.DESPERATE_PRAYER},
 		["4"] = {"", "4", VUHDO_SPELL_ID.RENEW},
 		["5"] = {"", "5", VUHDO_SPELL_ID.BINDING_HEAL},
@@ -1113,6 +1113,88 @@ function VUHDO_loadDefaultConfig()
 		143358,
 		142808
 		--Garrosh Hellscream
+	);
+	
+	-- 6.x - Warlords of Draenor
+	VUHDO_addCustomSpellIds(23,
+		-- [[ Draenor World Bosses ]]
+		-- Drov
+		175915, -- Acid Breath
+		-- Rukhmar
+		167615, -- Pierce Armor
+		167650, -- Loose Quills
+		-- Tarlna
+		176004, -- Savage Vines
+
+		-- [[ Highmaul ]]
+		-- Brackenspore
+		163241, -- Rot
+		-- Kargath Bladefist
+		159250, -- Blade Dance
+		159947, -- Chain Hurl
+		162497, -- On The Hunt
+		-- Koragh
+		162186, -- Expel Magic: Arcane
+		162185, -- Expel Magic: Fire
+		-- Margok
+		156225, -- Arcane Wrath
+		158605, -- Mark Of Chaos
+		157801, -- Slow
+		157763, -- Fixate
+		-- Tectus
+		162346, -- Crystalline Barrage
+		162370, -- Crystalline Barrage Damage
+		162892, -- Petrification
+		-- The Butcher
+		156151, -- Tenderizer
+		-- Twin Ogron
+		167200, -- Arcane Wound
+		158241, -- Blaze
+		163372, -- Arcane Volatility
+
+		--[[ Blackrock Foundry ]]
+		-- Blackhand
+		156096, -- Marked for Death
+		157000, -- Attach Slag Bombs
+		-- Darmac
+		154960, -- Pinned Down
+		155061, -- Rend and Tear
+		154981, -- Conflagration
+		155030, -- Seared Flesh
+		155236, -- Crush Armor
+		-- Gruul
+		155078, -- Overwhelming Blows
+		155326, -- Petrifying Slam
+		155506, -- Petrified
+		-- Hansgar and Franzok
+		157139, -- Shattered Vertebrae
+		-- Kagraz
+		154932, -- Molten Torrent
+		163284, -- Rising Flames
+		154952, -- Fixate
+		155074, -- Charring Breath
+		-- Kromog
+		156766, -- Warped Armor
+		-- Oregorger
+		156297, -- Acid Torrent
+		-- The Blast Furnace
+		158345, -- Shields Down
+		155196, -- Fixate
+		155192, -- Bomb
+		176121, -- Volatile Fire
+		175104, -- Melt Armor
+		-- The Iron Maidens
+		156626, -- Rapid Fire
+		164271, -- Penetrating Shot
+		156214, -- Convulsive Shadows
+		156007, -- Impale
+		158315, -- Dark Hunt
+		157950, -- Heart Seeker
+		-- Thogar
+		155921, -- Enkindle
+		155864, -- Pulse Grenade
+		159481, -- Delayed Siege Bomb
+		156494  -- Obliteration
 	);
 
 	for _, tName in pairs(VUHDO_CONFIG["CUSTOM_DEBUFF"]["STORED"]) do

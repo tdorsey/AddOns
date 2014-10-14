@@ -18,22 +18,29 @@ function AskMrRobot.EnchantLinkText:new(name, parent)
 end
 
 function AskMrRobot.EnchantLinkText:SetEnchantId(enchantId)
-	self.itemName = nil
+	--self.itemName = nil
 	if enchantId and enchantId ~= 0 then
-		local spellId = AskMrRobot.getEnchantSpellId(enchantId)
+		local enchantData = AskMrRobot.ExtraEnchantData[enchantId];
+		local spellId = enchantData and enchantData.spellId
 		local link = nil
 		if spellId then
 			link = 'enchant:' .. spellId
 		end
 		self:SetItemLink(link)
-		if self.useSpellName then
-			local spellName = spellId and select(1, GetSpellInfo(spellId))
-			self.itemText:SetText(spellName)
-			self.itemName = spellName
+		if enchantData then
+			self.itemText:SetText(enchantData.text)
 		else
-			self.itemName = AskMrRobot.getEnchantName(enchantId)
-			self.itemText:SetText(self.itemName)
+			--self.itemText:SetText(enchantId)
+			self.itemText:SetText('unknown')
 		end
+		-- if self.useSpellName then
+		-- 	local spellName = spellId and select(1, GetSpellInfo(spellId))
+		-- 	self.itemText:SetText(spellName)
+		-- 	self.itemName = spellName
+		-- else
+		-- 	self.itemName = AskMrRobot.getEnchantName(enchantId)
+		-- 	self.itemText:SetText(self.itemName)
+		-- end
 	else
 		self:SetItemLink(nil)
 		self.itemText:SetText('')
@@ -83,8 +90,19 @@ end
 function AskMrRobot.EnchantLinkIconAndText:SetEnchantId(enchantId)
 	AskMrRobot.EnchantLinkText.SetEnchantId(self, enchantId)
 	if enchantId and enchantId ~= 0 then
-		local texture = AskMrRobot.getEnchantIcon(enchantId)
-		self.icon:SetTexture('Interface/Icons/' .. texture)
+		--local texture = AskMrRobot.getEnchantIcon(enchantId)
+		--self.icon:SetTexture('Interface/Icons/' .. texture)
+		local enchantData = AskMrRobot.ExtraEnchantData[enchantId];
+		local spellId = enchantData and enchantData.spellId
+		local link = nil
+		if spellId then
+			link = 'enchant:' .. spellId
+			local _, _, icon = GetSpellInfo(spellId)
+			if icon then
+				self.icon:SetTexture(icon)
+			end
+		end
+
 		self.iconFrame:Show()
 	else
 		self.iconFrame:Hide()

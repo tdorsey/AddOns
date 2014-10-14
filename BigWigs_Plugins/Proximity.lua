@@ -84,10 +84,6 @@ local function updateSoundButton()
 	if not proxAnchor then return end
 	proxAnchor.sound:SetNormalTexture(db.sound and unmute or mute)
 end
-local function toggleSound()
-	db.sound = not db.sound
-	updateSoundButton()
-end
 
 -------------------------------------------------------------------------------
 -- Display Window
@@ -106,6 +102,7 @@ local function OnDragHandleMouseUp(self, button) self.frame:StopMovingOrSizing()
 local function onResize(self, width, height)
 	db.width = width
 	db.height = height
+	proxAnchor.tooltip:SetWidth(width)
 	if inConfigMode then
 		testDots()
 	else
@@ -116,17 +113,12 @@ local function onResize(self, width, height)
 	end
 end
 
-local function onDisplayEnter(self)
-	if not db.objects.tooltip then return end
-	if not activeSpellID and not inConfigMode then return end
-	GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-	GameTooltip:SetHyperlink("spell:" .. (activeSpellID or 44318))
-	GameTooltip:Show()
-end
-
 local locked = nil
 local function lockDisplay()
 	if locked then return end
+	if not inConfigMode then
+		proxAnchor:EnableMouse(false) -- Keep enabled during config mode
+	end
 	proxAnchor:SetMovable(false)
 	proxAnchor:SetResizable(false)
 	proxAnchor:RegisterForDrag()
@@ -138,6 +130,7 @@ local function lockDisplay()
 end
 local function unlockDisplay()
 	if not locked then return end
+	proxAnchor:EnableMouse(true)
 	proxAnchor:SetMovable(true)
 	proxAnchor:SetResizable(true)
 	proxAnchor:RegisterForDrag("LeftButton")
@@ -156,29 +149,6 @@ local function onControlEnter(self)
 	GameTooltip:Show()
 end
 local function onControlLeave() GameTooltip:Hide() end
-
-local function onNormalClose()
-	BigWigs:Print(L.toggleDisplayPrint)
-	plugin:Close()
-end
-
-local function breakThings()
-	proxAnchor.sound:SetScript("OnEnter", nil)
-	proxAnchor.sound:SetScript("OnLeave", nil)
-	proxAnchor.sound:SetScript("OnClick", nil)
-	proxAnchor.close:SetScript("OnEnter", nil)
-	proxAnchor.close:SetScript("OnLeave", nil)
-	proxAnchor.close:SetScript("OnClick", nil)
-end
-
-local function makeThingsWork()
-	proxAnchor.sound:SetScript("OnEnter", onControlEnter)
-	proxAnchor.sound:SetScript("OnLeave", onControlLeave)
-	proxAnchor.sound:SetScript("OnClick", toggleSound)
-	proxAnchor.close:SetScript("OnEnter", onControlEnter)
-	proxAnchor.close:SetScript("OnLeave", onControlLeave)
-	proxAnchor.close:SetScript("OnClick", onNormalClose)
-end
 
 function plugin:RestyleWindow()
 	updateSoundButton()
@@ -784,13 +754,24 @@ do
 		proxAnchor:SetMinResize(100, 30)
 		proxAnchor:SetClampedToScreen(true)
 		proxAnchor:EnableMouse(true)
-		proxAnchor:SetScript("OnEnter", onDisplayEnter)
-		proxAnchor:SetScript("OnLeave", onControlLeave)
 		proxAnchor:SetScript("OnMouseUp", function(self, button)
 			if inConfigMode and button == "LeftButton" then
 				plugin:SendMessage("BigWigs_SetConfigureTarget", plugin)
 			end
 		end)
+
+		local tooltipFrame = CreateFrame("Frame", nil, proxAnchor)
+		tooltipFrame:SetWidth(db.width or plugin.defaultDB.width)
+		tooltipFrame:SetHeight(40)
+		tooltipFrame:SetPoint("BOTTOM", proxAnchor, "TOP")
+		tooltipFrame:SetScript("OnEnter", function(self)
+			if not activeSpellID and not inConfigMode then return end
+			GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
+			GameTooltip:SetHyperlink(format("spell:%d", activeSpellID or 44318))
+			GameTooltip:Show()
+		end)
+		tooltipFrame:SetScript("OnLeave", onControlLeave)
+		proxAnchor.tooltip = tooltipFrame
 
 		updater = proxAnchor:CreateAnimationGroup()
 		updater:SetLooping("REPEAT")
@@ -805,19 +786,33 @@ do
 
 		local close = CreateFrame("Button", nil, proxAnchor)
 		close:SetPoint("BOTTOMRIGHT", proxAnchor, "TOPRIGHT", -2, 2)
+		close:SetFrameLevel(proxAnchor:GetFrameLevel() + 5) -- place this above everything
 		close:SetHeight(16)
 		close:SetWidth(16)
 		close.tooltipHeader = L.close
 		close.tooltipText = L.closeProximityDesc
+		close:SetScript("OnEnter", onControlEnter)
+		close:SetScript("OnLeave", onControlLeave)
+		close:SetScript("OnClick", function()
+			BigWigs:Print(L.toggleDisplayPrint)
+			plugin:Close()
+		end)
 		close:SetNormalTexture("Interface\\AddOns\\BigWigs\\Textures\\icons\\close")
 		proxAnchor.close = close
 
 		local sound = CreateFrame("Button", nil, proxAnchor)
 		sound:SetPoint("BOTTOMLEFT", proxAnchor, "TOPLEFT", 2, 2)
+		sound:SetFrameLevel(proxAnchor:GetFrameLevel() + 5) -- place this above everything
 		sound:SetHeight(16)
 		sound:SetWidth(16)
 		sound.tooltipHeader = L.toggleSound
 		sound.tooltipText = L.toggleSoundDesc
+		sound:SetScript("OnEnter", onControlEnter)
+		sound:SetScript("OnLeave", onControlLeave)
+		sound:SetScript("OnClick", function()
+			db.sound = not db.sound
+			updateSoundButton()
+		end)
 		proxAnchor.sound = sound
 
 		local header = proxAnchor:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
@@ -847,7 +842,7 @@ do
 
 		local drag = CreateFrame("Frame", nil, proxAnchor)
 		drag.frame = proxAnchor
-		drag:SetFrameLevel(proxAnchor:GetFrameLevel() + 10) -- place this above everything
+		drag:SetFrameLevel(proxAnchor:GetFrameLevel() + 5) -- place this above everything
 		drag:SetWidth(16)
 		drag:SetHeight(16)
 		drag:SetPoint("BOTTOMRIGHT", proxAnchor, -1, 1)
@@ -926,9 +921,8 @@ end
 --
 
 function plugin:BigWigs_StartConfigureMode()
-	if proxAnchor:IsShown() then
-		print("Cannot enter configure mode whilst proximity is active.")
-		return
+	if activeRange > 0 then
+		return -- Pointless trying to start configure mode if proximity has already been opened by a boss encounter.
 	end
 	inConfigMode = true
 	self:Test()
@@ -936,6 +930,9 @@ end
 
 function plugin:BigWigs_StopConfigureMode()
 	inConfigMode = nil
+	if db.lock then
+		proxAnchor:EnableMouse(false) -- Mouse disabled whilst locked, but we enable it in test mode. Re-disable it.
+	end
 	self:Close()
 end
 
@@ -1183,9 +1180,7 @@ function plugin:Open(range, module, key, player, isReverse)
 
 	if not player and not isReverse then
 		updater:SetScript("OnLoop", BigWigs.isWOD and normalProximityWOD or normalProximity) -- XXX compat
-		makeThingsWork()
 	elseif player then
-		breakThings()
 		if type(player) == "table" then
 			for i = 1, #player do
 				for j = 1, GetNumGroupMembers() do
@@ -1216,7 +1211,6 @@ function plugin:Open(range, module, key, player, isReverse)
 		end
 	elseif isReverse then
 		updater:SetScript("OnLoop", BigWigs.isWOD and reverseProximityWOD or reverseProximity) -- XXX compat
-		makeThingsWork()
 	end
 
 	local width, height = proxAnchor:GetWidth(), proxAnchor:GetHeight()
@@ -1246,10 +1240,10 @@ function plugin:Open(range, module, key, player, isReverse)
 end
 
 function plugin:Test()
-	-- Close ourselves in case we entered configure mode DURING a boss fight.
 	self:Close()
-	-- Break the sound+close buttons
-	breakThings()
+	if db.lock then
+		proxAnchor:EnableMouse(true) -- Mouse disabled whilst locked, enable it in test mode
+	end
 	testDots()
 	proxAnchor:Show()
 end

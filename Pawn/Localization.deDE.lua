@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -51,10 +51,6 @@ PawnLocal =
 	NoScalesDescription = "Um zu beginnen erstelle oder importiere eine neue Wertung.",
 	NoStatDescription = "Wähle ein Attribut aus der Liste um ihm einen Wert zu geben.",
 	Or = "oder ",
-	ReforgeCappedStatWarning = "Vorsicht beim Umschmieden von Waffenkunde oder Trefferwertung. Lass deine Ausweichchance nicht auf 0% sinken.",
-	ReforgeDebugMessage = "   ---- Gegenstand umschmieden um +%g zu gewinnen",
-	ReforgeInstructions = "Schmiede %s um nach %s",
-	ReforgeInstructionsNoReforge = "Nicht umschmieden",
 	RenameScaleEnterName = "Gib einen neuen Namen für %s ein:",
 	SocketBonusValueCalculationMessage = "   -- Wert des Sockelbonus: %g",
 	StatNameText = "1 |cffffffff%s|r entspricht:",
@@ -87,28 +83,27 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		ApInfo = "Angriffskraft.  Auf den meisten Gegenständen nicht enthalten. Beinhaltet nicht die aus Stärke und Beweglichkeit erhaltene Angriffskraft.",
 		ArmorInfo = "Rüstung unabhängig vom Gegenstandstyp.  Berücksichtigt keine Bonusrüstung, da Gegenstände mit Bonusrüstung obsolet sind.",
 		ArmorTypes = "Waffenarten",
-		CasterStats = "Zauberwertungen",
+		AvoidanceInfo = "Zahigkelt.  Reduziert den Schaden nehmen Sie aus des Wirkungsbereichs Angriffe.", -- Needs review
 		Cloth = "Stoff",
 		ClothInfo = "Für einen Stoffrüstungsgegenstand zugeteilte Punkte.",
 		Crit = "Krit",
 		CritInfo = "Kritische Trefferwertung.  Betrifft Nah-, Fernkampfangriffe und Zauber.",
-		DodgeInfo = "Ausweichwertung. (Tank)",
 		DpsInfo = "Waffenschaden pro Sekunde.  (Wenn du den DPS-Wert für Waffengattungen unterschiedlich definieren willst, scrolle runter zum Bereich \"Spezielle Waffenwertungen\"",
-		ExpertiseInfo = "Waffenkunde.  Schwächt die Ausweich- und Parierwertungen deiner Feinde.",
 		HasteInfo = "Tempo.  Betrifft Nah-, Fernkampfangriffe und Zauber.",
-		Hit = "Treffer",
-		HitInfo = "Trefferwert.  Betrifft Nah-, Fernkampfangriffe und Zauber.",
-		HybridStats = "Hybridwertungen",
+		IndestructibleInfo = "Spalten.  Verhindert, dass Ihre Geräte von Haltbarkeit Schaden nehmen.", -- Needs review
+		IndestructibleIs = "|cffffffffspalten|r sein lohnt sich:", -- Needs review
 		IntellectInfo = "Primäre Wertung: Intelligenz.",
 		Leather = "Leder",
 		LeatherInfo = "Für einen Lederrüstungsgegenstand zugeteilte Punkte.",
+		LeechInfo = "Vermeidung.  Bewirkt, dass Ihre Angriffe und Heilzauber um Ihre Gesundheit wiederherzustellen.", -- Needs review
 		Mail = "Kette",
 		MailInfo = "Für einen Kettenrüstungsgegenstand zugeteilte Punkte.",
 		MasteryInfo = "Meisterschaftswertung.  Verbessert den Meisterschaftsbonus des primären Talentbaums.",
 		MetaSocket = "Meta-Sockel",
 		MetaSocketInfo = "Ein Metasockel, weder leer noch voll. Addiert Extrapunkte für Helme die einen Meta-Sockel besitzen um die speziellen Effekte von Meta-Edelsteinen zu kompensieren.",
-		ParryInfo = "Parierwertung. (Tank)",
-		PhysicalStats = "Physikalische Schadenswertungen",
+		MinorStats = "Kleinere", -- Needs review
+		MovementSpeedInfo = "Bewegungsgeschwindigkeit. Bewirkt, dass euer Charakter schneller ausgeführt.", -- Needs review
+		MultistrikeInfo = "Bereitschaft. Erhöht die Chance, dass Ihre Angriffe und Heilzauber Ihr Ziel extra zweimal bei reduzierter Wirksamkeit getroffen werden.", -- Needs review
 		Plate = "Platte",
 		PlateInfo = "Für einen Plattenrüstungsgegenstand zugeteilte Punkte.",
 		PrimaryStats = "Basiswerte",
@@ -117,6 +112,7 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		PvPResilience = "PvP-Abhärtung",
 		PvPResilienceInfo = "Abhärtungswertung. Reduziert den Schaden durch andere Spieler. Nur wirksam gegen andere Spieler.",
 		PvPStats = "PvP Wertungen",
+		SecondaryStats = "Sekundäre", -- Needs review
 		Shield = "Schild",
 		ShieldInfo = "Für einen Schild zugeteilte Punkte.",
 		Sockets = "Sockel",
@@ -131,7 +127,7 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		SpiritInfo = "Primäre Wertung: Willenskraft.",
 		StaminaInfo = "Primäre Wertung: Ausdauer.",
 		StrengthInfo = "Primäre Wertung: Stärke.",
-		TankStats = "Tank-Wertungen",
+		VersatilityInfo = "Verstarkung. Erhöht den Schaden von Schaden-Zeichen behandelt, erhöht Heilung um Heilung Zeichen und verringert den erlittenen für Tank-Zeichen.", -- Needs review
 		WeaponMainHandDps = "Waffenhand: DPS",
 		WeaponMainHandDpsInfo = "Waffenschaden pro Sekunde, nur für Waffenhandwaffen.",
 		WeaponMainHandMaxDamage = "Waffenhand: max. Schaden",
@@ -225,9 +221,11 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		Ap = "^%+?([%d%.,]+) Angriffskraft$",
 		Armor = "^%+?([%d%.,]+) Rüstung$",
 		Armor2 = "^UNUSED$",
+		Avoidance = "^%+([%d%.,]+) Zähigkeit$", -- Needs review
 		Axe = "^Axt$",
 		BagSlots = "^%d+ Platz .+$",
 		BladesEdgeMountains = "^Schergrat$",
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$", -- Requires localization
 		Bow = "^Bogen$",
 		ChanceOnHit = "Trefferchance:",
 		Charges = "^.+ Ladungen?$",
@@ -239,8 +237,6 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		Dagger = "^Dolch$",
 		Design = "Design:",
 		DisenchantingRequires = "^Entzaubern benötigt",
-		Dodge = "^%+?([%d%.,]+) Ausweichen$",
-		Dodge2 = "^UNUSED$",
 		Dps = "^%(([%d%.,]+) Schaden pro Sekunde%)$",
 		DpsAdd = "^Erhöht ([%d%.,]+) Schaden pro Sekunde$",
 		Duration = "^Dauer:",
@@ -254,8 +250,6 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		EnchantmentPyriumWeaponChain = "^Pyriumwaffenkette$",
 		EnchantmentTitaniumWeaponChain = "^Titanwaffenkette$",
 		Equip = "Anlegen:",
-		Expertise = "^%+?([%d%.,]+) Waffenkunde$",
-		Expertise2 = "^UNUSED$",
 		FistWeapon = "^Faustwaffe$",
 		Flexible = "^Flexibel$",
 		Formula = "Formel:",
@@ -269,36 +263,33 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		HeroicElite = "^Heroisch, Elite$",
 		HeroicThunderforged = "^Heroisch, Donnergeschmiedet$",
 		HeroicWarforged = "^Heroisch, Kriegsgeschmiedet$",
-		Hit = "^%+?([%d%.,]+) Trefferwert$",
-		Hit2 = "^UNUSED$",
-		Hit3 = "^UNUSED$",
 		Hp5 = "^Anlegen: Stellt ([%d%.,]+) Gesundheit alle 5 Sek%. wieder her%.?$",
 		Hp52 = "^Anlegen: Stellt alle 5 Sek%. ([%d%.,]+) Gesundheit wieder her%.?$",
 		Hp53 = "^%+?([%d%.,]+) Gesundheit alle 5 [sS]ek%.?$",
 		Hp54 = "^%+?([%d%.,]+) Gesundheit pro 5 [sS]ek%.?$",
 		Intellect = "^%+?([-%d%.,]+) Intelligenz$",
 		Leather = "^Leder$",
+		Leech = "^%+([%d%.,]+) Vermeidung$", -- Needs review
 		Mace = "^Streitkolben$",
 		Mail = "^Kette$",
 		Manual = "Anleitung:",
 		Mastery = "^%+?([%d%.,]+) Meisterschaft$",
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%xBenötigt",
+		MovementSpeed = "^%+([%d%.,]+) Lebensdiebstahl$", -- Needs review
 		MultiStatSeparator1 = "und",
+		Multistrike = "^%+([%d%.,]+) Bereitschaft$", -- Needs review
 		NormalizationEnchant = "^Verzaubert: (.*)$",
-		NormalizationReforge = "^(.*) %(Umgeschmiedet (.*)%)$",
 		OnlyFitsInMetaGemSlot = "\"Metaedelsteine können nur in Sockel der Kategorie Meta eingesetzt werden.%.\"$",
-		Parry = "^%+?([%d%.,]+) Parieren$",
-		Parry2 = "^UNUSED$",
 		Pattern = "Muster:",
 		Plans = "Pläne:",
 		Plate = "^Platte$",
 		Polearm = "^Stangenwaffe$",
-		PvPPower = "^%+?([%d%.,]+) P[vV]P[- ]Macht$", -- Needs review
+		PvPPower = "^%+?([%d%.,]+) P[vV]P[- ]Macht$",
 		RaidFinder = "^Schlachtzugsbrowser$",
 		Recipe = "Rezept:",
 		Requires2 = "^Benötigt",
-		Resilience = "^%+?([%d%.,]+) P[vV]P[- ]Abhärtung$", -- Needs review
+		Resilience = "^%+?([%d%.,]+) P[vV]P[- ]Abhärtung$",
 		Resilience2 = "^UNUSED$",
 		Schematic = "Vorlage:",
 		Scope = "^Zielfernrohr %(%+([%d%.,]+) Schaden%)$",
@@ -323,6 +314,7 @@ Weitere Informationen zur Anpassung von Pawn findet ihr in der Hilfedatei (Readm
 		Timeless = "^Zeitlos$",
 		UpgradeLevel = "^Upgrade Level:",
 		Use = "Benutzen:",
+		Versatility = "^%+([%d%.,]+) Verstärkung$", -- Needs review
 		Wand = "^Zauberstab$",
 		Warforged = "^Kriegsgeschmiedet$",
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+) Schaden$",
@@ -354,7 +346,6 @@ Wowhead Bewertungsgewichtungen mit Erlaubnis benutzt.  Sende Feedback zu den Pro
 		CompareHeader = "Vergleiche Gegenstände (Profil %s)",
 		CompareMetaSockets = "Meta-Sockel",
 		CompareOtherHeader = "Anderes",
-		CompareReforgingPotential = "Umschmiede-Potential",
 		CompareShaTouchedSockets = "Sha-berührt",
 		CompareSlotEmpty = "(kein Gegenstand)",
 		CompareSocketBonus = "Sockelbonus",
@@ -432,6 +423,12 @@ Shortcuts:
 /pawn debug on
 /pawn debug off]=],
 		OptionsHeader = "Verändere Pawn Optionen",
+		OptionsIgnoreGemsWhileLevelingCheck = "Sockets auf Low-Level-Elemente zu ignorieren", -- Needs review
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = [=[Enable this option to have Pawn ignore sockets on low-level items when calculating item values, since most people do not go to the effort or expense of socketing items while still leveling.  A "low-level" item is one weaker than what can be obtained in a heroic dungeon at the level cap.
+
+If checked, Pawn's socketing advisor will still suggest appropriate gems for low-level items, but sockets will be ignored in calculations and socketed items will not show up as upgrades as often.
+
+If unchecked, Pawn will calculate values for items as if they were socketed in the way that maximizes the item's value, regardless of the item's level.]=], -- Requires localization
 		OptionsInventoryIcon = "Inventar-Icons anzeigen",
 		OptionsInventoryIconTooltip = "Aktiviere diese Option um Inventar-Icons neben Gegenstandsfenstern anzuzeigen.",
 		OptionsItemIDs = "Gegenstands-ID anzeigen",
@@ -443,8 +440,6 @@ Jeder Gegenstand in World of Warcraft hat eine eindeutige ID. Diese Information 
 		OptionsOtherHeader = "Weitere Optionen",
 		OptionsQuestUpgradeAdvisor = "Zeige Upgrade-Ratgeber bei Quests",
 		OptionsQuestUpgradeAdvisorTooltip = "Wenn in deinem Questlog oder beim Dialog mit NPCs, eine der Belohnungen eine Verbesserung für deinen Charakter ist, wird Pawn einen grünen Pfeil für diesen Gegenstand anzeigen.  Wenn keiner dieser Gegenstände eine Verbesserung ist, dann zeigt Pawn will für den Gegenstand Münzen an, der am wertvollsten beim Verkauf ist.",
-		OptionsReforgingAdvisor = "Zeige den Umschmieden-Ratgeber",
-		OptionsReforgingAdvisorTooltip = "Pawn wird beim Umschmieden ein Popup anzeigen, das Vorschläge zur Optimierung deines Gegenstands macht.",
 		OptionsResetUpgrades = "Re-Scan",
 		OptionsResetUpgradesTooltip = [=[Pawn wird alles vergessen, was es über die besten Gegenstände, die du je angelegt hattest, wusste und dein aktuelles Set erneut scannen um die bessere Upgradeinformationen in der Zukunft zu liefern.
 
@@ -480,7 +475,6 @@ Wenn man eine Zweihand-Waffe trägt, wird weiterhin eine Verbesserung für Einha
 
 Deaktiviere die Option, wenn nur Verbesserungen für die aktuell getragene Waffenart gezeigt werden soll.]=],
 		OptionsWelcome = "Konfiguriere Pawn wie du es möchtest. Änderungen werden unmittelbar übernommen.",
-		ReforgingAdvisorHeader = "Pawn's Umschmieden-Ratgeber empfiehlt:",
 		ScaleChangeColor = "Farbe ändern",
 		ScaleChangeColorTooltip = "Ändert die Schriftfarbe der Wertungsinformationen im Gegenstandstooltip.",
 		ScaleCopy = "Kopieren",
@@ -512,6 +506,7 @@ Shortcut: Shift+click auf ein Bewertungsprofil]=],
 		ScaleWelcome = "Bewertungsprofile sind Wertegruppen die benutzt werden um Gegenständen Punkte zuzuweisen. Du kannst außerdem fremderstellte Bewertungsprofile importieren oder dein eigenes leeres oder auf Standardwerten basierendes Bewertungsprofil erstellen.",
 		SocketingAdvisorButtonTooltip = "Klicken um Pawn's \"Edelsteine\" Reiter zu öffnen, wo du mehr Informationen über Edelsteine, die Pawn empfiehlt, bekommst.",
 		SocketingAdvisorHeader = "Pawn's Edelstein-Ratgeber empfiehlt:",
+		SocketingAdvisorIgnoreThisItem = "Kümmern Sie sich nicht Hinzufügen von Edelsteinen zu Low-Level. Aber wenn Sie dies tun, verwenden Sie diese:", -- Needs review
 		ValuesDoNotShowUpgradesFor1H = "Verbesserungen für 1Hand ausblenden",
 		ValuesDoNotShowUpgradesFor2H = "Verbesserungen für 2Hand ausblenden",
 		ValuesDoNotShowUpgradesTooltip = "Aktiviere diese Option um Verbesserungen für die gewählten Gegenstände auszublenden. Obwohl Tank-Paladine Zweihandwaffen verwenden können sind diese niemals eine Verbesserung, also sollte keine Verbesserung angezeigt werden. Ähnlich ist es für Vergelter-Paladine, bei denen eine Einhandwaffe niemals eine Verbesserung darstellt.",
@@ -555,6 +550,7 @@ Für weitere Informationen hierzu siehe readme.htm.]=],
 		PriestHoly = "Priester: Heilig",
 		PriestShadow = "Priester: Schatten",
 		Provider = "Wowhead Wertungen",
+		ProviderStarter = "Starter", -- Needs review
 		RogueAssassination = "Schurke: Meucheln",
 		RogueCombat = "Schurke: Kampf",
 		RogueSubtlety = "Schurke: Täuschung",

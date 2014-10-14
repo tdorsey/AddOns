@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -62,9 +62,9 @@ PawnIgnoreNames =
 -- them through the normal gauntlet of expressions.
 PawnNormalizationRegexes =
 {
+	{"^\|c........(.+)$", "%1"}, -- "|cFF 0FF 0Heroic" --> "Heroic"
 	{"^([%w%s%.]+) %+(%d+)$", "+%2 %1"}, -- "Stamina +5" --> "+5 Stamina"
 	{"^(.-)|r.*", "%1"}, -- For removing meta gem requirements
-	{L.NormalizationReforge, "%1"}, -- "+123 Spirit (Reforged from Hit)" --> "+123 Spirit" (REFORGE_TOOLTIP_LINE)
 	{L.NormalizationEnchant, "%1"}, -- "Enchanted: +50 Strength" --> "+50 Strength" (ENCHANTED_TOOLTIP_LINE)
 }
 
@@ -145,7 +145,6 @@ PawnRegexes =
 	{PawnGameConstant(MAJOR_GLYPH)}, -- Major Glyph
 	{PawnGameConstant(MINOR_GLYPH)}, -- Minor Glyph
 	{PawnGameConstant(PRIME_GLYPH)}, -- Prime Glyph
-	{PawnGameConstant(REFORGED)}, -- Reforged
 	{PawnGameConstant(PawnLocal.CogwheelName)}, -- Cogwheel
 	{PawnGameConstant(MOUNT)}, -- Cenarion War Hippogryph
 	{PawnGameConstantIgnoredPlaceholder(ITEM_CLASSES_ALLOWED)}, -- Classes:
@@ -191,25 +190,16 @@ PawnRegexes =
 	{L.Stamina, "Stamina"},
 	{L.Intellect, "Intellect"}, -- negative Intellect: Kreeg's Mug
 	{L.Spirit, "Spirit"},
-	{L.EnchantmentTitaniumWeaponChain, "HitRating", 28, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration
-	{L.EnchantmentPyriumWeaponChain, "HitRating", 40, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration
-	{L.EnchantmentLivingSteelWeaponChain, "ExpertiseRating", 200, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration
-	{L.Dodge, "DodgeRating"}, -- Uppercase: Subtle Alicite, Arctic Ring of Eluding, Cata head enchantment for tanks
-	{L.Dodge2, "DodgeRating"}, -- unused in English
-	{L.Parry, "ParryRating"},
-	{L.Parry2, "ParryRating"}, -- unused in English
+	{L.EnchantmentTitaniumWeaponChain, "HasteRating", 28, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration -- *** Needs update in WoW 6.0
+	{L.EnchantmentPyriumWeaponChain, "HasteRating", 8, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration
+	{L.EnchantmentLivingSteelWeaponChain, "CritRating", 13, PawnMultipleStatsFixed}, -- Weapon enchantment; also reduces disarm duration
 	{L.Dps}, -- Ignore this; DPS is calculated manually
 	{L.DpsAdd, "Dps"},
-	{L.EnchantmentFieryWeapon, "Dps", 4, PawnMultipleStatsFixed}, -- weapon enchantment, 
-	{L.Expertise, "ExpertiseRating"}, -- Guardian's Shadow Crystal
-	{L.Expertise2, "ExpertiseRating"}, -- unused in English
+	{L.EnchantmentFieryWeapon, "Dps", 4, PawnMultipleStatsFixed}, -- weapon enchantment
 	{L.Crit, "CritRating"},
 	{L.Crit2, "CritRating"}, -- unused in English
 	{L.ScopeCrit, "CritRating"},
-	{L.ScopeRangedCrit, "CritRating"}, -- Heartseeker Scope; Pawn doesn't distinguish between ranged and hybrid crit
-	{L.Hit, "HitRating"}, -- 3% hit scope
-	{L.Hit2, "HitRating"}, -- unused in English
-	{L.Hit3, "HitRating"}, -- unused in English
+	{L.ScopeRangedCrit, "CritRating"}, -- Heartseeker Scope
 	{L.Resilience, "ResilienceRating"}, -- Mystic Dawnstone
 	{L.Resilience2, "ResilienceRating"}, -- unused in English
 	{L.PvPPower, "SpellPenetration"}, -- Stormy Chalcedony
@@ -218,6 +208,12 @@ PawnRegexes =
 	{L.Haste2, "HasteRating"}, -- unused in English
 	{L.Mastery, "MasteryRating"}, -- Zen Dream Emerald
 	{L.Mastery2, "MasteryRating"}, -- unused in English
+	{L.Multistrike, "Multistrike"}, -- http://wod.wowhead.com/item=100945
+	{L.Versatility, "Versatility"}, -- http://wod.wowhead.com/item=100945
+	{L.Leech, "Leech"}, -- http://wod.wowhead.com/item=100945
+	{L.Avoidance, "Avoidance"}, -- http://wod.wowhead.com/item=100945
+	{PawnGameConstant(STAT_STURDINESS), "Indestructible", 1, PawnMultipleStatsFixed}, -- http://wod.wowhead.com/item=100945
+	{L.MovementSpeed, "MovementSpeed"}, -- http://wod.wowhead.com/item=100945
 	{L.Ap, "Ap"},
 	{L.Hp5, "Stamina", 3, PawnSingleStatMultiplier}, -- (counting 1 HP5 = 3 Stamina)
 	{L.Hp52, "Stamina", 3, PawnSingleStatMultiplier}, -- Demon's Blood (counting 1 HP5 = 3 Stamina)
@@ -228,7 +224,8 @@ PawnRegexes =
 	{L.Armor, "Armor"}, -- normal armor and cloak armor enchantments
 	{L.Armor2, "Armor"}, -- unused in English
 	{L.EnchantmentArmorKit, "Armor"}, -- armor kits
-	{L.SpellPower, "SpellPower"}, -- enchantments
+	{L.BonusArmor, "Armor"}, -- Chef's Hat: http://wod.wowhead.com/item=46349#links
+	{L.SpellPower, "SpellPower"}, -- enchantments and weapons
 	{PawnGameConstant(EMPTY_SOCKET_RED), "RedSocket", 1, PawnMultipleStatsFixed},
 	{PawnGameConstant(EMPTY_SOCKET_YELLOW), "YellowSocket", 1, PawnMultipleStatsFixed},
 	{PawnGameConstant(EMPTY_SOCKET_BLUE), "BlueSocket", 1, PawnMultipleStatsFixed},

@@ -1,21 +1,21 @@
 local _, AskMrRobot = ...
 local L = AskMrRobot.L;
 
-AskMrRobot.eventListener = CreateFrame("FRAME"); -- Need a frame to respond to events
-AskMrRobot.eventListener:RegisterEvent("ADDON_LOADED"); -- Fired when saved variables are loaded
-AskMrRobot.eventListener:RegisterEvent("ITEM_PUSH");
-AskMrRobot.eventListener:RegisterEvent("DELETE_ITEM_CONFIRM");
-AskMrRobot.eventListener:RegisterEvent("UNIT_INVENTORY_CHANGED");
-AskMrRobot.eventListener:RegisterEvent("BANKFRAME_OPENED");
-AskMrRobot.eventListener:RegisterEvent("BANKFRAME_CLOSED");
-AskMrRobot.eventListener:RegisterEvent("PLAYERBANKSLOTS_CHANGED");
-AskMrRobot.eventListener:RegisterEvent("CHARACTER_POINTS_CHANGED");
-AskMrRobot.eventListener:RegisterEvent("CONFIRM_TALENT_WIPE");
-AskMrRobot.eventListener:RegisterEvent("PLAYER_TALENT_UPDATE");
-AskMrRobot.eventListener:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
-AskMrRobot.eventListener:RegisterEvent("PLAYER_ENTERING_WORLD");
-AskMrRobot.eventListener:RegisterEvent("PLAYER_LOGOUT"); -- Fired when about to log out
-AskMrRobot.eventListener:RegisterEvent("PLAYER_LEVEL_UP");
+AskMrRobot.eventListener = CreateFrame("FRAME") -- Need a frame to respond to events
+AskMrRobot.eventListener:RegisterEvent("ADDON_LOADED") -- Fired when saved variables are loaded
+AskMrRobot.eventListener:RegisterEvent("ITEM_PUSH")
+AskMrRobot.eventListener:RegisterEvent("DELETE_ITEM_CONFIRM")
+AskMrRobot.eventListener:RegisterEvent("UNIT_INVENTORY_CHANGED")
+AskMrRobot.eventListener:RegisterEvent("BANKFRAME_OPENED")
+--AskMrRobot.eventListener:RegisterEvent("BANKFRAME_CLOSED");
+AskMrRobot.eventListener:RegisterEvent("PLAYERBANKSLOTS_CHANGED")
+AskMrRobot.eventListener:RegisterEvent("CHARACTER_POINTS_CHANGED")
+AskMrRobot.eventListener:RegisterEvent("CONFIRM_TALENT_WIPE")
+AskMrRobot.eventListener:RegisterEvent("PLAYER_TALENT_UPDATE")
+AskMrRobot.eventListener:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+AskMrRobot.eventListener:RegisterEvent("PLAYER_ENTERING_WORLD")
+--AskMrRobot.eventListener:RegisterEvent("PLAYER_LOGOUT") -- Fired when about to log out
+--AskMrRobot.eventListener:RegisterEvent("PLAYER_LEVEL_UP")
 --AskMrRobot.eventListener:RegisterEvent("GET_ITEM_INFO_RECEIVED")
 AskMrRobot.eventListener:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 AskMrRobot.eventListener:RegisterEvent("SOCKET_INFO_UPDATE")
@@ -31,553 +31,252 @@ AskMrRobot.eventListener:RegisterEvent("PLAYER_DIFFICULTY_CHANGED")
 AskMrRobot.AddonName = ...
 AskMrRobot.ChatPrefix = "_AMR"
 
-local amrLDB
-local icon
-local reforgequeue
-local reforgeFrame = nil
-local LoggingCombat = _G.LoggingCombat
+-- the main user interface window
+AskMrRobot.mainWindow = nil
 
-AskMrRobot.itemDiffs = {
-	items = {},    -- slotNum -> nil (no change) or current <item id>, optimized <item id>
-	enchants = {}, -- slotNum -> nil (no change) or current <enchant id>, optimized <enchant id>
-	gems = {},     -- slotNum -> nil (no change) or ?
-	reforges = {}   -- slotNum -> nil (no change) or current <reforge id>, optimized <reforge id>
-}
-
-AskMrRobot.instanceIds = {
-	HeartOfFear = 1009,
-	MogushanVaults = 1008,	
-	SiegeOfOrgrimmar = 1136,
-	TerraceOfEndlessSpring = 996,
-	ThroneOfThunder = 1098
-}
-
--- instances that we currently support logging for
-AskMrRobot.supportedInstanceIds = {
-	[1136] = true
-}
-
--- returns true if currently in a supported instance
-function AskMrRobot.IsSupportedInstance()
-
-	local zone, _, difficultyIndex, _, _, _, _, instanceMapID = GetInstanceInfo()
-	if AskMrRobot.supportedInstanceIds[tonumber(instanceMapID)] then
-		return true
-	else
-		return false
-	end
-end
-
--- upgrade id -> upgrade level
-local upgradeTable = {
-  [0]   =  0,
-  [1]   =  1, -- 1/1 -> 8
-  [373] =  1, -- 1/2 -> 4
-  [374] =  2, -- 2/2 -> 8
-  [375] =  1, -- 1/3 -> 4
-  [376] =  2, -- 2/3 -> 4
-  [377] =  3, -- 3/3 -> 4
-  [378] =  1, -- 1/1 -> 7
-  [379] =  1, -- 1/2 -> 4
-  [380] =  2, -- 2/2 -> 4
-  [445] =  0, -- 0/2 -> 0
-  [446] =  1, -- 1/2 -> 4
-  [447] =  2, -- 2/2 -> 8
-  [451] =  0, -- 0/1 -> 0
-  [452] =  1, -- 1/1 -> 8
-  [453] =  0, -- 0/2 -> 0
-  [454] =  1, -- 1/2 -> 4
-  [455] =  2, -- 2/2 -> 8
-  [456] =  0, -- 0/1 -> 0
-  [457] =  1, -- 1/1 -> 8
-  [458] =  0, -- 0/4 -> 0
-  [459] =  1, -- 1/4 -> 4
-  [460] =  2, -- 2/4 -> 8
-  [461] =  3, -- 3/4 -> 12
-  [462] =  4, -- 4/4 -> 16
-  [465] =  0, -- 0/2 -> 0
-  [466] =  1, -- 1/2 -> 4
-  [467] =  2, -- 2/2 -> 8
-  [468] =  0, -- 0/4 -> 0
-  [469] =  1, -- 1/4 -> 4
-  [470] =  2, -- 2/4 -> 8
-  [471] =  3, -- 3/4 -> 12
-  [472] =  4, -- 4/4 -> 16
-  [476] =  0, -- ? -> 0
-  [479] =  0, -- ? -> 0
-  [491] =  0, -- ? -> 0
-  [492] =  1, -- ? -> 0
-  [493] =  2, -- ? -> 0
-  [494] = 0,
-  [495] = 1,
-  [496] = 2,
-  [497] = 3,
-  [498] = 4,
-  [504] = 3,
-  [505] = 4,
-  [506] = 5,
-  [507] = 6
-}
-
-local professionIds = {
-    ["None"] = 0,
-    ["Mining"] = 1,
-    ["Skinning"] = 2,
-    ["Herbalism"] = 3,
-    ["Enchanting"] = 4,
-    ["Jewelcrafting"] = 5,
-    ["Engineering"] = 6,
-    ["Blacksmithing"] = 7,
-    ["Leatherworking"] = 8,
-    ["Inscription"] = 9,
-    ["Tailoring"] = 10,
-    ["Alchemy"] = 11,
-    ["Fishing"] = 12,
-    ["Cooking"] = 13,
-    ["First Aid"] = 14,
-    ["Archaeology"] = 15
-}
-
-local raceIds = {
-    ["None"] = 0,
-    ["BloodElf"] = 1,
-    ["Draenei"] = 2,
-    ["Dwarf"] = 3,
-    ["Gnome"] = 4,
-    ["Human"] = 5,
-    ["NightElf"] = 6,
-    ["Orc"] = 7,
-    ["Tauren"] = 8,
-    ["Troll"] = 9,
-    ["Scourge"] = 10,
-    ["Undead"] = 10,
-    ["Goblin"] = 11,
-    ["Worgen"] = 12,
-    ["Pandaren"] = 13
-}
-
-local factionIds = {
-    ["None"] = 0,
-    ["Alliance"] = 1,
-    ["Horde"] = 2
-}
-
-local function OnExport()
-    if (AmrOptions.exportToClient) then
-        AskMrRobot.SaveAll()
-        ReloadUI()
-    else
-        AskMrRobot_ReforgeFrame:Show()
-        AskMrRobot_ReforgeFrame:ShowTab("export")
-    end
-end
+local _amrLDB
+local _minimapIcon
 
 function AskMrRobot.eventListener:OnEvent(event, ...)
 	if event == "ADDON_LOADED" then
         local addon = select(1, ...)
         if (addon == "AskMrRobot") then
-            print(L.AMR_ON_EVENT_LOADED.format(GetAddOnMetadata(AskMrRobot.AddonName, "Version")))
+            --print(L.AMR_ON_EVENT_LOADED:format(GetAddOnMetadata(AskMrRobot.AddonName, "Version")))
+            
+            AskMrRobot.InitializeSettings()
+            AskMrRobot.InitializeMinimap()
             
             -- listen for messages from other AMR addons
-            RegisterAddonMessagePrefix(AskMrRobot.ChatPrefix)
-            
-            AmrRealmName = GetRealmName()
-            AmrCharacterName = UnitName("player")
+            RegisterAddonMessagePrefix(AskMrRobot.ChatPrefix)            
 
-            AskMrRobot.CombatLogTab.InitializeVariable()
-
-            if not AmrIconInfo then AmrIconInfo = {} end
-            if not AmrBankItems then AmrBankItems = {} end
-            if not AmrCurrencies then AmrCurrencies = {} end
-            if not AmrSpecializations then AmrSpecializations = {} end
-            if not AmrOptions then AmrOptions = {} end
-            if not AmrGlyphs then AmrGlyphs = {} end
-            if not AmrTalents then AmrTalents = {} end
-            if not AmrBankItemsAndCounts then AmrBankItemsAndCounts = {} end
-            if not AmrImportString then AmrImportString = "" end
-            if not AmrImportDate then AmrImportDate = "" end
-            
-			if not AmrSettings then AmrSettings = {} end
-			if not AmrSettings.Logins then AmrSettings.Logins = {} end
-
-            if not AmrSendSettings then
-                AmrSendSettings = {
-                    SendGems = true,
-                    SendEnchants = true,
-                    SendEnchantMaterials = true,
-                    SendToType = "a friend",
-                    SendTo = ""
-                }
-            end
-
-            amrLDB = LibStub("LibDataBroker-1.1"):NewDataObject("AskMrRobot", {
-                type = "launcher",
-                text = "Ask Mr. Robot",
-                icon = "Interface\\AddOns\\AskMrRobot\\Media\\icon",
-                OnClick = function()
-                	if IsControlKeyDown() then
-                		AskMrRobot_ReforgeFrame.combatLogTab:LogWipe()
-                    elseif IsModifiedClick("CHATLINK") then
-                        OnExport()
-                    else
-                        AskMrRobot_ReforgeFrame:Toggle()
-                    end
-                end,
-                OnTooltipShow = function(tt)
-                    tt:AddLine("Ask Mr. Robot", 1, 1, 1);
-                    tt:AddLine(" ");
-                    tt:AddLine(L.AMR_ON_EVENT_TOOLTIP)
-                end	
-            });
-
-
-            AskMrRobot.AmrUpdateMinimap()
-
-            AskMrRobot_ReforgeFrame = AskMrRobot.AmrUI:new()
-
-            -- remember the import settings between sessions
-            AskMrRobot_ReforgeFrame.summaryTab.importDate = AmrImportDate or ""
-            AskMrRobot_ReforgeFrame.buttons[2]:Click()
-            
-            -- the previous import string is loaded when the UI is first shown, otherwise the game spams events and it lags
+            AskMrRobot.mainWindow = AskMrRobot.AmrUI:new()
         end
+    
+    elseif event == "UNIT_INVENTORY_CHANGED" then
+        AskMrRobot.ScanEquipped()
         
-	elseif event == "ITEM_PUSH" or event == "DELETE_ITEM_CONFIRM" or event == "UNIT_INVENTORY_CHANGED" or event == "SOCKET_INFO_CLOSE" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "BAG_UPDATE" then
-		if AskMrRobot_ReforgeFrame then
-			AskMrRobot_ReforgeFrame:OnUpdate()
-		end
+	elseif event == "ITEM_PUSH" or event == "DELETE_ITEM_CONFIRM" or event == "SOCKET_INFO_CLOSE" or event == "PLAYER_SPECIALIZATION_CHANGED" or event == "BAG_UPDATE" then
+		--if AskMrRobot_ReforgeFrame then
+		--	AskMrRobot_ReforgeFrame:OnUpdate()
+		--end
 		--AskMrRobot.SaveBags();
 		--AskMrRobot.SaveEquiped();
 		--AskMrRonot.GetCurrencies();
 		--AskMrRobot.GetGold();
+        
 	elseif event == "BANKFRAME_OPENED" or event == "PLAYERBANKSLOTS_CHANGED" then 
-		--print("Scanning Bank: " .. event);
 		AskMrRobot.ScanBank();
-	elseif event == "BANKFRAME_CLOSED" then
-		--print("Stop Scanning Bank");
-		--inBank = false;
+        
 	elseif event == "CHARACTER_POINTS_CHANGED" or event == "CONFIRM_TALENT_WIPE" or event == "PLAYER_TALENT_UPDATE" or event == "ACTIVE_TALENT_GROUP_CHANGED" then
 		--AskMrRobot.GetAmrSpecializations();
-		if AskMrRobot_ReforgeFrame then
-			AskMrRobot_ReforgeFrame:OnUpdate()
-		end
-	elseif event == "PLAYER_LEVEL_UP" then
-		--GetLevel();
+		--if AskMrRobot_ReforgeFrame then
+		--	AskMrRobot_ReforgeFrame:OnUpdate()
+		--end
+        
 	elseif event == "ITEM_UNLOCKED" then
-		AskMrRobot.On_ITEM_UNLOCKED()
-	elseif event == "PLAYER_LOGOUT" then
-		-- doing nothing right now, but leaving this in case we need something here	
-	elseif event == "PLAYER_ENTERING_WORLD" then
+		--AskMrRobot.On_ITEM_UNLOCKED()
 
-		-- delete entries that are more than 10 days old to prevent the table from growing indefinitely
-		if AmrSettings.Logins and #AmrSettings.Logins > 0 then
-			local now = time()
-			local oldDuration = 60 * 60 * 24 * 10
-			local entryTime
-			repeat
-				-- parse entry and get time
-				local parts = {}
-				for part in string.gmatch(AmrSettings.Logins[1], "([^;]+)") do
-					tinsert(parts, part)
-				end
-				entryTime = tonumber(parts[3])
-
-				-- entries are in order, remove first entry if it is old
-				if difftime(now, entryTime) > oldDuration then
-					tremove(AmrSettings.Logins, 1)
-				end
-			until #AmrSettings.Logins == 0 or difftime(now, entryTime) <= oldDuration
-		end
-
-		-- record the time a player logs in, used to figure out which player logged which parts of their log file
-		local key = AmrRealmName .. ";" .. AmrCharacterName .. ";"
-		local loginData = key .. time()
-		if AmrSettings.Logins and #AmrSettings.Logins > 0 then
-			local last = AmrSettings.Logins[#AmrSettings.Logins]
-			if string.len(last) >= string.len(key) and string.sub(last, 1, string.len(key)) ~= key then
-				table.insert(AmrSettings.Logins, loginData)
-			end
-		else
-			table.insert(AmrSettings.Logins, loginData)
-		end
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        AskMrRobot.RecordLogin()
 
     elseif event == "PLAYER_REGEN_DISABLED" then
-
         -- send data about this character when a player enters combat in a supported zone
 		if AskMrRobot.IsSupportedInstance() then
 			local t = time()
 			AskMrRobot.SaveAll()
 			AskMrRobot.ExportToAddonChat(t)
-			AskMrRobot.ExportLoggingData(t)
+			AskMrRobot.CombatLogTab.SaveExtras(t)
 		end
 
     elseif event == "CHAT_MSG_ADDON" then
         local chatPrefix, message = select(1, ...)
-        local isLogging = AskMrRobot_ReforgeFrame.combatLogTab:IsLogging()
+        local isLogging = AskMrRobot.CombatLogTab.IsLogging()
         if (isLogging and chatPrefix == AskMrRobot.ChatPrefix) then
-            AskMrRobot_ReforgeFrame.combatLogTab:ReadAddonMessage(message)
+            AskMrRobot.mainWindow.combatLogTab:ReadAddonMessage(message)
         end
+        
     elseif event == "UPDATE_INSTANCE_INFO" or event == "PLAYER_DIFFICULTY_CHANGED" then
-    	AskMrRobot_ReforgeFrame.combatLogTab:UpdateAutoLogging()
+    	AskMrRobot.mainWindow.combatLogTab:UpdateAutoLogging()
+        
 	end
  
 end
 
-AskMrRobot.eventListener:SetScript("OnEvent", AskMrRobot.eventListener.OnEvent);
+AskMrRobot.eventListener:SetScript("OnEvent", AskMrRobot.eventListener.OnEvent)
 
-local function parseItemLink(input)
-	local itemId, enchantId, gemEnchantId1, gemEnchantId2, gemEnchantId3, gemEnchantId4, suffixId, _, _, reforgeId, upgradeId = string.match(input, "^|.-|Hitem:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(-?%d+):(-?%d+):(-?%d+):(%d+):(%d+)|");
-	local item = {}
-	item.itemId = tonumber(itemId)
-	item.suffixId = tonumber(suffixId)
-	item.enchantId = tonumber(enchantId)
-	item.reforgeId = tonumber(reforgeId)
-	item.upgradeId = tonumber(upgradeId)
-	item.gemEnchantIds = { tonumber(gemEnchantId1), tonumber(gemEnchantId2), tonumber(gemEnchantId3), tonumber(gemEnchantId4) }
-	return item
-end
 
 SLASH_AMR1 = "/amr";
 function SlashCmdList.AMR(msg)
 
 	if msg == 'toggle' then
-		AskMrRobot_ReforgeFrame:Toggle()
+		AskMrRobot.mainWindow:Toggle()
 	elseif msg == 'show' then
-		AskMrRobot_ReforgeFrame:Show()
+		AskMrRobot.mainWindow:Show()
 	elseif msg == 'hide' then
-		AskMrRobot_ReforgeFrame:Hide()
+		AskMrRobot.mainWindow:Hide()
 	elseif msg == 'export' then
-		OnExport()
+		AskMrRobot.mainWindow.exportTab:Show()
 	elseif msg == 'wipe' then
-		AskMrRobot_ReforgeFrame.combatLogTab:LogWipe()
+		AskMrRobot.mainWindow.combatLogTab:LogWipe()
 	elseif msg == 'unwipe' then
-		AskMrRobot_ReforgeFrame.combatLogTab:LogUnwipe()
+		AskMrRobot.mainWindow.combatLogTab:LogUnwipe()
 	else
 		print(L.AMR_SLASH_COMMAND_TEXT_1 .. L.AMR_SLASH_COMMAND_TEXT_2 .. L.AMR_SLASH_COMMAND_TEXT_3 .. L.AMR_SLASH_COMMAND_TEXT_4 .. L.AMR_SLASH_COMMAND_TEXT_5 .. L.AMR_SLASH_COMMAND_TEXT_6 .. L.AMR_SLASH_COMMAND_TEXT_7)
 	end
 end
 
-function AskMrRobot.SaveAll()
-	AskMrRobot.ScanBank()
-	AskMrRobot.SaveBags()
-	AskMrRobot.SaveEquiped()
-	AskMrRobot.GetCurrencies()
-	AskMrRobot.GetGold()
-	AskMrRobot.GetAmrSpecializations()
-	AskMrRobot.GetAmrProfessions()
-	AskMrRobot.GetRace()
-	AskMrRobot.GetLevel()
-	AskMrRobot.GetAmrGlyphs()
-	AskMrRobot.GetAmrTalents()
-	--ReloadUI()
+-- initialize settings when the addon loads
+function AskMrRobot.InitializeSettings()
+
+    -- global settings
+    if not AmrSettings then AmrSettings = {} end
+    if not AmrSettings.Logins then AmrSettings.Logins = {} end
+    
+    -- per-character settings
+    if not AmrDb then AmrDb = {} end
+    
+    -- addon stuff
+    if not AmrDb.IconInfo then AmrDb.IconInfo = {} end
+    if not AmrDb.Options then AmrDb.Options = {} end
+    if not AmrDb.LastCharacterImport then AmrDb.LastCharacterImport = "" end
+    if not AmrDb.LastCharacterImportDate then AmrDb.LastCharacterImportDate = "" end
+    
+    if not AmrDb.SendSettings then
+        AmrDb.SendSettings = {
+            SendGems = true,
+            SendEnchants = true,
+            SendEnchantMaterials = true,
+            SendToType = "a friend",
+            SendTo = ""
+        }
+    end
+    
+    -- character stuff
+    AskMrRobot.ScanCharacter()    
+    if not AmrDb.BankItems then AmrDb.BankItems = {} end
+    if not AmrDb.BagItems then AmrDb.BagItems = {} end
+    if not AmrDb.Currencies then AmrDb.Currencies = {} end
+    if not AmrDb.Reps then AmrDb.Reps = {} end
+    -- data saved for both specs
+    if not AmrDb.Specs then AmrDb.Specs = {} end
+    if not AmrDb.Glyphs then AmrDb.Glyphs = {} end
+    if not AmrDb.Talents then AmrDb.Talents = {} end
+    if not AmrDb.Equipped then AmrDb.Equipped = {} end
+    
+    -- combat log specific settings
+    AskMrRobot.CombatLogTab.InitializeVariable()
 end
 
-local function InitIcon()
-	icon = LibStub("LibDBIcon-1.0");
-	icon:Register("AskMrRobot", amrLDB, AmrIconInfo);
+-- record logins when the addon starts up, used to help figure out which character logged which parts of a log file
+function AskMrRobot.RecordLogin()
+
+    -- delete entries that are more than 10 days old to prevent the table from growing indefinitely
+    if AmrSettings.Logins and #AmrSettings.Logins > 0 then
+        local now = time()
+        local oldDuration = 60 * 60 * 24 * 10
+        local entryTime
+        repeat
+            -- parse entry and get time
+            local parts = {}
+            for part in string.gmatch(AmrSettings.Logins[1], "([^;]+)") do
+                tinsert(parts, part)
+            end
+            entryTime = tonumber(parts[3])
+
+            -- entries are in order, remove first entry if it is old
+            if difftime(now, entryTime) > oldDuration then
+                tremove(AmrSettings.Logins, 1)
+            end
+        until #AmrSettings.Logins == 0 or difftime(now, entryTime) <= oldDuration
+    end
+
+    -- record the time a player logs in, used to figure out which player logged which parts of their log file
+    local key = AmrDb.RealmName .. ";" .. AmrDb.CharacterName .. ";"
+    local loginData = key .. time()
+    if AmrSettings.Logins and #AmrSettings.Logins > 0 then
+        local last = AmrSettings.Logins[#AmrSettings.Logins]
+        if string.len(last) >= string.len(key) and string.sub(last, 1, string.len(key)) ~= key then
+            table.insert(AmrSettings.Logins, loginData)
+        end
+    else
+        table.insert(AmrSettings.Logins, loginData)
+    end
+end
+
+function AskMrRobot.InitializeMinimap()
+
+    -- minimap icon and data broker icon plugin thingy
+    _amrLDB = LibStub("LibDataBroker-1.1"):NewDataObject("AskMrRobot", {
+        type = "launcher",
+        text = "Ask Mr. Robot",
+        icon = "Interface\\AddOns\\AskMrRobot\\Media\\icon",
+        OnClick = function()            
+            if IsControlKeyDown() then
+                AskMrRobot.mainWindow.combatLogTab:LogWipe()
+            elseif IsModifiedClick("CHATLINL") then
+                AskMrRobot.mainWindow.exportTab:Show()
+            else
+                AskMrRobot.mainWindow:Toggle()
+            end
+        end,
+        OnTooltipShow = function(tt)
+            tt:AddLine("Ask Mr. Robot", 1, 1, 1);
+            tt:AddLine(" ");
+            tt:AddLine(L.AMR_ON_EVENT_TOOLTIP)
+        end	
+    });
+
+    AskMrRobot.AmrUpdateMinimap()
 end
 
 function AskMrRobot.AmrUpdateMinimap()	
-	if AmrOptions.hideMapIcon then
-		if icon then
-			icon:Hide("AskMrRobot");
+	if AmrDb.Options.hideMapIcon then
+		if _minimapIcon then
+			_minimapIcon:Hide("AskMrRobot")
 		end
 	else
-		if not icon then 
-			InitIcon() 
+		if not _minimapIcon then 
+			_minimapIcon = LibStub("LibDBIcon-1.0")
+            _minimapIcon:Register("AskMrRobot", _amrLDB, AmrDb.IconInfo)
 		end
-		--if AskMrRobot_ReforgeFrame.combatLogTab:IsLogging() then
-		if AskMrRobot.CombatLogTab.IsLogging(nil) then
-			amrLDB.icon = 'Interface\\AddOns\\AskMrRobot\\Media\\icon_green'
+		
+		if AskMrRobot.CombatLogTab.IsLogging() then
+			_amrLDB.icon = 'Interface\\AddOns\\AskMrRobot\\Media\\icon_green'
 		else
-			amrLDB.icon = 'Interface\\AddOns\\AskMrRobot\\Media\\icon'
+			_amrLDB.icon = 'Interface\\AddOns\\AskMrRobot\\Media\\icon'
 		end
-		icon:Show("AskMrRobot");
+        
+		_minimapIcon:Show("AskMrRobot")
 	end
 end
 
-local function getToolTipText(tip)
-	return EnumerateTooltipLines_helper(tip:GetRegions())
+
+function AskMrRobot.SaveAll()
+    AskMrRobot.ScanCharacter()
+	AskMrRobot.ScanBank()
+	AskMrRobot.ScanBags()
+	AskMrRobot.ScanEquipped()
+	AskMrRobot.GetCurrencies()
+    AskMrRobot.GetReputations()
+	AskMrRobot.GetSpecs()
 end
 
-local bagItems = {}
-local bagItemsWithCount = {}
-
-function AskMrRobot.ScanBag(bagId) 	
-	local numSlots = GetContainerNumSlots(bagId);
-	for slotId = 1, numSlots do
-		local _, itemCount, _, _, _, _, itemLink = GetContainerItemInfo(bagId, slotId);
-		if itemLink ~= nil then
-            local itemData = parseItemLink(itemLink)
-            if itemData.itemId ~= nil then
-                tinsert(bagItems, itemLink);
-                tinsert(bagItemsWithCount, {link = itemLink, count = itemCount})
-            end
-		end
-	end
-end
-
-local BACKPACK_CONTAINER = 0;
-local BANK_CONTAINER = -1;
-
-function AskMrRobot.ScanEquiped()
-	local equipedItems = {};
-	for slotNum = 1, #AskMrRobot.slotIds do
-		local slotId = AskMrRobot.slotIds[slotNum];
-		local itemLink = GetInventoryItemLink("player", slotId);
-		if (itemLink ~= nil) then
-			equipedItems[slotId .. ""] = itemLink;
-		end
-	end
-	return equipedItems
-end
-
-function AskMrRobot.SaveEquiped()
-	AmrEquipedItems = AskMrRobot.ScanEquiped();
-end
-
-function AskMrRobot.ScanBags()
-	bagItems = {}
-	bagItemsWithCount = {}
-
-	AskMrRobot.ScanBag(BACKPACK_CONTAINER); -- backpack
-	
-	for bagId = 1, NUM_BAG_SLOTS do
-		AskMrRobot.ScanBag(bagId);
-	end
-	
-
-	return bagItems, bagItemsWithCount
-end
-
-function AskMrRobot.SaveBags()
-	AmrBagItems, _ = AskMrRobot.ScanBags()
-end
-
-function AskMrRobot.GetGold()
-	AmrGold = GetMoney();
-end
-
-local lastBankBagId = nil;
-local lastBankSlotId = nil;
-local bankItems = {};
-local bankItemsAndCount = {};
-AmrBankItemsAndCounts = {};
-
-local function ScanBankBag(bagId)
-	local numSlots = GetContainerNumSlots(bagId);
-	for slotId = 1, numSlots do
-		local _, itemCount, _, _, _, _, itemLink = GetContainerItemInfo(bagId, slotId);
-		if itemLink ~= nil then
-            local itemData = parseItemLink(itemLink)
-            if itemData.itemId ~= nil then
-                lastBankBagId = bagId;
-                lastBankSlotId = slotId;
-                tinsert(bankItems, itemLink);						
-                tinsert(bankItemsAndCount, {link = itemLink, count = itemCount})
-            end
-		end
-	end
-end
-		
-function AskMrRobot.ScanBank()
-		
-	bankItems = {};
-	bankItemsAndCount = {}
-	
-	ScanBankBag(BANK_CONTAINER);
-	for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
-		ScanBankBag(bagId);
-	end
-	
-	-- see if the scan completed before the window closed
-	if lastBankBagId ~= nil then
-		local itemLink = GetContainerItemLink(lastBankBagId, lastBankSlotId);
-		if itemLink ~= nil then --still open
-			AmrBankItems = bankItems;
-			AmrBankItemsAndCounts = bankItemsAndCount
-		end
-	end
-end
-
-local function GetCurrencyAmount(index)
-	local localized_label, amount, icon_file_name = GetCurrencyInfo(index);
-	return amount;
-end
-
-function AskMrRobot.GetCurrencies()
-	local currencies = {};
-	local currencyList = {61, 81, 241, 361, 384, 394, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 416, 515, 614, 615, 676, 679};
-
-	for i, currency in pairs(currencyList) do
-		local amount = GetCurrencyAmount(currency);
-		if amount ~= 0 then
-			currencies[currencyList[i]] = amount;
-		end
-	end
-	AmrCurrencies = currencies;
-end
-
-local function GetAmrSpecialization(specGroup)
-	local spec = GetSpecialization(false, false, specGroup);
-	return spec and GetSpecializationInfo(spec);
-end
-
-function AskMrRobot.GetAmrSpecializations()
-
-	AmrSpecializations = {};
-
-	AmrActiveSpec = GetActiveSpecGroup();
-
-	for group = 1, 2 do
-		AmrSpecializations[group .. ""] = GetAmrSpecialization(group)
-	end
-
--- Death Knight 
--- 250 - Blood
--- 251 - Frost
--- 252 - Unholy
--- Druid 
--- 102 - Balance
--- 103 - Feral Combat
--- 104 - Guardian
--- 105 - Restoration
--- Hunter 
--- 253 - Beast Mastery
--- 254 - Marksmanship
--- 255 - Survival
--- Mage 
--- 62 - Arcane
--- 63 - Fire
--- 64 - Frost
--- Monk 
--- 268 - Brewmaster
--- 269 - Windwalker
--- 270 - Mistweaver
--- Paladin 
--- 65 - Holy
--- 66 - Protection
--- 70 - Retribution
--- Priest 
--- 256 Discipline
--- 257 Holy
--- 258 Shadow
--- Rogue 
--- 259 - Assassination
--- 260 - Combat
--- 261 - Subtlety
--- Shaman 
--- 262 - Elemental
--- 263 - Enhancement
--- 264 - Restoration
--- Warlock 
--- 265 - Affliction
--- 266 - Demonology
--- 267 - Destruction
--- Warrior 
--- 71 - Arms
--- 72 - Fury
--- 73 - Protection
+-- gets all basic character properties
+function AskMrRobot.ScanCharacter()
+    AmrDb.RealmName = GetRealmName()
+    AmrDb.CharacterName = UnitName("player")
+	AmrDb.Guild = GetGuildInfo("player")
+    AmrDb.ActiveSpec = GetActiveSpecGroup()
+    AmrDb.Level = UnitLevel("player");
+    
+    local cls, clsEn = UnitClass("player")
+    AmrDb.Class = clsEn;
+    
+    local race, raceEn = UnitRace("player")
+	AmrDb.Race = raceEn;
+	AmrDb.Faction = UnitFactionGroup("player")
+    
+    AskMrRobot.GetAmrProfessions()
 end
 
 function AskMrRobot.GetAmrProfessions()
@@ -601,88 +300,178 @@ function AskMrRobot.GetAmrProfessions()
 	}
 
 	local prof1, prof2, archaeology, fishing, cooking, firstAid = GetProfessions();
-	AmrProfessions = {};
+	AmrDb.Professions = {};
 	if prof1 then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(prof1);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 	if prof2 then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(prof2);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 	if archaeology then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(archaeology);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 	if fishing then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(fishing);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 	if cooking then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(cooking);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 	if firstAid then
 		local name, icon, skillLevel, maxSkillLevel, numAbilities, spelloffset, skillLine, skillModifier = GetProfessionInfo(firstAid);
 		if profMap[skillLine] ~= nil then
-			AmrProfessions[profMap[skillLine]] = skillLevel;
+			AmrDb.Professions[profMap[skillLine]] = skillLevel;
 		end
 	end
 end
 
-function AskMrRobot.GetRace()
-	local race, raceEn = UnitRace("player");
-	AmrRace = raceEn;
-	AmrFaction = UnitFactionGroup("player");
+
+-- use some local variables to deal with the fact that a user can close the bank before a scan completes
+local _lastBankBagId = nil
+local _lastBankSlotId = nil
+local BACKPACK_CONTAINER = 0
+local BANK_CONTAINER = -1
+
+local function scanBag(bagId, isBank, bagTable, bagItemsWithCount)
+	local numSlots = GetContainerNumSlots(bagId)
+	for slotId = 1, numSlots do
+		local _, itemCount, _, _, _, _, itemLink = GetContainerItemInfo(bagId, slotId)
+        -- we skip any stackable item, as far as we know, there is no equippable gear that can be stacked
+		if itemLink ~= nil then
+			local itemData = AskMrRobot.parseItemLink(itemLink)
+			if itemData ~= nil then			
+				if itemCount == 1 then
+	                if isBank then
+                    	_lastBankBagId = bagId
+                    	_lastBankSlotId = slotId
+                	end                	
+                	tinsert(bagTable, itemLink)
+                end
+                if bagItemsWithCount then
+                	if bagItemsWithCount[itemData.id] then
+                		bagItemsWithCount[itemData.id] = bagItemsWithCount[itemData.id] + itemCount
+                	else
+                		bagItemsWithCount[itemData.id] = itemCount
+                	end
+                end
+            end
+		end
+	end
+end
+		
+function AskMrRobot.ScanBank(bankItemsWithCount)
+	local bankItems = {}
+	local bankItemsAndCounts = {}
+
+	scanBag(BANK_CONTAINER, true, bankItems, bankItemsAndCounts)
+	for bagId = NUM_BAG_SLOTS + 1, NUM_BAG_SLOTS + NUM_BANKBAGSLOTS do
+		scanBag(bagId, true, bankItems, bankItemsAndCounts)
+	end
+	
+	-- see if the scan completed before the window closed, otherwise we don't overwrite with partial data
+	if _lastBankBagId ~= nil then
+		local itemLink = GetContainerItemLink(_lastBankBagId, _lastBankSlotId)
+		if itemLink ~= nil then --still open
+            AmrDb.BankItems = bankItems
+            AmrDb.BankItemsAndCounts = bankItemsAndCounts
+		end
+	end
 end
 
-function AskMrRobot.GetLevel()
-	AmrLevel = UnitLevel("player");
+function AskMrRobot.ScanBags(bagItemsWithCount)
+	local bagItems = {}
+	scanBag(BACKPACK_CONTAINER, false, bagItems, bagItemsWithCount) -- backpack
+	for bagId = 1, NUM_BAG_SLOTS do
+		scanBag(bagId, false, bagItems, bagItemsWithCount)
+	end
+	AmrDb.BagItems = bagItems
 end
 
-local SlotNames = {
-   "HeadSlot",
-   "NeckSlot",
-   "ShoulderSlot",
-   "ShirtSlot",
-   "ChestSlot",
-   "WaistSlot",
-   "LegsSlot",
-   "FeetSlot",
-   "WristSlot",
-   "HandsSlot",
-   "Finger0Slot",
-   "Finger1Slot",
-   "Trinket0Slot",
-   "Trinket1Slot",
-   "BackSlot",
-   "MainHandSlot",
-   "SecondaryHandSlot",
---   "RangedSlot",
-   "TabardSlot",
-}
+function AskMrRobot.ScanEquipped()
+    local equippedItems = {};
+	for slotNum = 1, #AskMrRobot.slotIds do
+		local slotId = AskMrRobot.slotIds[slotNum];
+		local itemLink = GetInventoryItemLink("player", slotId);
+		if (itemLink ~= nil) then
+			equippedItems[slotId] = itemLink;
+		end
+	end
+    
+    -- store last-seen equipped gear for each spec
+	AmrDb.Equipped[GetActiveSpecGroup()] = equippedItems
+end
 
-local function GetAmrTalentsForSpec(spec)	
+
+local function getCurrencyAmount(index)
+	local localized_label, amount, icon_file_name = GetCurrencyInfo(index);
+	return amount;
+end
+
+function AskMrRobot.GetCurrencies()
+    local currencies = {};
+    currencies[-1] = GetMoney()
+    
+    local currencyList = {61, 81, 241, 361, 384, 394, 390, 391, 392, 393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 416, 515, 614, 615, 676, 679}
+	for i, currency in pairs(currencyList) do
+		local amount = getCurrencyAmount(currency)
+		if amount ~= 0 then
+			currencies[currency] = amount
+		end
+	end
+    
+    AmrDb.Currencies = currencies
+end
+
+
+local function getRepStanding(factionId)
+    local name, description, standingId, _ = GetFactionInfoByID(factionId)
+    return standingId - 1; -- our rep enum correspond to what the armory returns, are 1 less than what the game returns
+end
+
+function AskMrRobot.GetReputations()
+    local reps = {}
+    
+    local repList = {1375,1376,1270,1269,1341,1337,1387,1388,1435}
+    for i, repId in pairs(repList) do
+        local standing = getRepStanding(repId)
+        if standing >= 0 then
+            reps[repId] = standing
+        end
+    end
+    
+    AmrDb.Reps = reps;
+end
+
+
+local function getSpecId(specGroup)
+	local spec = GetSpecialization(false, false, specGroup);
+	return spec and GetSpecializationInfo(spec);
+end
+
+local function getTalents(specGroup)	
     local talentInfo = {}
-    local maxTiers = 6
-    for talent = 1, GetNumTalents() do
-     	local name, texture, tier, column, selected, available = GetTalentInfo(talent, false, spec)
-     	if tier > maxTiers then
-     		maxTiers = tier
-     	end
-     	if selected then
-     		talentInfo[tier] = column
-    	end
+    local maxTiers = 7
+    for tier = 1, maxTiers do
+        for col = 1, 3 do
+            local id, name, texture, selected, available = GetTalentInfo(tier, col, specGroup)
+            if selected then
+                talentInfo[tier] = col
+            end
+        end
     end
     
     local str = ""
@@ -697,17 +486,10 @@ local function GetAmrTalentsForSpec(spec)
 	return str
 end
 
-function AskMrRobot.GetAmrTalents()
-	AmrTalents = {}
-    for spec = 1, GetNumSpecGroups() do
-    	AmrTalents[spec] = GetAmrTalentsForSpec(spec);
-    end
-end
-
-local function GetAmrGlyphsForSpec(spec)
+local function getGlyphs(specGroup)
 	local glyphs = {}
 	for i = 1,  NUM_GLYPH_SLOTS do
-		local _, _, _, glyphSpellID, _, glyphID = GetGlyphSocketInfo(i, spec)
+		local _, _, _, glyphSpellID, _, glyphID = GetGlyphSocketInfo(i, specGroup)
 		if (glyphID) then
 			tinsert(glyphs, glyphSpellID)
 		end
@@ -715,31 +497,32 @@ local function GetAmrGlyphsForSpec(spec)
 	return glyphs;
 end
 
-function AskMrRobot.GetAmrGlyphs()
-	AmrGlyphs = {}
-	for spec = 1, GetNumSpecGroups() do
-		AmrGlyphs[spec] = GetAmrGlyphsForSpec(spec)
+-- get specs, talents, and glyphs
+function AskMrRobot.GetSpecs()
+
+    AmrDb.Specs = {}
+    AmrDb.Talents = {}
+    AmrDb.Glyphs = {}
+    
+    for group = 1, GetNumSpecGroups() do
+        -- spec, convert game spec id to one of our spec ids
+        local specId = getSpecId(group)
+        if specId then
+            AmrDb.Specs[group] = AskMrRobot.specIds[specId]
+        else
+            AmrDb.Specs[group] = 0
+        end
+        
+        AmrDb.Talents[group] = getTalents(group)
+        AmrDb.Glyphs[group] = getGlyphs(group)
 	end
 end
 
---[[
-local function ItemLinkToExportString(itemLink, slot)
-    local itemData = parseItemLink(itemLink)
-    local ret = {}
-    table.insert(ret, slot)
-    table.insert(ret, itemData.itemId)
-    table.insert(ret, itemData.suffixId)
-    table.insert(ret, itemData.upgradeId)
-    table.insert(ret, itemData.gemEnchantIds[1])
-    table.insert(ret, itemData.gemEnchantIds[2])
-    table.insert(ret, itemData.gemEnchantIds[3])
-    table.insert(ret, itemData.enchantId)
-    table.insert(ret, itemData.reforgeId)
-    return table.concat(ret, ":")
-end
-]]
+----------------------------------------------------------------------------
+-- Export
+----------------------------------------------------------------------------
 
-local function toCompressedNumberList(list)
+function AskMrRobot.toCompressedNumberList(list)
     -- ensure the values are numbers, sorted from lowest to highest
     local nums = {}
     for i, v in ipairs(list) do
@@ -758,14 +541,67 @@ local function toCompressedNumberList(list)
     return table.concat(ret, ",")
 end
 
--- create a more compact but less readable string
-function AskMrRobot.ExportToCompressedString(includeInventory)
+-- appends a list of items to the export
+local function appendItemsToExport(fields, itemObjects)
+
+    -- sort by item id so we can compress it more easily
+    table.sort(itemObjects, function(a, b) return a.id < b.id end)
+    
+    -- append to the export string
+    local prevItemId = 0
+    local prevGemId = 0
+    local prevEnchantId = 0
+    local prevUpgradeId = 0
+    local prevBonusId = 0
+    for i, itemData in ipairs(itemObjects) do
+        local itemParts = {}
+        
+        table.insert(itemParts, itemData.id - prevItemId)
+        prevItemId = itemData.id
+        
+        if itemData.slot ~= nil then table.insert(itemParts, "s" .. itemData.slot) end
+        if itemData.suffixId ~= 0 then table.insert(itemParts, "f" .. itemData.suffixId) end
+        if itemData.upgradeId ~= 0 then 
+            table.insert(itemParts, "u" .. (itemData.upgradeId - prevUpgradeId))
+            prevUpgradeId = itemData.upgradeId
+        end
+        if itemData.bonusIds then
+            for bIndex, bValue in ipairs(itemData.bonusIds) do
+                table.insert(itemParts, "b" .. (bValue - prevBonusId))
+                prevBonusId = bValue
+            end
+        end        
+        if itemData.gemIds[1] ~= 0 then 
+            table.insert(itemParts, "x" .. (itemData.gemIds[1] - prevGemId))
+            prevGemId = itemData.gemIds[1]
+        end
+        if itemData.gemIds[2] ~= 0 then 
+            table.insert(itemParts, "y" .. (itemData.gemIds[2] - prevGemId))
+            prevGemId = itemData.gemIds[2]
+        end
+        if itemData.gemIds[3] ~= 0 then 
+            table.insert(itemParts, "z" .. (itemData.gemIds[3] - prevGemId))
+            prevGemId = itemData.gemIds[3]
+        end
+        if itemData.enchantId ~= 0 then 
+            table.insert(itemParts, "e" .. (itemData.enchantId - prevEnchantId))
+            prevEnchantId = itemData.enchantId
+        end
+    
+        table.insert(fields, table.concat(itemParts, ""))
+    end
+end
+
+-- create a compact string representing this player
+--  if complete is true, exports everything (inventory, both specs)
+--  otherwise only exports the player's active gear, spec, etc.
+function AskMrRobot.ExportToCompressedString(complete)
     local fields = {}
     
     -- compressed string uses a fixed order rather than inserting identifiers
     table.insert(fields, GetAddOnMetadata(AskMrRobot.AddonName, "Version"))
-    table.insert(fields, AmrRealmName)
-    table.insert(fields, AmrCharacterName)
+    table.insert(fields, AmrDb.RealmName)
+    table.insert(fields, AmrDb.CharacterName)
 
 	-- guild name
 	local guildName = GetGuildInfo("player")
@@ -776,22 +612,22 @@ function AskMrRobot.ExportToCompressedString(includeInventory)
     end
 
     -- race, default to pandaren if we can't read it for some reason
-    local raceval = raceIds[AmrRace]
+    local raceval = AskMrRobot.raceIds[AmrDb.Race]
     if raceval == nil then raceval = 13 end
     table.insert(fields, raceval)
     
     -- faction, default to alliance if we can't read it for some reason
-    raceval = factionIds[AmrFaction]
+    raceval = AskMrRobot.factionIds[AmrDb.Faction]
     if raceval == nil then raceval = 1 end
     table.insert(fields, raceval)
     
-    table.insert(fields, AmrLevel)
+    table.insert(fields, AmrDb.Level)
     
     local profs = {}
     local noprofs = true
-    if AmrProfessions then
-	    for k, v in pairs(AmrProfessions) do
-	        local profval = professionIds[k]
+    if AmrDb.Professions then
+	    for k, v in pairs(AmrDb.Professions) do
+	        local profval = AskMrRobot.professionIds[k]
 	        if profval ~= nil then
 	            noprofs = false
 	            table.insert(profs, profval .. ":" .. v)
@@ -805,147 +641,78 @@ function AskMrRobot.ExportToCompressedString(includeInventory)
     
     table.insert(fields, table.concat(profs, ","))
     
-    if (AmrActiveSpec ~= nil) then
-        table.insert(fields, AmrActiveSpec)
-        table.insert(fields, AmrSpecializations[AmrActiveSpec .. ""])
-        table.insert(fields, AmrTalents[AmrActiveSpec])
-        table.insert(fields, toCompressedNumberList(AmrGlyphs[AmrActiveSpec]))
-    else
-        table.insert(fields, "_")
-        table.insert(fields, "_")
-        table.insert(fields, "_")
-        table.insert(fields, "_")
+    -- export specs
+    table.insert(fields, AmrDb.ActiveSpec)
+    for spec = 1, 2 do
+        if AmrDb.Specs[spec] and (complete or spec == AmrDb.ActiveSpec) then
+            table.insert(fields, ".s" .. spec) -- indicates the start of a spec block
+            table.insert(fields, AmrDb.Specs[spec])
+            table.insert(fields, AmrDb.Talents[spec])
+            table.insert(fields, AskMrRobot.toCompressedNumberList(AmrDb.Glyphs[spec]))
+        end
     end
     
-    -- convert items to parsed objects, sorted by id
-    local itemObjects = {}
-    if AmrEquipedItems then
-	    for k, v in pairs(AmrEquipedItems) do
-	        local itemData = parseItemLink(v)
-	        itemData.slot = k
-	        table.insert(itemObjects, itemData)
-	    end
+    -- export equipped gear
+    if AmrDb.Equipped then
+        for spec = 1, 2 do
+            if AmrDb.Equipped[spec] and (complete or spec == AmrDb.ActiveSpec) then
+                table.insert(fields, ".q" .. spec) -- indicates the start of an equipped gear block
+                
+                local itemObjects = {}
+                for k, v in pairs(AmrDb.Equipped[spec]) do
+                    local itemData = AskMrRobot.parseItemLink(v)
+                    itemData.slot = k
+                    table.insert(itemObjects, itemData)
+                end
+                
+                appendItemsToExport(fields, itemObjects)
+            end
+        end
 	end
     
-    -- if desired, include bank/bag items too
-    if includeInventory then
-    	if AmrBagItems then
-	        for i, v in ipairs(AmrBagItems) do
-	            local itemData = parseItemLink(v)
-	            if itemData.itemId ~= nil then
+    -- if doing a complete export, include reputations and bank/bag items too
+    if complete then
+    
+        -- export reputations
+        local reps = {}
+        local noreps = true
+        if AmrDb.Reps then
+            for k, v in pairs(AmrDb.Reps) do
+                noreps = false
+                table.insert(reps, k .. ":" .. v)
+            end
+        end
+        if noreps then
+            table.insert(reps, "_")
+        end
+        
+        table.insert(fields, ".r")
+        table.insert(fields, table.concat(reps, ","))    
+    
+        -- export bag and bank
+        local itemObjects = {}
+    	if AmrDb.BagItems then
+	        for i, v in ipairs(AmrDb.BagItems) do
+	            local itemData = AskMrRobot.parseItemLink(v)
+	            if itemData ~= nil then
 	                table.insert(itemObjects, itemData)
 	            end
 	        end
 	    end
-	    if AmrBankItems then
-	        for i, v in ipairs(AmrBankItems) do
-	            local itemData = parseItemLink(v)
-	            if itemData.itemId ~= nil then
+	    if AmrDb.BankItems then
+	        for i, v in ipairs(AmrDb.BankItems) do
+	            local itemData = AskMrRobot.parseItemLink(v)
+	            if itemData ~= nil then
 	                table.insert(itemObjects, itemData)
 	            end
 	        end
 	    end
-    end
-    
-    -- sort by item id so we can compress it more easily
-    table.sort(itemObjects, function(a, b) return a.itemId < b.itemId end)
-    
-    -- append to the export string
-    local prevItemId = 0
-    local prevGemId = 0
-    local prevEnchantId = 0
-    for i, itemData in ipairs(itemObjects) do
-    
-        local itemParts = {}
         
-        table.insert(itemParts, itemData.itemId - prevItemId)
-        prevItemId = itemData.itemId
-        
-        if itemData.slot ~= nil then table.insert(itemParts, "s" .. itemData.slot) end
-        if itemData.suffixId ~= 0 then table.insert(itemParts, "f" .. itemData.suffixId) end
-        if upgradeTable[itemData.upgradeId] ~= 0 then table.insert(itemParts, "u" .. upgradeTable[itemData.upgradeId]) end
-        if itemData.gemEnchantIds[1] ~= 0 then 
-            table.insert(itemParts, "a" .. (itemData.gemEnchantIds[1] - prevGemId))
-            prevGemId = itemData.gemEnchantIds[1]
-        end
-        if itemData.gemEnchantIds[2] ~= 0 then 
-            table.insert(itemParts, "b" .. (itemData.gemEnchantIds[2] - prevGemId))
-            prevGemId = itemData.gemEnchantIds[2]
-        end
-        if itemData.gemEnchantIds[3] ~= 0 then 
-            table.insert(itemParts, "c" .. (itemData.gemEnchantIds[3] - prevGemId))
-            prevGemId = itemData.gemEnchantIds[3]
-        end
-        if itemData.enchantId ~= 0 then 
-            table.insert(itemParts, "e" .. (itemData.enchantId - prevEnchantId))
-            prevEnchantId = itemData.enchantId
-        end
-        if itemData.reforgeId ~= 0 then table.insert(itemParts, "r" .. (itemData.reforgeId - 113)) end
-    
-        table.insert(fields, table.concat(itemParts, ""))
+        table.insert(fields, ".inv")
+        appendItemsToExport(fields, itemObjects)
     end
 
     return "$" .. table.concat(fields, ";") .. "$"
-end
-
-local function GetPlayerExtraData(data, index)
-
-	local unitId = "raid" .. index
-
-	local guid = UnitGUID(unitId)
-	if guid == nil then
-		return nil
-	end
-	
-	local fields = {}
-
-	local buffs = {}
-    for i=1,40 do
-    	local _,_,_,count,_,_,_,_,_,_,spellId = UnitAura(unitId, i, "HELPFUL")
-    	table.insert(buffs, spellId)
-    end
-	if #buffs == 0 then
-		table.insert(fields, "_")
-	else
-		table.insert(fields, toCompressedNumberList(buffs))
-	end
-
-	local petGuid = UnitGUID("raidpet" .. index)
-	if petGuid then
-		table.insert(fields, guid .. "," .. petGuid)
-    else
-		table.insert(fields, '_')
-	end
-
-	local name = GetRaidRosterInfo(index)
-    local realm = GetRealmName()
-    local splitPos = string.find(name, "-")
-    if splitPos ~= nil then
-        realm = string.sub(name, splitPos + 1)
-        name = string.sub(name, 1, splitPos - 1)
-    end
-
-	data[realm .. ":" .. name] = table.concat(fields, ";")
-end
-
-function AskMrRobot.ExportLoggingData(timestamp)
-
-	local isLogging = AskMrRobot_ReforgeFrame.combatLogTab:IsLogging()
-	if not isLogging then
-		return
-	end
-
-	-- we only get extra information for people if in a raid
-	if not IsInRaid() then 
-		return
-	end
-
-	local data = {}
-	for i = 1,40 do
-		GetPlayerExtraData(data, i)
-	end
-	
-	AskMrRobot.CombatLogTab.SaveExtras(data, timestamp)
 end
 
 function AskMrRobot.ExportToAddonChat(timestamp)
@@ -973,408 +740,275 @@ end
 
 -- Create an export string that can be copied to the website
 function AskMrRobot.ExportToString()
-
-    --[[
-    local fields = {}
-    
-    fields["realm"] = AmrRealmName
-    fields["name"] = AmrCharacterName
-    fields["race"] = AmrRace
-    fields["faction"] = AmrFaction
-    fields["level"] = AmrLevel
-    
-    local profs = {}
-    for k, v in pairs(AmrProfessions) do
-        table.insert(profs, k .. ":" .. v)
-    end
-    fields["professions"] = table.concat(profs, ",")
-    
-    if (AmrActiveSpec ~= nil) then
-        fields["activespec"] = AmrActiveSpec
-        fields["spec"] = AmrSpecializations[AmrActiveSpec .. ""]
-        fields["talents"] = AmrTalents[AmrActiveSpec]
-        fields["glyphs"] = table.concat(AmrGlyphs[AmrActiveSpec], ",")
-    end
-    
-    local items = {}
-    for k, v in pairs(AmrEquipedItems) do
-        table.insert(items, ItemLinkToExportString(v, k))
-    end
-    for i, v in ipairs(AmrBagItems) do
-        table.insert(items, ItemLinkToExportString(v, "-1"))
-    end
-    for i, v in ipairs(AmrBankItems) do
-        table.insert(items, ItemLinkToExportString(v, "-1"))
-    end
-    fields["items"] = table.concat(items, "_")
-    
-    local fieldList = {}
-    for k, v in pairs(fields) do
-        table.insert(fieldList, k .. "=" .. v)
-    end
-    ]]
-    
-    --return table.concat(fieldList, ";")
-    
     return AskMrRobot.ExportToCompressedString(true)
-    --return AskMrRobot.ExportToAddonChat(time())
-end
-
-local function parseGlyphs(input)
-	local glyphs = {}
-	for glyph in string.gmatch(input, "([^,]+)") do
-		tinsert(glyphs, glyph)
-	end
-	table.sort(glyphs)
-	return glyphs
-end
-
-local function parseProfessions(input)
-	local professions = {}
-	for prof, v in string.gmatch(input, "([^:,]+):([^,]+)") do
-		professions[prof] = tonumber(v);
-	end
-	return professions;
-end
-
-local gemColorMapping = {
-	y = 'Yellow',
-	b = 'Blue',
-	r = 'Red',
-	h = 'Hydraulic',
-	p = 'Prismatic',
-	m = 'Meta',
-	c = 'Cogwheel'
-}
-
-local function parseAmrItem(input)
-	local slot, itemId, suffixList, upgradeId, gemColorString, gemEnchantIdString, gemIdString, enchantId, reforgeId = string.match(input, "^(%d+):(%d+):([^:]+):([^:]+):([^:]+):([^:]+):([^:]+):(%d+):(%d+)");
-	-- parse the gem enchant ids out of their comma seperated list
-	local gems = {}
-	for gemEnchantId in string.gmatch(gemEnchantIdString, '(%d+)') do
-		tinsert(gems, {enchantId = tonumber(gemEnchantId), id = 0})
-	end
-	-- make sure we have 4 gem ids
-	for i = #gems + 1, 4 do
-		tinsert(gems, {enchantId = 0, id = 0})
-	end	
-	-- parse the gem ids out of their comma seperated list	
-	local gemIds = {}
-	i = 1
-	for gemId in string.gmatch(gemIdString, '(%d+)') do
-		gems[i].id = tonumber(gemId)
-		i = i + 1
-	end
-	i = 1
-	for gemColor in string.gmatch(gemColorString, '([^,])') do
-		gems[i].color = gemColorMapping[gemColor]
-		i = i + 1
-	end
-
-	-- parse the possible suffixes out of their comma seperated list and put them in a set (number -> bool)
-	local suffixes = {}
-	for suffixId in string.gmatch(suffixList, '(%-?%d+)') do
-		suffixes[tonumber(suffixId)] = true
-	end
-
-	local item = {
-		itemId = tonumber(itemId),
-		suffixes = suffixes,
-		upgradeId = tonumber(upgradeId),
-		gems = gems,
-		enchantId = tonumber(enchantId),
-		reforgeId = tonumber(reforgeId)
-	}
-	return slot, item
 end
 
 
-function AskMrRobot.parseAmr(input)
-	local parsedInput = {}
-	parsedInput.items = {}
-	for k, v in string.gmatch(input, "([^=;]+)=([^;]*)") do
-		if (k == 'item') then
-			local slot, item = parseAmrItem(v);
-			parsedInput.items[AskMrRobot.slotIdToSlotNum[tonumber(slot) + 1]] = item;
-		 elseif (k == 'glyphs') then
-		 	parsedInput.glyphs = parseGlyphs(v)
-	 	 elseif (k == 'professions') then
-	 	 	parsedInput.professions = parseProfessions(v)
-		 else
-		 	parsedInput[k]=v
-		end
-	end
-	return parsedInput
+----------------------------------------------------------------------------
+-- Import
+----------------------------------------------------------------------------
+
+-- imports will give us extra information about items, gems, and enchants
+AskMrRobot.ExtraItemData = {}     -- keyed by item id
+AskMrRobot.ExtraGemData = {}      -- keyed by gem enchant id
+AskMrRobot.ExtraEnchantData = {}  -- keyed by enchant id
+
+-- the data that was last imported
+AskMrRobot.ImportData = nil       -- keyed by slot id
+
+local MIN_IMPORT_VERSION = 2
+
+--
+-- Import a character, returning nil on success, otherwise an error message, import result stored in AskMrRobot.ImportData
+--
+function AskMrRobot.ImportCharacter(data)
+
+    -- make sure all data is up to date before importing
+    AskMrRobot.SaveAll()
+    
+    if data == nil or string.len(data) == 0 then
+        return L.AMR_IMPORT_ERROR_EMPTY
+    end
+    
+    local data1 = { strsplit("$", data) }
+    if #data1 ~= 3 then
+        return L.AMR_IMPORT_ERROR_FORMAT
+    end
+    
+    local parts = { strsplit(";", data1[2]) }
+    
+    -- require a minimum version
+    local ver = tonumber(parts[1])
+    if ver < MIN_IMPORT_VERSION then
+        return L.AMR_IMPORT_ERROR_VERSION
+    end
+    
+    -- require realm/name match
+    local realm = parts[2]
+    local name = parts[3]
+    if realm ~= AmrDb.RealmName or name ~= AmrDb.CharacterName then
+        local badPers = name .. " (" .. realm .. ")"
+        local goodPers = AmrDb.CharacterName .. " (" .. AmrDb.RealmName .. ")"
+        return L.AMR_IMPORT_ERROR_CHAR:format(badPers, goodPers)
+    end
+    
+    -- require race match
+    local race = tonumber(parts[5])
+    if race ~= AskMrRobot.raceIds[AmrDb.Race] then
+        return L.AMR_IMPORT_ERROR_RACE
+    end
+    
+    -- require faction match
+    local faction = tonumber(parts[6])
+    if faction ~= AskMrRobot.factionIds[AmrDb.Faction] then
+        return L.AMR_IMPORT_ERROR_FACTION
+    end
+    
+    -- require level match
+    local level = tonumber(parts[7])
+    if level ~= AmrDb.Level then
+        return L.AMR_IMPORT_ERROR_LEVEL
+    end
+
+    -- require spec match
+    local spec = tonumber(parts[11])
+    if spec ~= AmrDb.Specs[AmrDb.ActiveSpec] then
+        print(AmrDb.ActiveSpec)
+        print(spec)
+        print(AmrDb.Specs[AmrDb.ActiveSpec])
+        local _, specName = GetSpecializationInfoByID(AskMrRobot.gameSpecIds[spec])
+        return L.AMR_IMPORT_ERROR_SPEC:format(specName)
+    end
+    
+    -- require talent match
+    local talents = parts[12]
+    if talents ~= AmrDb.Talents[AmrDb.ActiveSpec] then
+        return L.AMR_IMPORT_ERROR_TALENT
+    end
+    
+    -- require glyph match
+    -- TODO: re-enable this check when glyphs are more consistent
+    --local glyphs = parts[13]
+    --if glyphs ~= AskMrRobot.toCompressedNumberList(AmrDb.Glyphs[AmrDb.ActiveSpec]) then
+    --    return L.AMR_IMPORT_ERROR_GLYPH
+    --end
+    
+    -- if we make it this far, the data is valid, so read item information
+    local importData = {}
+
+    local itemInfo = {}
+    local gemInfo = {}
+    local enchantInfo = {}
+    
+    local prevItemId = 0
+    local prevGemId = 0
+    local prevEnchantId = 0
+    local prevUpgradeId = 0
+    local prevBonusId = 0
+    local digits = {
+        ["-"] = true,
+        ["0"] = true,
+        ["1"] = true,
+        ["2"] = true,
+        ["3"] = true,
+        ["4"] = true,
+        ["5"] = true,
+        ["6"] = true,
+        ["7"] = true,
+        ["8"] = true,
+        ["9"] = true,
+    }
+    for i = 15, #parts do
+        local itemString = parts[i]
+        if itemString ~= "" and itemString ~= "_" then
+            local tokens = {}
+            local bonusIds = {}
+            local hasBonuses = false
+            local token = ""
+            local prop = "i"
+            local tokenComplete = false
+            for j = 1, string.len(itemString) do
+                local c = string.sub(itemString, j, j)
+                if digits[c] == nil then
+                    tokenComplete = true
+                else
+                    token = token .. c
+                end
+                
+                if tokenComplete or j == string.len(itemString) then
+                    local val = tonumber(token)
+                    if prop == "i" then
+                        val = val + prevItemId
+                        prevItemId = val
+                    elseif prop == "u" then
+                        val = val + prevUpgradeId
+                        prevUpgradeId = val
+                    elseif prop == "b" then
+                        val = val + prevBonusId
+                        prevBonusId = val
+                    elseif prop == "x" or prop == "y" or prop == "z" then
+                        val = val + prevGemId
+                        prevGemId = val
+                    elseif prop == "e" then
+                        val = val + prevEnchantId
+                        prevEnchantId = val
+                    end
+                    
+                    if prop == "b" then
+                        table.insert(bonusIds, val)
+                        hasBonuses = true
+                    else
+                        tokens[prop] = val
+                    end
+                    
+                    token = ""
+                    tokenComplete = false
+                    
+                    -- we have moved on to the next token
+                    prop = c
+                end
+            end
+            
+            local obj = {}
+            importData[tonumber(tokens["s"])] = obj
+            
+            obj.id = tokens["i"]
+            obj.suffixId = tokens["f"] or 0
+            obj.upgradeId = tokens["u"] or 0
+            obj.enchantId = tokens["e"] or 0
+            
+            obj.gemIds = {}
+            table.insert(obj.gemIds, tokens["x"] or 0)
+            table.insert(obj.gemIds, tokens["y"] or 0)
+            table.insert(obj.gemIds, tokens["z"] or 0)
+            table.insert(obj.gemIds, 0)
+            
+            if hasBonuses then
+                obj.bonusIds = bonusIds
+            end
+            
+            local itemObj = {}
+            itemObj.id = obj.id
+            itemInfo[obj.id] = itemObj
+            
+            -- look for any socket color information, add to our extra data
+            if tokens["c"] then
+                itemObj.socketColors = {}
+                for j = 1, string.len(tokens["c"]) do
+                    table.insert(itemObj.socketColors, tonumber(string.sub(tokens["c"], j, j)))
+                end
+            end
+            
+            -- look for item ID duplicate info, deals with old SoO items
+            if tokens["d"] then
+                itemObj.duplicateId = tonumber(tokens["d"])
+            end
+            
+        end
+    end
+    
+    -- now read any extra display information
+    parts = { strsplit("@", data1[3]) }
+    for i = 1, #parts do
+        local infoParts = { strsplit("\\", parts[i]) }
+        
+        if infoParts[1] == "g" then
+        
+            local gemObj = {}            
+            gemObj.enchantId = tonumber(infoParts[2])
+            gemObj.id = tonumber(infoParts[3])
+            
+            local identicalGems = infoParts[4]
+            if string.len(identicalGems) > 0 then
+                gemObj.identicalGroup = {}
+                identicalGems = { strsplit(",", identicalGems) }
+                for j = 1, #identicalGems do
+                    gemObj.identicalGroup[tonumber(identicalGems[j])] = true
+                end
+            end
+            
+            gemObj.text = string.gsub(infoParts[5], "_(%a+)_", function(s) return L.AMR_STAT_SHORT_STRINGS[s] end)
+            if infoParts[6] == nil or string.len(infoParts[6]) == 0 then
+            	gemObj.identicalItemGroup = {[gemObj.id]=true}
+            else
+            	local identicalIds = { strsplit(',', infoParts[6]) }
+            	gemObj.identicalItemGroup = {}
+            	for j = 1, #identicalIds do
+            		gemObj.identicalItemGroup[tonumber(identicalIds[j])] = true
+            	end            	
+            end            
+
+            gemInfo[gemObj.enchantId] = gemObj
+            
+        elseif infoParts[1] == "e" then
+        
+            local enchObj = {}
+            enchObj.id = tonumber(infoParts[2])
+            enchObj.itemId = tonumber(infoParts[3])
+            enchObj.spellId = tonumber(infoParts[4])
+            enchObj.text = string.gsub(infoParts[5], "_(%a+)_", function(s) return L.AMR_STAT_SHORT_STRINGS[s] end)
+            
+            local mats = infoParts[6]
+            if string.len(mats) > 0 then
+                enchObj.materials = {}
+                mats = { strsplit(",", mats) }
+                for j = 1, #mats do
+                    local kv = { strsplit("=", mats[j]) }
+                    enchObj.materials[tonumber(kv[1])] = tonumber(kv[2])
+                end
+            end
+            
+            enchantInfo[enchObj.id] = enchObj
+            
+        end
+    end
+    
+    -- we have succeeded, record the result
+    AskMrRobot.ImportData = importData
+    AskMrRobot.ExtraItemData = itemInfo
+    AskMrRobot.ExtraGemData = gemInfo
+    AskMrRobot.ExtraEnchantData = enchantInfo    
+    
+    AmrDb.LastCharacterImport = data
+    AmrDb.LastCharacterImportDate = date()    
 end
-
-function AskMrRobot.validateRealm(realm)
-	return realm == GetRealmName();
-end
-
-function AskMrRobot.validateCharacterName(characterName)
-	return UnitName("player") == characterName
-end
-
-function AskMrRobot.validateRace(race)
-	local _, raceEn = UnitRace("player")
-	return raceEn == race or (raceEn == "Scourge" and race == "Undead")
-end
-
-function AskMrRobot.validateFaction(faction)
-	return faction == UnitFactionGroup("player")
-end
-
-function AskMrRobot.validateSpec(spec)
-	if spec == 'nil' then 
-		spec = nil
-	end
-	local currentSpec = GetAmrSpecialization(GetActiveSpecGroup())
-	return (not currentSpec and not spec) or tostring(currentSpec) == spec
-end
-
-function AskMrRobot.validateTalents(talents)
-	if talents == nil then
-		talents = ''
-	end
-	return talents == GetAmrTalentsForSpec(GetActiveSpecGroup())
-end
-
-function AskMrRobot.validateGlyphs(glyphs)
-	if (glyphs == nil) then
-		glyphs = {};
-	end
-	local currentGlyphs = GetAmrGlyphsForSpec(GetActiveSpecGroup())
-	table.sort(glyphs, function(a,b) return tostring(a) < tostring(b) end)
-	table.sort(currentGlyphs, function(a,b) return tostring(a) < tostring(b) end)
-
-	if #glyphs ~= #currentGlyphs then
-		return false
-	end
-	for i = 1, #glyphs do
-		if tostring(glyphs[i]) ~= tostring(currentGlyphs[i]) then
-			return false
-		end
-	end
-
-	return true
-end
-
-local function getPrimaryProfessions()
-	local profs = {}
-	local prof1, prof2 = GetProfessions()
-	local profMap = {
-		[794] = "Archaeology",
-		[171] = "Alchemy",
-		[164] = "Blacksmithing",
-		[185] = "Cooking",
-		[333] = "Enchanting",
-		[202] = "Engineering",
-		[129] = "First Aid",
-		[356] = "Fishing",
-		[182] = "Herbalism",
-		[773] = "Inscription",
-		[755] = "Jewelcrafting",
-		[165] = "Leatherworking",
-		[186] = "Mining",
-		[393] = "Skinning",
-		[197] = "Tailoring"
-	}
-
-	if prof1 then
-		local _, _, skillLevel, _, _, _, skillLine = GetProfessionInfo(prof1);
-		if profMap[skillLine] ~= nil then
-			profs[profMap[skillLine]] = skillLevel
-		end
-	end
-	if prof2 then
-		local _, _, skillLevel, _, _, _, skillLine = GetProfessionInfo(prof2);
-		if profMap[skillLine] ~= nil then
-			profs[profMap[skillLine]] = skillLevel
-		end
-	end	
-	return profs;
-end
-
-local professionThresholds = {
-	Leatherworking = 575,
-	Inscription = 600,
-	Alchemy = 50,
-	Enchanting = 550,
-	Jewelcrafting = 550,
-	Blacksmithing = 550,
-	Tailoring = 550
-}
-
-function AskMrRobot.validateProfessions(professions)
-	local currentProfessions = getPrimaryProfessions()
-	if #currentProfessions ~= #professions then
-		return false
-	end
-	for k, v in pairs(professions) do
-		if currentProfessions[k] then
-			local threshold = professionThresholds[k]
-			if not threshold then
-				threshold = 1
-			end
-			-- compare the desired profession against the threshold
-			local desired = v >= threshold
-			-- compare the current profession against the threshold
-			local has = currentProfessions[k] and currentProfessions[k] >= threshold
-			-- if the current value is on the other side of the threshold
-			-- then we don't match
-			if desired ~= has then 
-				return false 
-			end
-		else 
-			return false
-		end
-	end
-	return true
-end
-
-function AskMrRobot.populateItemDiffs(amrItem, itemLink, slotNum)
-	AskMrRobot.itemDiffs.items[slotNum] = nil
-	AskMrRobot.itemDiffs.gems[slotNum] = nil
-	AskMrRobot.itemDiffs.enchants[slotNum] = nil
-	AskMrRobot.itemDiffs.reforges[slotNum] = nil
-
-	local needsUpgrade = false
-	local aSuffix = 0
-	if amrItem then
-		for k,v in pairs(amrItem.suffixes) do
-			aSuffix = k
-		end
-	end
-
-	if itemLink == nil then
-		if amrItem ~= nil then
-			AskMrRobot.itemDiffs.items[slotNum] = {
-				current = nil,
-				optimized = { itemId = amrItem.itemId, upgradeId = amrItem.upgradeId, suffixId = aSuffix },
-				needsUpgrade = false
-			}
-		end
-		return
-	end
-	local item = parseItemLink(itemLink)
-	local isItemBad = false
-
-	if amrItem == nil or item.itemId ~= amrItem.itemId then
-		isItemBad = true
-	else
-		if item.suffixId == 0 then
-			if #amrItem.suffixes > 0 then
-				isItemBad = true
-			end
-		else
-			if not amrItem.suffixes[item.suffixId] then
-				isItemBad = true
-			end
-		end
-		if not isItemBad and upgradeTable[item.upgradeId] ~= upgradeTable[amrItem.upgradeId] then
-			isItemBad = true
-			needsUpgrade = true
-		end
-	end
-
-	if isItemBad then
-		AskMrRobot.itemDiffs.items[slotNum] = {
-			current = item.itemId,
-			optimized = { itemId = amrItem and amrItem.itemId or 0, upgradeId = amrItem and amrItem.upgradeId or 0, suffixId = aSuffix },			
-			needsUpgrade = needsUpgrade
-		}
-		return
-	end
-
-	local badGemCount, gemInfo = AskMrRobot.MatchesGems(itemLink, item.gemEnchantIds, amrItem.gems)
-	if badGemCount > 0 then
-		AskMrRobot.itemDiffs.gems[slotNum] = gemInfo
-	end
-
-	if item.enchantId ~= amrItem.enchantId then
-		AskMrRobot.itemDiffs.enchants[slotNum] = {
-			current = item.enchantId,
-			optimized = amrItem.enchantId
-		}
-	end
-
-	if item.reforgeId ~= amrItem.reforgeId then
-		AskMrRobot.itemDiffs.reforges[slotNum] = {
-			current = item.reforgeId,
-			optimized = amrItem.reforgeId
-		}
-	end
-end
-
---[[
-function AskMrRobot.StartLogging()
-	if not LoggingCombat() then
-		LoggingCombat(1)
-		print("Started Combat Logging")
-	end
-end
-
-function AskMrRobot.FinishLogging()
-	if LoggingCombat() then
-		LoggingCombat(0)
-		print("Finished Combat Logging")
-	end
-end
-
--- local difficultyLookup = {
--- 	DUNGEON_DIFFICULTY1,
--- 	DUNGEON_DIFFICULTY2,
--- 	RAID_DIFFICULTY_10PLAYER,
--- 	RAID_DIFFICULTY_25PLAYER,
--- 	RAID_DIFFICULTY_10PLAYER_HEROIC,
--- 	RAID_DIFFICULTY_25PLAYER_HEROIC,
--- 	RAID_FINDER,
--- 	CHALLENGE_MODE,
--- 	RAID_DIFFICULTY_40PLAYER,
--- 	nil,
--- 	nil, -- Norm scen
--- 	nil, -- heroic scen
--- 	nil,
--- 	PLAYER_DIFFICULTY4
--- }
-
---http://wowpedia.org/InstanceMapID
-local instanceMaps = {
-	HeartOfFear = 1009,
-	MogushanVaults = 1008,	
-	SiegeOfOrgrimmar = 1136,
-	TerraceOfEndlessSpring = 996,
-	ThroneOfThunder = 1098
-}
-
-function AskMrRobot.UpdateLogging()
-
-	-- get the info about the instance
-	--local zone, zonetype, difficultyIndex, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceMapID = GetInstanceInfo()
-	local zone, _, difficultyIndex, _, _, _, _, instanceMapID = GetInstanceInfo()
-	--local difficulty = difficultyIndex
-	-- Unless Blizzard fixes scenarios to not return nil, let's hardcode this into returning "scenario" -Znuff
-	--if zonetype == nil and difficultyIndex == 1 then
-		--zonetype = "scenario"
-	--end
-
-	-- if nothing has changed, then bail
-	--if (not zone) and difficulty == 0 then return end
-	if zone == AskMrRobot.lastzone and difficultyIndex == AskMrRobot.lastdiff then
-	  -- do nothing if the zone hasn't ACTUALLY changed
-	  -- otherwise we may override the user's manual enable/disable
-	  return
-	end
-
-	AskMrRobot.lastzone = zone
-	AskMrRobot.lastdiff = difficultyIndex
-
-	if AmrOptions.autoLog[tonumber(instanceMapID)] then
-		if instanceMapID == instanceMaps.SiegeOfOrgrimmar then
-			AskMrRobot.StartLogging()
-		else
-			AskMrRobot.FinishLogging()
-		end
-	end
-end
-]]

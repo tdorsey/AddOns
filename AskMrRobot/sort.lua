@@ -22,10 +22,3 @@ function AskMrRobot.spairs(t, order)
         end
     end
 end
-
-function AskMrRobot.sortSlots(t)
-    return AskMrRobot.spairs(t, function(x, a, b)
-        if a == nil and b == nil then return 0 end
-        return AskMrRobot.sortedSlots[a] < AskMrRobot.sortedSlots[b]
-    end)
-end

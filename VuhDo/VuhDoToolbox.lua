@@ -429,7 +429,7 @@ end
 
 --
 function VUHDO_isInSameZone(aUnit)
-	return (VUHDO_RAID[aUnit] or sEmpty)["map"] == (VUHDO_RAID["player"] or sEmpty)["map"];
+	return (VUHDO_RAID[aUnit] or sEmpty)["zone"] == (VUHDO_RAID["player"] or sEmpty)["zone"];
 end
 local VUHDO_isInSameZone = VUHDO_isInSameZone;
 
@@ -451,6 +451,40 @@ function VUHDO_isSpellKnown(aSpellName)
 		or VUHDO_NAME_TO_SPELL[aSpellName] ~= nil and GetSpellBookItemInfo(VUHDO_NAME_TO_SPELL[aSpellName]);
 end
 
+
+--
+function VUHDO_getTalentSpellId(aTalentName, onlyActiveSpec)
+	if onlyActiveSpec then
+		for tier=1,7 do
+			for column=1,3 do
+				local id, name, _, selected, _ = GetTalentInfo(tier, column, GetActiveSpecGroup());
+
+				if name == aTalentName and selected then
+					return id;
+				end
+			end
+		end
+	else
+		for group=1,2 do
+			for tier=1,7 do
+				for column=1,3 do
+					local id, name, _, selected, _ = GetTalentInfo(tier, column, group);
+					if name == aTalentName and selected then
+						return id;
+					end
+				end
+			end
+		end
+	end
+
+	return nil;
+end
+
+
+--
+function VUHDO_isTalentKnown(aTalentName, onlyActiveSpec)
+	return VUHDO_getTalentSpellId(aTalentName, onlyActiveSpec) and true or false;
+end
 
 
 --
@@ -622,7 +656,7 @@ end
 
 --
 local tActionLowerName;
-local tIsMacroKnown, tIsSpellKnown
+local tIsMacroKnown, tIsSpellKnown, tIsTalentKnown
 function VUHDO_isActionValid(anActionName, anIsCustom)
 
 	if (anActionName or "") == "" then
@@ -642,13 +676,14 @@ function VUHDO_isActionValid(anActionName, anIsCustom)
 
 	tIsMacroKnown = GetMacroIndexByName(anActionName) ~= 0;
 	tIsSpellKnown = VUHDO_isSpellKnown(anActionName);
+	tIsTalentKnown = VUHDO_isTalentKnown(anActionName, true);
 
-	if tIsSpellKnown and tIsMacroKnown then
+	if (tIsSpellKnown or tIsTalentKnown) and tIsMacroKnown then
 		VUHDO_Msg(format(VUHDO_I18N_AMBIGUOUS_MACRO, anActionName), 1, 0.3, 0.3);
 		return VUHDO_I18N_WARNING, 1, 0.3, 0.3, "WRN";
 	elseif tIsMacroKnown then
 		return VUHDO_I18N_MACRO, 0.8, 0.8, 1, "MCR";
-	elseif tIsSpellKnown then
+	elseif (tIsSpellKnown or tIsTalentKnown) then
 		return VUHDO_I18N_SPELL, 1, 0.8, 0.8, "SPL";
 	elseif IsUsableItem(anActionName) then
 		return VUHDO_I18N_ITEM, 1, 1, 0.8, "ITM";
@@ -791,3 +826,42 @@ function VUHDO_getCurrentKeyModifierString()
 		IsControlKeyDown() and "ctrl" or "",
 		IsShiftKeyDown() and "shift" or "");
 end
+
+-- Helper to serialize a table to a string for pretty printing
+-- Taken from Lua Users Wiki: http://lua-users.org/wiki/TableUtils
+function VUHDO_tableValueToString(v)
+  if "string" == type( v ) then
+    v = string.gsub( v, "\n", "\\n" )
+    if string.match( string.gsub(v,"[^'\"]",""), '^"+$' ) then
+      return "'" .. v .. "'"
+    end
+    return '"' .. string.gsub(v,'"', '\\"' ) .. '"'
+  else
+    return "table" == type( v ) and VUHDO_tableToString( v ) or
+      tostring( v )
+  end
+end
+
+function VUHDO_tableKeyToString(k)
+  if "string" == type( k ) and string.match( k, "^[_%a][_%a%d]*$" ) then
+    return k
+  else
+    return "[" .. VUHDO_tableValueToString( k ) .. "]"
+  end
+end
+
+function VUHDO_tableToString(tbl)
+  local result, done = {}, {}
+  for k, v in ipairs( tbl ) do
+    table.insert( result, VUHDO_tableValueToString( v ) )
+    done[ k ] = true
+  end
+  for k, v in pairs( tbl ) do
+    if not done[ k ] then
+      table.insert( result,
+        VUHDO_tableKeyToString( k ) .. "=" .. VUHDO_tableValueToString( v ) )
+    end
+  end
+  return "{" .. table.concat( result, "," ) .. "}"
+end
+

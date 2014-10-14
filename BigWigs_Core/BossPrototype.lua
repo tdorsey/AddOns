@@ -5,7 +5,7 @@
 local AL = LibStub("AceLocale-3.0")
 local L = AL:GetLocale("Big Wigs: Common")
 local UnitExists, UnitAffectingCombat, GetSpellInfo, UnitGUID = UnitExists, UnitAffectingCombat, GetSpellInfo, UnitGUID
-local format, sub, band = string.format, string.sub, bit.band
+local format, sub, gsub, band = string.format, string.sub, string.gsub, bit.band
 local type, next, tonumber = type, next, tonumber
 local core = BigWigs
 local C = core.C
@@ -247,7 +247,7 @@ do
 				local mobId
 				if isWOD then
 					local _, _, _, _, _, id = strsplit("-", destGUID)
-					mobId = tonumber(id) or -1
+					mobId = tonumber(id) or 1
 				else
 					mobId = tonumber(sub(destGUID, 6, 10), 16)
 				end
@@ -448,7 +448,7 @@ do
 					-- XXX compat
 					if isWOD then
 						local _, _, _, _, _, id = strsplit("-", guid)
-						guid = tonumber(id) or -1
+						guid = tonumber(id) or 1
 					else
 						guid = tonumber(sub(guid, 6, 10), 16)
 					end
@@ -606,11 +606,12 @@ function boss:Mythic()
 end
 
 function boss:MobId(guid)
-	if isWOD and guid then -- XXX compat
+	if not guid then return 1 end
+	if isWOD then -- XXX compat
 		local _, _, _, _, _, id = strsplit("-", guid)
-		return tonumber(id) or -1
+		return tonumber(id) or 1
 	else
-		return guid and tonumber(sub(guid, 6, 10), 16) or -1
+		return guid and tonumber(sub(guid, 6, 10), 16) or 1
 	end
 end
 
@@ -906,7 +907,7 @@ do
 	local coloredNames = setmetatable({}, {__index =
 		function(self, key)
 			if key then
-				local shortKey = key:gsub("%-.+", "*") -- Replace server names with *
+				local shortKey = gsub(key, "%-.+", "*") -- Replace server names with *
 				local _, class = UnitClass(key)
 				if class then
 					local newKey = hexColors[class] .. shortKey .. "|r"
@@ -1011,7 +1012,7 @@ function boss:TargetBar(key, length, player, text, icon)
 			self:SendMessage("BigWigs_StartEmphasize", self, msg, length)
 		end
 	elseif not checkFlag(self, key, C.ME_ONLY) and checkFlag(self, key, C.BAR) then
-		self:SendMessage("BigWigs_StartBar", self, key, format(L.other, textType == "string" and text or spells[text or key], player:gsub("%-.+", "*")), length, icons[icon or textType == "number" and text or key])
+		self:SendMessage("BigWigs_StartBar", self, key, format(L.other, textType == "string" and text or spells[text or key], gsub(player, "%-.+", "*")), length, icons[icon or textType == "number" and text or key])
 	end
 end
 
@@ -1022,7 +1023,7 @@ function boss:StopBar(text, player)
 			self:SendMessage("BigWigs_StopBar", self, msg)
 			self:SendMessage("BigWigs_StopEmphasize", self, msg)
 		else
-			self:SendMessage("BigWigs_StopBar", self, format(L.other, type(text) == "number" and spells[text] or text, player:gsub("%-.+", "*")))
+			self:SendMessage("BigWigs_StopBar", self, format(L.other, type(text) == "number" and spells[text] or text, gsub(player, "%-.+", "*")))
 		end
 	else
 		self:SendMessage("BigWigs_StopBar", self, type(text) == "number" and spells[text] or text)
@@ -1088,15 +1089,17 @@ function boss:Berserk(seconds, noEngageMessage, customBoss, customBerserk, custo
 
 	-- There are many Berserks, but we use 26662 because Brutallus uses this one.
 	-- Brutallus is da bomb.
-	local berserk, icon = (GetSpellInfo(26662)), 26662
-	-- XXX "Interface\\EncounterJournal\\UI-EJ-Icons" ?
-	-- http://static.wowhead.com/images/icons/ej-enrage.png
+	local icon = 26662
+	local berserk = spells[icon]
 	if type(customBerserk) == "number" then
 		key = customBerserk
-		berserk, icon = (GetSpellInfo(customBerserk)), customBerserk
+		berserk = spells[customBerserk]
+		icon = customBerserk
 	elseif type(customBerserk) == "string" then
 		berserk = customBerserk
 	end
+
+	self:Bar(key, seconds, berserk, icon)
 
 	if not noEngageMessage then
 		-- Engage warning with minutes to enrage
@@ -1114,7 +1117,5 @@ function boss:Berserk(seconds, noEngageMessage, customBoss, customBerserk, custo
 	self:DelayedMessage(key, seconds - 10, "Urgent", format(L.custom_sec, berserk, 10))
 	self:DelayedMessage(key, seconds - 5, "Important", format(L.custom_sec, berserk, 5))
 	self:DelayedMessage(key, seconds, "Important", customFinalMessage or format(L.custom_end, boss, berserk), icon, "Alarm")
-
-	self:Bar(key, seconds, berserk, icon)
 end
 

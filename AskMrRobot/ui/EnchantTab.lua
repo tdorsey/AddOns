@@ -44,7 +44,7 @@ function AskMrRobot.EnchantTab:new(parent)
 	tab.badEnchantCurrent = {}
 	tab.badEnchantOptimized = {}
 
-	for i = 1, #AskMrRobot.slotNames do
+	for i = 1, #AskMrRobot.slotIds do
 		local itemText = tab:CreateFontString(nil, "ARTWORK", "GameFontWhite")
 		itemText:SetPoint("TOPLEFT", "AmrBadEnchantSlotHeader", "TOPLEFT", 0, -26 * i)
 		itemText:SetPoint("BOTTOMRIGHT", "AmrBadEnchantSlotHeader", "BOTTOMRIGHT", 0, -26 * i)
@@ -66,21 +66,26 @@ function AskMrRobot.EnchantTab:new(parent)
 	return tab
 end
 
-function AskMrRobot.EnchantTab:showBadEnchants()
-
-	local badEnchants = AskMrRobot.itemDiffs.enchants
+function AskMrRobot.EnchantTab:Update()
 
 	local i = 1
 
 	-- for all the bad items
-	for slotNum, badEnchant in AskMrRobot.sortSlots(badEnchants) do
-		self.badEnchantSlots[i]:SetText(_G[strupper(AskMrRobot.slotNames[slotNum])])
-		self.badEnchantSlots[i]:Show()
+	if AskMrRobot.ComparisonResult.enchants then
+		for iSlot = 1, #AskMrRobot.slotIds do
+			local slotId = AskMrRobot.slotIds[iSlot]
+			local badEnchant = AskMrRobot.ComparisonResult.enchants[slotId]
+			if badEnchant ~= nil then
+				self.badEnchantSlots[i]:SetText(AskMrRobot.slotDisplayText[slotId])
+				self.badEnchantSlots[i]:Show()
 
-		self.badEnchantCurrent[i]:SetEnchantId(badEnchant.current)
+				self.badEnchantCurrent[i]:SetEnchantId(badEnchant.current)
 
-		self.badEnchantOptimized[i]:SetEnchantId(badEnchant.optimized)
-		i = i + 1
+				self.badEnchantOptimized[i]:SetEnchantId(badEnchant.optimized)
+				i = i + 1
+			end
+		end
+
 	end
 
 	-- hide / show the headers

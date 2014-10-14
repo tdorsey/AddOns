@@ -24,6 +24,7 @@ L["intermission"] = "Intervalo" -- Needs review
 L["interrupted"] = "%s Interrompido"
 L["mob_killed"] = "%s morto! (%d/%d)"
 L["mob_remaining"] = "%s morto, %d restando"
+L["mythic"] = "Modo mítico" -- Needs review
 L["near"] = "%s perto de VOCÊ"
 L["next_add"] = "Próximo adicional"
 L["normal"] = "Modo normal"

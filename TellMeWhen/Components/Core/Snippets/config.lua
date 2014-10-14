@@ -299,8 +299,12 @@ function codesnippet:Import_ImportData(Item, domain)
 	TMW:Update()
 end
 
-function codesnippet:Import_CreateMenuEntry(info, Item)
+function codesnippet:Import_CreateMenuEntry(info, Item, doLabel)
 	info.text = Item.Settings.Name or L["CODESNIPPETS_DEFAULTNAME"]
+
+	if doLabel then
+		info.text = L["fCODESNIPPET"]:format(info.text)
+	end
 end
 
 
@@ -325,10 +329,38 @@ SharableDataType_profile:RegisterMenuBuilder(19, function(Item_profile)
 		end
 
 		if SettingsBundle:CreateParentedMenuEntry(L["CODESNIPPETS"]) then
-			TMW.AddDropdownSpacer()
+			TMW.DD:AddSpacer()
 		end
 	end
 end)
+
+-- Global Snippets
+local SharableDataType_database = TMW.Classes.SharableDataType.types.database
+SharableDataType_database:RegisterMenuBuilder(16, function(Item_database)
+	local db = Item_database.Settings
+
+	if db.global.CodeSnippets then
+		local SettingsBundle = TMW.Classes.SettingsBundle:New("codesnippet")
+
+		for n, snippet in TMW:InNLengthTable(db.global.CodeSnippets) do
+			if snippet then
+
+				local Item = TMW.Classes.SettingsItem:New("codesnippet")
+
+				Item:SetParent(Item_database)
+				Item.Settings = snippet
+
+				SettingsBundle:Add(Item)
+
+			end
+		end
+
+		SettingsBundle:CreateParentedMenuEntry(L["CODESNIPPETS"])
+	end
+end)
+
+
+
 
 -- Import Snippet
 codesnippet:RegisterMenuBuilder(1, function(Item_codesnippet)	
@@ -336,32 +368,30 @@ codesnippet:RegisterMenuBuilder(1, function(Item_codesnippet)
 	
 	-- Import as global snippet
 	if IMPORTS.codesnippet_global then
-		local info = UIDropDownMenu_CreateInfo()
+		local info = TMW.DD:CreateInfo()
 		info.text = L["CODESNIPPETS_IMPORT_GLOBAL"]
 		info.tooltipTitle = info.text
 		info.tooltipText = L["CODESNIPPETS_IMPORT_GLOBAL_DESC"]
-		info.tooltipOnButton = true
 		info.notCheckable = true
 		
 		info.func = function()
 			Item_codesnippet:Import("global")
 		end
-		UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+		TMW.DD:AddButton(info)
 	end
 	
 	-- Import as profile snippet
 	if IMPORTS.codesnippet_profile then
-		local info = UIDropDownMenu_CreateInfo()
+		local info = TMW.DD:CreateInfo()
 		info.text = L["CODESNIPPETS_IMPORT_PROFILE"]
 		info.tooltipTitle = info.text
 		info.tooltipText = L["CODESNIPPETS_IMPORT_PROFILE_DESC"]
-		info.tooltipOnButton = true
 		info.notCheckable = true
 		
 		info.func = function()
 			Item_codesnippet:Import("profile")
 		end
-		UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+		TMW.DD:AddButton(info)
 	end
 end)
 

@@ -1,10 +1,10 @@
 local _, AskMrRobot = ...
 local L = AskMrRobot.L;
 
--- initialize the ExportTab class
+-- initialize the CombatLogTab class
 AskMrRobot.CombatLogTab = AskMrRobot.inheritsFrom(AskMrRobot.Frame)
 
--- these are valid keys in AmrLogData, all others will be deleted
+-- these are valid keys in AmrDb.LogData, all others will be deleted
 local _logDataKeys = {
 	["_logging"] = true,
 	["_autoLog"] = true,
@@ -88,17 +88,17 @@ function AskMrRobot.CombatLogTab:new(parent)
 		L.AMR_COMBATLOGTAB_CHECKBOX_AUTOLOG_SOO_DESCRIPTION,
 		function(self, value) 
 			if value then
-				AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "enabled"
+				AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "enabled"
 			else
-				AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "disabled" 
+				AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "disabled" 
 			end
 
-			AmrLogData._lastZone = nil
-			AmrLogData._lastDiff = nil
+			AmrDb.LogData._lastZone = nil
+			AmrDb.LogData._lastDiff = nil
 			tab:UpdateAutoLogging()
 		end
 	)
-	autoChk:SetChecked(AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled")
+	autoChk:SetChecked(AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled")
 	autoChk:SetPoint("TOPLEFT", btn, "BOTTOMLEFT", 0, -10)
     autoChk:SetHeight(30)
 
@@ -171,18 +171,18 @@ function AskMrRobot.CombatLogTab:new(parent)
 		local t = time()
 		AskMrRobot.SaveAll()
 		AskMrRobot.ExportToAddonChat(t)
-		AskMrRobot.ExportLoggingData(t)
+		AskMrRobot.CombatLogTab.SaveExtras(t)
     end)
 	]]
 
 	-- when we start up, ensure that logging is still enabled if it was enabled when they last used the addon
-    if (tab:IsLogging()) then
+    if (AskMrRobot.CombatLogTab.IsLogging()) then
         SetCVar("advancedCombatLogging", 1)
         LoggingCombat(true)
     end
     
 	-- if auto-logging is enabled, do a check when the addon is loaded to make sure that state is set correctly
-	if AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled" then
+	if AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled" then
 		tab:UpdateAutoLogging()
 	end
 
@@ -193,8 +193,8 @@ function AskMrRobot.CombatLogTab:new(parent)
     return tab
 end
 
-function AskMrRobot.CombatLogTab:IsLogging()
-    return AmrLogData._logging == true
+function AskMrRobot.CombatLogTab.IsLogging()
+    return AmrDb.LogData._logging == true
 end
 
 function AskMrRobot.CombatLogTab:StartLogging()
@@ -203,19 +203,19 @@ function AskMrRobot.CombatLogTab:StartLogging()
 	local oldDuration = 60 * 60 * 24 * 10
 
 	-- archive the current logging session so that users don't accidentally blow away data before uploading it
-	if AmrLogData._current2 ~= nil then
-		if not AmrLogData._history2 then AmrLogData._history2 = {} end
+	if AmrDb.LogData._current2 ~= nil then
+		if not AmrDb.LogData._history2 then AmrDb.LogData._history2 = {} end
 
 		-- add new entries
-		for name, timeList in AskMrRobot.spairs(AmrLogData._current2) do
-			if not AmrLogData._history2[name] then AmrLogData._history2[name] = {} end
+		for name, timeList in AskMrRobot.spairs(AmrDb.LogData._current2) do
+			if not AmrDb.LogData._history2[name] then AmrDb.LogData._history2[name] = {} end
 			for timestamp, dataString in AskMrRobot.spairs(timeList) do
-				AmrLogData._history2[name][timestamp] = dataString
+				AmrDb.LogData._history2[name][timestamp] = dataString
 			end
 		end
 
 		-- delete entries that are more than 10 days old
-		for name, timeList in AskMrRobot.spairs(AmrLogData._history2) do
+		for name, timeList in AskMrRobot.spairs(AmrDb.LogData._history2) do
 			for timestamp, dataString in AskMrRobot.spairs(timeList) do
 				if difftime(now, tonumber(timestamp)) > oldDuration then
 					timeList[timestamp] = nil
@@ -227,25 +227,25 @@ function AskMrRobot.CombatLogTab:StartLogging()
 				count = count + 1
 			end
 			if count == 0 then
-				AmrLogData._history2[name] = nil
+				AmrDb.LogData._history2[name] = nil
 			end
 		end
 	end
 
 	-- same idea with extra info (auras, pets, whatever we end up adding to it)
-	if AmrLogData._currentExtra ~= nil then
-		if not AmrLogData._historyExtra then AmrLogData._historyExtra = {} end
+	if AmrDb.LogData._currentExtra ~= nil then
+		if not AmrDb.LogData._historyExtra then AmrDb.LogData._historyExtra = {} end
 
 		-- add new entries
-		for name, timeList in AskMrRobot.spairs(AmrLogData._currentExtra) do
-			if not AmrLogData._historyExtra[name] then AmrLogData._historyExtra[name] = {} end
+		for name, timeList in AskMrRobot.spairs(AmrDb.LogData._currentExtra) do
+			if not AmrDb.LogData._historyExtra[name] then AmrDb.LogData._historyExtra[name] = {} end
 			for timestamp, dataString in AskMrRobot.spairs(timeList) do
-				AmrLogData._historyExtra[name][timestamp] = dataString
+				AmrDb.LogData._historyExtra[name][timestamp] = dataString
 			end
 		end
 
 		-- delete entries that are more than 10 days old
-		for name, timeList in AskMrRobot.spairs(AmrLogData._historyExtra) do
+		for name, timeList in AskMrRobot.spairs(AmrDb.LogData._historyExtra) do
 			for timestamp, dataString in AskMrRobot.spairs(timeList) do
 				if difftime(now, tonumber(timestamp)) > oldDuration then
 					timeList[timestamp] = nil
@@ -257,19 +257,19 @@ function AskMrRobot.CombatLogTab:StartLogging()
 				count = count + 1
 			end
 			if count == 0 then
-				AmrLogData._historyExtra[name] = nil
+				AmrDb.LogData._historyExtra[name] = nil
 			end
 		end
 	end
 
 
 	-- delete _wipes entries that are more than 10 days old
-	if AmrLogData._wipes then
+	if AmrDb.LogData._wipes then
 		local i = 1
-		while i <= #AmrLogData._wipes do
-			local t = AmrLogData._wipes[i]
+		while i <= #AmrDb.LogData._wipes do
+			local t = AmrDb.LogData._wipes[i]
 			if difftime(now, t) > oldDuration then
-		        tremove(AmrLogData._wipes, i)
+		        tremove(AmrDb.LogData._wipes, i)
 		    else
 		        i = i + 1
 		    end
@@ -277,21 +277,21 @@ function AskMrRobot.CombatLogTab:StartLogging()
 	end
 
 	-- delete the _lastWipe if it is more than 10 days old
-	if AmrLogData._lastWipe and difftime(now, AmrLogData._lastWipe) > oldDuration then
-		AmrLogData_lastWipe = nil
+	if AmrDb.LogData._lastWipe and difftime(now, AmrDb.LogData._lastWipe) > oldDuration then
+		AmrDb.LogData_lastWipe = nil
 	end
 
 	-- clean up old-style logging data from previous versions of the addon
-	for k, v in AskMrRobot.spairs(AmrLogData) do
+	for k, v in AskMrRobot.spairs(AmrDb.LogData) do
 		if not _logDataKeys[k] then
-			AmrLogData[k] = nil
+			AmrDb.LogData[k] = nil
 		end
 	end
 
     -- start a new logging session
-    AmrLogData._current2 = {}
-	AmrLogData._currentExtra = {}
-    AmrLogData._logging = true
+    AmrDb.LogData._current2 = {}
+	AmrDb.LogData._currentExtra = {}
+    AmrDb.LogData._logging = true
     
     -- always enable advanced combat logging via our addon, gathers more detailed data for better analysis
     SetCVar("advancedCombatLogging", 1)
@@ -306,7 +306,7 @@ end
 
 function AskMrRobot.CombatLogTab:StopLogging()
     LoggingCombat(false)
-    AmrLogData._logging = false
+    AmrDb.LogData._logging = false
     self:Update()
     
     AskMrRobot.AmrUpdateMinimap()
@@ -315,7 +315,7 @@ function AskMrRobot.CombatLogTab:StopLogging()
 end
 
 function AskMrRobot.CombatLogTab:ToggleLogging()
-	if self:IsLogging() then
+	if AskMrRobot.CombatLogTab.IsLogging() then
 		self:StopLogging()
 	else
 		self:StartLogging()
@@ -324,7 +324,7 @@ end
 
 -- update the panel and state
 function AskMrRobot.CombatLogTab:Update()
-    local isLogging = self:IsLogging()
+    local isLogging = AskMrRobot.CombatLogTab.IsLogging()
     
     if isLogging then
     	self.btnStart:SetText(L.AMR_COMBATLOGTAB_STOP_LOGGING)
@@ -334,8 +334,8 @@ function AskMrRobot.CombatLogTab:Update()
     	self.loggingStatus:SetText("")
     end
 
-	if AmrLogData._lastWipe then
-		self.lastWipeLabel:SetText(L.AMR_COMBATLOGTAB_LASTWIPE:format(date('%B %d', AmrLogData._lastWipe), date('%I:%M %p', AmrLogData._lastWipe)))
+	if AmrDb.LogData._lastWipe then
+		self.lastWipeLabel:SetText(L.AMR_COMBATLOGTAB_LASTWIPE:format(date('%B %d', AmrDb.LogData._lastWipe), date('%I:%M %p', AmrDb.LogData._lastWipe)))
 		self.btnUnwipe:Show()
 	else
 		self.lastWipeLabel:SetText("")
@@ -356,23 +356,23 @@ function AskMrRobot.CombatLogTab:UpdateAutoLogging()
 		--zonetype = "scenario"
 	--end
 
-	if zone == AmrLogData._lastZone and difficultyIndex == AmrLogData._lastDiff then
+	if zone == AmrDb.LogData._lastZone and difficultyIndex == AmrDb.LogData._lastDiff then
 	  -- do nothing if the zone hasn't actually changed, otherwise we may override the user's manual enable/disable
 		return
 	end
 
-	AmrLogData._lastZone = zone
-	AmrLogData._lastDiff = difficultyIndex
+	AmrDb.LogData._lastZone = zone
+	AmrDb.LogData._lastDiff = difficultyIndex
 
-	if AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled" then
+	if AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] == "enabled" then
 		if tonumber(instanceMapID) == AskMrRobot.instanceIds.SiegeOfOrgrimmar then
 			-- if in SoO, make sure logging is on
-			if not self:IsLogging() then
+			if not AskMrRobot.CombatLogTab.IsLogging() then
 				self:StartLogging()
 			end
 		else
 			-- not in SoO, turn logging off
-			if self:IsLogging() then
+			if AskMrRobot.CombatLogTab.IsLogging() then
 				self:StopLogging()
 			end
 		end
@@ -388,52 +388,105 @@ local function RaidChatType()
 	end
 end
 
--- used to store wipes to AmrLogData so that we trim data after the wipe
+-- used to store wipes to AmrDb.LogData so that we trim data after the wipe
 function AskMrRobot.CombatLogTab:LogWipe()	
 	local t = time()
-	tinsert(AmrLogData._wipes, t)
-	AmrLogData._lastWipe = t
+	tinsert(AmrDb.LogData._wipes, t)
+	AmrDb.LogData._lastWipe = t
 
-	if GetNumGroupMembers() > 0 then
-		SendChatMessage(L.AMR_COMBATLOGTAB_WIPE_CHAT, RaidChatType())
-	end
+	--if GetNumGroupMembers() > 0 then
+	--	SendChatMessage(L.AMR_COMBATLOGTAB_WIPE_CHAT, RaidChatType())
+	--end
 	print(string.format(L.AMR_COMBATLOGTAB_WIPE_MSG, date('%I:%M %p', t)))
 
 	self:Update()
-	--AskMrRobot.wait(301, AskMrRobot.CombatLogTab.Update, self)
 end
 
 -- used to undo the wipe command
 function AskMrRobot.CombatLogTab:LogUnwipe()
-	local t = AmrLogData._lastWipe
+	local t = AmrDb.LogData._lastWipe
 	if not t then
 		print(L.AMR_COMBATLOGTAB_NOWIPES)
 	else
-		tremove(AmrLogData._wipes)
-		AmrLogData._lastWipe = nil
+		tremove(AmrDb.LogData._wipes)
+		AmrDb.LogData._lastWipe = nil
 		print(string.format(L.AMR_COMBATLOGTAB_UNWIPE_MSG, date('%I:%M %p', t)))
 	end
 	self:Update()
 end
 
--- initialize the AmrLogData variable
+-- initialize the AmrDb.LogData variable
 function AskMrRobot.CombatLogTab.InitializeVariable()
-    if not AmrLogData then AmrLogData = {} end
-	if not AmrLogData._autoLog then AmrLogData._autoLog = {} end
-	if not AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] then 
-		AmrLogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "disabled" 
+    if not AmrDb.LogData then AmrDb.LogData = {} end
+	if not AmrDb.LogData._autoLog then AmrDb.LogData._autoLog = {} end
+	if not AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] then 
+		AmrDb.LogData._autoLog[AskMrRobot.instanceIds.SiegeOfOrgrimmar] = "disabled" 
 	end
-	AmrLogData._wipes = AmrLogData._wipes or {}
+	AmrDb.LogData._wipes = AmrDb.LogData._wipes or {}
 end
 
-function AskMrRobot.CombatLogTab.SaveExtras(data, timestamp)
+local function GetPlayerExtraData(data, index)
 
+	local unitId = "raid" .. index
+
+	local guid = UnitGUID(unitId)
+	if guid == nil then
+		return nil
+	end
+	
+	local fields = {}
+
+	local buffs = {}
+    for i=1,40 do
+    	local _,_,_,count,_,_,_,_,_,_,spellId = UnitAura(unitId, i, "HELPFUL")
+    	table.insert(buffs, spellId)
+    end
+	if #buffs == 0 then
+		table.insert(fields, "_")
+	else
+		table.insert(fields, AskMrRobot.toCompressedNumberList(buffs))
+	end
+
+	local petGuid = UnitGUID("raidpet" .. index)
+	if petGuid then
+		table.insert(fields, guid .. "," .. petGuid)
+    else
+		table.insert(fields, '_')
+	end
+
+	local name = GetRaidRosterInfo(index)
+    local realm = GetRealmName()
+    local splitPos = string.find(name, "-")
+    if splitPos ~= nil then
+        realm = string.sub(name, splitPos + 1)
+        name = string.sub(name, 1, splitPos - 1)
+    end
+
+	data[realm .. ":" .. name] = table.concat(fields, ";")
+end
+
+function AskMrRobot.CombatLogTab.SaveExtras(timestamp)
+
+	if not AskMrRobot.CombatLogTab.IsLogging() then
+		return
+	end
+
+	-- we only get extra information for people if in a raid
+	if not IsInRaid() then 
+		return
+	end
+
+	local data = {}
+	for i = 1,40 do
+		GetPlayerExtraData(data, i)
+	end
+    
 	for name,val in pairs(data) do
 		-- record aura stuff, we never check for duplicates, need to know it at each point in time
-		if AmrLogData._currentExtra[name] == nil then
-			AmrLogData._currentExtra[name] = {}
+		if AmrDb.LogData._currentExtra[name] == nil then
+			AmrDb.LogData._currentExtra[name] = {}
 		end
-		AmrLogData._currentExtra[name][timestamp] = val
+		AmrDb.LogData._currentExtra[name][timestamp] = val
 	end
 end
 
@@ -452,32 +505,32 @@ function AskMrRobot.CombatLogTab:ReadAddonMessage(message)
     
     if (data == "done") then
         -- we have finished receiving this message; now process it to reduce the amount of duplicate data
-        local setup = AmrLogData._current2[name][timestamp]
+        local setup = AmrDb.LogData._current2[name][timestamp]
 
-        if (AmrLogData._previousSetup == nil) then
-            AmrLogData._previousSetup = {}
+        if (AmrDb.LogData._previousSetup == nil) then
+            AmrDb.LogData._previousSetup = {}
         end
         
-        local previousSetup = AmrLogData._previousSetup[name]
+        local previousSetup = AmrDb.LogData._previousSetup[name]
         
         if (previousSetup == setup) then
             -- if the last-seen setup for this player is the same as the current one, we don't need this entry
-            AmrLogData._current2[name][timestamp] = nil
+            AmrDb.LogData._current2[name][timestamp] = nil
         else
             -- record the last-seen setup
-            AmrLogData._previousSetup[name] = setup
+            AmrDb.LogData._previousSetup[name] = setup
         end
 
     else
         -- concatenate messages with the same timestamp+name
-        if (AmrLogData._current2[name] == nil) then
-            AmrLogData._current2[name] = {}
+        if (AmrDb.LogData._current2[name] == nil) then
+            AmrDb.LogData._current2[name] = {}
         end
         
-        if (AmrLogData._current2[name][timestamp] == nil) then
-            AmrLogData._current2[name][timestamp] = data
+        if (AmrDb.LogData._current2[name][timestamp] == nil) then
+            AmrDb.LogData._current2[name][timestamp] = data
         else
-            AmrLogData._current2[name][timestamp] = AmrLogData._current2[name][timestamp] .. data
+            AmrDb.LogData._current2[name][timestamp] = AmrDb.LogData._current2[name][timestamp] .. data
         end
     end
 end

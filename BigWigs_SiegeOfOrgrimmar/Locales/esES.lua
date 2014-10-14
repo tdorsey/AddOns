@@ -1,13 +1,13 @@
 local L = BigWigs:NewBossLocale("The Fallen Protectors", "esES") or BigWigs:NewBossLocale("The Fallen Protectors", "esMX")
 if not L then return end
 if L then
-L["defile_you"] = "Suelo Mancillado debajo de ti" -- Needs review
-L["defile_you_desc"] = "Advertencia cuando Suelo Mancillado esté debajo de ti" -- Needs review
-L["inferno_self"] = "Golpe de Infierno en ti" -- Needs review
-L["inferno_self_bar"] = "¡Vas a explotar!" -- Needs review
-L["inferno_self_desc"] = "Cuenta atrás especial cuando tengas Golpe de Infierno" -- Needs review
-L["intermission_desc"] = "Advertir cuando los jefes usen Medidas Desesperadas." -- Needs review
-L["no_meditative_field"] = "¡No estas en la burbuja!" -- Needs review
+L["defile_you"] = "Suelo mancillado debajo de ti"
+L["defile_you_desc"] = "Advertencia cuando Suelo mancillado esté debajo de ti"
+L["inferno_self"] = "Golpe de Infierno en ti"
+L["inferno_self_bar"] = "¡Vas a explotar!"
+L["inferno_self_desc"] = "Cuenta atrás especial cuando tengas Golpe de Infierno"
+L["intermission_desc"] = "Advertir cuando los jefes usen Medidas Desesperadas."
+L["no_meditative_field"] = "¡No estás en la burbuja!"
 
 
 	L.custom_off_bane_marks = "Palabra de las Sombras: terror marcador"
@@ -20,14 +20,14 @@ L["big_add"] = "Esbirro grande (%d)"
 L["big_add_killed"] = "Esbirro grande muerto (%d)"
 L["big_adds"] = "Esbirros grandes"
 L["big_adds_desc"] = "Alertas para la aparición de esbirros grandes y sus muertes."
-L["warmup_trigger"] = "Muy bien, crearé un campo para mantener aislada vuestra corrupción." -- Needs review
+L["warmup_trigger"] = "Muy bien, crearé un campo para mantener aislada vuestra corrupción."
 
 end
 
 L = BigWigs:NewBossLocale("Sha of Pride", "esES") or BigWigs:NewBossLocale("Sha of Pride", "esMX")
 if L then
-L["projection_green_arrow"] = "FLECHA VERDE" -- Needs review
-L["titan_pride"] = "Titán+Orgullo: %s" -- Needs review
+L["projection_green_arrow"] = "FLECHA VERDE"
+L["titan_pride"] = "Titán+Orgullo: %s"
 
 
 	L.custom_off_titan_mark = "Marcador de Ofrenda de los titanes"
@@ -39,18 +39,18 @@ end
 
 L = BigWigs:NewBossLocale("Galakras", "esES") or BigWigs:NewBossLocale("Galakras", "esMX")
 if L then
-L["adds_desc"] = "Temporizadores cuando un nuevo grupo de esbirros entren en el combate." -- Needs review
-L["demolisher_message"] = "Demoledor" -- Needs review
-L["drakes"] = "Protodracos" -- Needs review
-L["north_tower"] = "Torre norte" -- Needs review
+L["adds_desc"] = "Temporizadores cuando un nuevo grupo de esbirros entren en el combate."
+L["demolisher_message"] = "Demoledor"
+L["drakes"] = "Protodracos"
+L["north_tower"] = "Torre norte"
 L["north_tower_trigger"] = "¡La puerta de la torre norte está abierta!"
-L["south_tower"] = "Torre sur" -- Needs review
+L["south_tower"] = "Torre sur"
 L["south_tower_trigger"] = "¡La puerta de la torre sur está abierta!"
-L["start_trigger_alliance"] = "¡Bien hecho! ¡Grupos de desembarco, formad! ¡Infantería, al frente!" -- Needs review
+L["start_trigger_alliance"] = "¡Bien hecho! ¡Grupos de desembarco, formad! ¡Infantería, al frente!"
 L["start_trigger_horde"] = "Bien hecho. La primera brigada a tomado tierra." -- Needs review
-L["tower_defender"] = "Defensor de la torre" -- Needs review
-L["towers"] = "Torres" -- Needs review
-L["towers_desc"] = "Advertencia cuando las torres se abran." -- Needs review
+L["tower_defender"] = "Defensor de la torre"
+L["towers"] = "Torres"
+L["towers_desc"] = "Advertencia cuando las torres se abran."
 L["warlord_zaela"] = "Señora de la guerra Zaela"
 
 
@@ -67,7 +67,7 @@ end
 
 L = BigWigs:NewBossLocale("Kor'kron Dark Shaman", "esES") or BigWigs:NewBossLocale("Kor'kron Dark Shaman", "esMX")
 if L then
-L["blobs"] = "Manchas" -- Needs review
+L["blobs"] = "Burbujas"
 
 
 	L.custom_off_mist_marks = "Marcador de Niebla tóxica"
@@ -108,9 +108,9 @@ end
 
 L = BigWigs:NewBossLocale("Spoils of Pandaria", "esES") or BigWigs:NewBossLocale("Spoils of Pandaria", "esMX")
 if L then
-L["enable_zone"] = "Depósito de Artefactos" -- Needs review
-L["start_trigger"] = "¿Estamos grabando?" -- Needs review
-L["win_trigger"] = "Reiniciando sistema. No lo apague si no quiere que el artefacto explote." -- Needs review
+L["enable_zone"] = "Depósito de Artefactos"
+L["start_trigger"] = "¿Estamos grabando?"
+L["win_trigger"] = "Reiniciando sistema. No lo apague si no quiere que el artefacto explote."
 
 
 	L.crates = "Cajas"
@@ -130,21 +130,21 @@ end
 
 L = BigWigs:NewBossLocale("Siegecrafter Blackfuse", "esES") or BigWigs:NewBossLocale("Siegecrafter Blackfuse", "esMX")
 if L then
-L["assembly_line_items"] = "Objetos (%d): %s" -- Needs review
-L["assembly_line_message"] = "Armas sin terminar (%d)" -- Needs review
-L["assembly_line_trigger"] = "La cadena de montaje empieza a sacar armas sin terminar." -- Needs review
-L["disabled"] = "Desactivado" -- Needs review
-L["item_deathdealer"] = "Mortifero" -- Needs review
-L["item_laser"] = "Laser" -- Needs review
-L["item_magnet"] = "Iman" -- Needs review
-L["item_mines"] = "Minas" -- Needs review
-L["item_missile"] = "Misiles" -- Needs review
-L["laser_on_you"] = "¡Laser en ti PEW PEW!" -- Needs review
-L["overcharged_crawler_mine"] = "Mina reptadora sobrecargada." -- Needs review
-L["saw_blade_near_you"] = "Hoja de sierra cerca de ti (no en ti)" -- Needs review
-L["saw_blade_near_you_desc"] = "Tal vez desees desactivar esto para evitar spam si la raid esta de acuerdo con tus tácticas." -- Needs review
-L["shockwave_missile_trigger"] = "¡He aquí la hermosa torreta de misiles de ondas de choque ST-03!" -- Needs review
-L["shredder_engage_trigger"] = "¡Una trituradora automática se acerca!" -- Needs review
+L["assembly_line_items"] = "Objetos (%d): %s"
+L["assembly_line_message"] = "Armas sin terminar (%d)"
+L["assembly_line_trigger"] = "La cadena de montaje empieza a sacar armas sin terminar."
+L["disabled"] = "Desactivado"
+L["item_deathdealer"] = "Mortífero"
+L["item_laser"] = "Laser"
+L["item_magnet"] = "Imán"
+L["item_mines"] = "Minas"
+L["item_missile"] = "Misiles"
+L["laser_on_you"] = "¡Laser en ti PEW PEW!"
+L["overcharged_crawler_mine"] = "Mina reptadora sobrecargada."
+L["saw_blade_near_you"] = "Hoja de sierra cerca de ti (no en ti)"
+L["saw_blade_near_you_desc"] = "Tal vez desees desactivar esto para evitar spam si la raid esta de acuerdo con tus tácticas."
+L["shockwave_missile_trigger"] = "¡He aquí la hermosa torreta de misiles de ondas de choque ST-03!"
+L["shredder_engage_trigger"] = "¡Una trituradora automática se acerca!"
 
 
 	--L.custom_off_mine_marker = "Mine marker"
@@ -182,18 +182,18 @@ L = BigWigs:NewBossLocale("Garrosh Hellscream", "esES") or BigWigs:NewBossLocale
 if L then
 L["bombardment"] = "Bombardeo"
 L["bombardment_desc"] = "Bombardea Ventormenta, dejando manchas de fuego en el suelo. La Estrella de hierro Kor'kron solo puede aparecer durante el bombardeo."
-L["chain_heal_bar"] = "Foco: Sanación en cadena" -- Needs review
-L["chain_heal_desc"] = "Cura un objetivo amistoso el 40% de su vida máxima, extendiéndose a los objetivos amistosos cercanos." -- Needs review
-L["chain_heal_message"] = "¡Tu foco está casteando Sanación en cadena!" -- Needs review
+L["chain_heal_bar"] = "Foco: Sanación en cadena"
+L["chain_heal_desc"] = "Cura un objetivo amistoso el 40% de su vida máxima, extendiéndose a los objetivos amistosos cercanos."
+L["chain_heal_message"] = "¡Tu foco está casteando Sanación en cadena!"
 L["clump_check_desc"] = "Comprueba cada 3 segundos durante el bombardeo los jugadores agrupados, si un grupo es encontrado por una Estrella de hierro Kor'kron aparecerá."
 L["clump_check_warning"] = "Grupo encontrado, Estrella inc"
 L["empowered_message"] = "¡%s está potenciado!"
-L["farseer_trigger"] = "¡Clarividentes, sanad nuestras heridas!" -- Needs review
-L["ironstar_impact_desc"] = "Un temporizador para cuando la Estrella de hierro choque con la pared en el otro lado." -- Needs review
+L["farseer_trigger"] = "¡Clarividentes, sanad nuestras heridas!"
+L["ironstar_impact_desc"] = "Un temporizador para cuando la Estrella de hierro choque con la pared en el otro lado."
 L["ironstar_rolling"] = "¡Estrella de hierro rodando!"
 L["manifest_rage"] = "Manifiesto de ira"
-L["manifest_rage_desc"] = "Cuando Garrosh alcanza 100 de energia el pre-casteará Manifiesto de Ira durante 2 segundos, entonces lo canalizará. Mientras es canalizado invocará adds grandes. Pon la Estrella de hierro en Garrosh para stunearlo y así interrumpir su casteo." -- Needs review
-L["phase_3_end_trigger"] = "¿Creéis que habéis GANADO?" -- Needs review
+L["manifest_rage_desc"] = "Cuando Garrosh alcanza 100 de energia el pre-casteará Manifiesto de Ira durante 2 segundos, entonces lo canalizará. Mientras es canalizado invocará adds grandes. Pon la Estrella de hierro en Garrosh para stunearlo y así interrumpir su casteo."
+L["phase_3_end_trigger"] = "¿Creéis que habéis GANADO?"
 
 
 	L.custom_off_shaman_marker = "Marcador de Clarividentes"

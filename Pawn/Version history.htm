@@ -11,54 +11,11 @@
 <p>
 	I got tired of the version history section of the <a href="Readme.htm">
 	readme</a> being longer than the rest of it, so I moved parts here.</p>
-<h2>FAQ</h2>
-<h3>Why doesn't Pawn work in my language?</h3>
-<p>Unlike most addons, Pawn will not function properly in a language that it 
-hasn't been translated into.&nbsp; Pawn needs to be able to "read" the text on 
-the tooltips, and it can't do that in languages it hasn't been translated into.&nbsp; 
-If you try to use Pawn in a language that it doesn't understand, you'll get an 
-error message when you log in.</p>
-<p>If you're interested in helping translate Pawn to your native language, let 
-me know!&nbsp; (I'll warn you up front that it's not an easy untertaking!)</p>
-<h3>Why doesn't Pawn let me set a cap for a stat (hit, expertise, haste, ...) 
-and then a value above the cap and a value below the cap?</h3>
-<p>The core problem is that Pawn needs a way for you to, for each character, 
-associate a scale with a particular equipment set—something that doesn't change 
-often.&nbsp; Once Pawn has that, I could conceivably set up Pawn to allow caps, 
-sliding values, and all manner of crazy things.</p>
-<p>Until that time, allowing the value of a stat to change based on how much of 
-it you have would have to be based on your current stat values, which can be 
-buffed with spells, elixirs, and food, and which might be for an entirely 
-different gear set.&nbsp; For example, imagine a balance druid who is already 
-way over the hit cap, wants to get rid of some, and values hit at 0 when he's 
-above the cap.&nbsp; But, he's currently healing the raid, so he's in resto gear 
-and has 0 hit.&nbsp; When a necklace for his balance set drops with hit on it, 
-Pawn would see he has 0 hit (way below the cap) so it would give a high value to 
-that necklace's hit rating even though he really, really doesn't want more hit.&nbsp; 
-Instead, to give useful information, Pawn would need to know the amount of hit 
-the druid has <u>in his balance gear</u>.</p>
-<p>So that's the main thing blocking the feature.&nbsp; I've been working toward 
-making caps possible, but I'm still not quite there. Once a scale can be 
-associated with a single gear set, then I should be able to start work on a way 
-to allow caps and other types of self-adjusting stat values.</p>
-<h3>Why doesn't Pawn suggest enchantments?</h3>
-<p>I could do something with enchantments in the future someday, but I'm not really convinced. Usually your choice of enchantment is either simple enough that 
-	Pawn isn&#39;t very necessary (is the +30 spell power enchantment or the +51 
-	spell power enchantment better?), or complex enough that Pawn can&#39;t tell you 
-	which one is better for your playstyle (periodically do 500 extra nature 
-	damage, +1000 attack power on a proc, or a flat +130 agility?).&nbsp; This 
-feature would almost certainly come down to including a series of suggested 
-enchantments for every slot, for every class and spec in the game (and possibly 
-another set of enchantments for heirloom items, since those can't use the 
-top-tier enchantments).&nbsp; Then I'd have to keep all that stuff up-to-date 
-with the latest theorycrafting.&nbsp; It seems like a lot of work to replicate 
-what's already available in your favorite class guide, and I could spend that 
-time on things that better leverage Pawn's strengths—helping you quickly make 
-in-game item decisions.</p>
-
 <h2>Future versions</h2>
 <p>There are many features that I&#39;d like to add in future versions of Pawn, 
-besides fixing issues listed in the &quot;known issues&quot; below.</p>
+besides fixing issues listed in the &quot;known issues&quot; below.&nbsp; 
+However, since Pawn's usefulness in 6.0 and later seems fairly limited, it's 
+likely that Pawn may not receive any further major features.</p>
 <ul>
 	<li>I'd like to make it so that Pawn only shows scales for your current 
 	specialization by default.&nbsp; Most people don't care to see all three (or 
@@ -88,110 +45,47 @@ besides fixing issues listed in the &quot;known issues&quot; below.</p>
 		<span style="color: #808080;">⬇</span> -4% downgrade</span></li>
 	</ul>
 	</li>
-	<li>Pawn will suggest that you fill engineering helms with the same type of cogwheel,
-	but the cogwheels are unique-equipped, so Pawn should really suggest a best two or
-	three.  (Engineers always gotta make things more complicated...)</li>
 	<li>The item upgrade features work just on item IDs, but that means they 
 	don't work well with random stat items since most of those have no stats on 
 	the base version of the item and the "of the Beast" part is basically an 
 	enchantment.&nbsp; 
 	(I should probably store what Pawn calls unenchanted item links, which would still have the 
 	random stat component.)</li>
-	<li>Once Pawn has a concept of "sets of items," I could add an option so 
-	that upgrade percentages shown are relative to the total value of your gear 
-	instead of relative to your old best item for that slot.&nbsp; This would 
-	help you find the best use of your valor points, for example, without 
-	needing to see raw Pawn scores.&nbsp; (Instead of showing (NewItem - 
-	OldItem) / OldItem, instead show (NewItem - OldItem) / 
-	TotalValueOfOldItem'sGearSet.)&nbsp; This would be also useful for helping 
-	you know how to best spend your valor points for item level upgrades.<ul>
-		<li>I don't <i>necessarily</i> have to complete the work to teach Pawn 
-		about the concept of a set of items before I could do this, though; it 
-		already knows what your best items for each of your scales is.</li>
-	</ul>
-	</li>
-	<li>It would be neat if Pawn let you modify the built-in scales, and then it 
-	would apply the specific changes that you made over the new scale when the 
-	built-in one updated.&nbsp; That would allow you to adjust for hit and 
-	expertise caps, disable certain stats or weapon types, and so on.</li>
-	<li>Pawn has reported compatibility problems with the mod BagSync.  I'll look into it.</li>
-	<li>Another possible source for up-to-date example scales is
-	<a href="http://www.askmrrobot.com/">Ask Mr. Robot</a>.<ul>
-		<li>Apparently that's where Wowhead's scales come from now anyway...?</li>
-	</ul>
-	</li>
 	<li>I can add more upgrade arrows to more places, like your own inventory.&nbsp; 
 	(The main reason I haven't done this already is that I was worried about the 
 	performance implications.)</li>
 	<li>I could add the upgrade arrow icon to the icon that Pawn adds 
 	to the left of item link windows.</li>
-	<li>I should add a feature so that warriors with Titan&#39;s Grip can have their 
+	<li>I should add a feature so that warriors with Crazed Berserker (aka Titan&#39;s Grip) can have their 
 	two best two-handed weapons tracked for upgrades instead of just one.</li>
-	<li>Now that item level is a more important stat than in the past since a 
-	low item level actually prevents you from getting into dungeons, I should 
-	reconsider adding item level as a custom stat for people who want to use it, 
-	but I don't want to add more features that use item level automatically 
-	without thinking them through very carefully, since it sort of defeats the 
-	whole purpose of Pawn and item level can be used to make very poor 
-	decisions.</li>
 	<li>For specs that have different DPS values for main hand weapons and 
 	off-hand weapons, one-handed weapons should have two separate values, and 
 	should use those different values when determining upgrades.&nbsp; (This is 
 	a pretty big change though, and it might only really affect rogues.)</li>
-	<li>Someday I&#39;d still like to use some new WoW features that were added in 
-	patch 3.2 (the GetItemStats API) to drastically speed up Pawn&#39;s 
-	calculations, reduce the complexity of the code, and significantly reduce 
-	the amount of time and effort it takes to translate Pawn.&nbsp; 
-	Unfortunately there are several limitations:<ul>
-		<li>GetItemStats can&#39;t return stats for the &quot;current&quot; version of an 
-		item, so I wouldn&#39;t have a way to see what gems, enchantments, and 
-		reforgings are on an item.<ul>
-			<li>I might be able to <i>very tediously</i> work around this by 
-			maintaining a database of the spell IDs for every enchantment and 
-			what stats it gave, but that would be a pretty massive undertaking, 
-			even greater than what I had to do to add a gem database.</li>
-		</ul>
-		</li>
-		<li>There&#39;s no way to get a socket bonus from GetItemStats, nor is there 
-		a way to tell if the item scales with your level, whether or not it 
-		grants XP, and some other stuff.</li>
+	<li>WoW now has an API that didn't exist when Pawn was created: 
+	GetItemStats.&nbsp; Using it could drastically speed up Pawn's calculations, 
+	reduce complexity of the code, and make it much easier to translate.&nbsp; 
+	I'd like to use it someday.&nbsp; It has these drawbacks though:<ul>
+		<li>It can't get information about socket bonuses (no longer terribly 
+		relevant in 6.0)</li>
+		<li>It can't get information about which gems and enchantments are on 
+		the item (no longer terribly relevant in 6.0)</li>
+		<li>It can't tell things like whether the item scales with your level, 
+		grants XP, or things like that (I might be able to work around that by 
+		just maintaining a list of all item IDs of heirlooms)</li>
+		<li>It can't tell the difference between the raid finder version of an 
+		item and the mythic version of an item (verified September 24, 2014)</li>
 	</ul>
 	</li>
-	<li>I need to add a way for scales to choose a specific meta gem [effect], and the 
-	Wowhead scales should always have the best meta gem for each class/spec 
-	chosen, since that&#39;s not always the one with the best primary stats.&nbsp; 
-	(One problem with this is that I'd need a different best meta gem for each 
-	tier of expansion content.)</li>
 	<li>To make Pawn more approachable for new users, I think that by default 
 	I'll remove Pawn values from trinkets (since trinkets have secondary effects 
 	and thus their Pawn values are very rarely accurate).&nbsp; (Of course I'd add an option to turn 
 	those values back 
 	on.)</li>
-	<li>It might be interesting to have Pawn give a second-best suggested stat if one of
-	the stats to reforge to or from on an item is hit rating or expertise, to aid people who
-	are hit capped but don't reduce the value of hit in their scales.<ul>
-		<li>It would also need to do this if the stat were spirit for shadow 
-		priests, boomkins, and elemental shamans.</li>
-	</ul>
-	</li>
-	<li>Pawn could show little icons next to scores for items that still need to 
-	be properly gemmed or reforged to reach their base values.</li>
-	<li>You should be able to see the gem and reforging suggestions for an item 
-	without actually opening up those UIs—probably in the Compare tab with just 
-	one item visible.</li>
-	<li>The Compare tab should be updated to allow comparisons between two 
-	one-handed items and a two-handed item.</li>
-	<li>Right now, the Compare tab only shows stats that have nonzero values in 
-	your currently-selected scale.&nbsp; I could add an option to show all stats, though that 
-	would make it a lot harder to use at a glance—weapons have a lot of stats, 
-	including 8-12 stats just for tracking damage and speed, plus any real stats 
-	on the item.</li>
 	<li>I could improve the Compare tab to support comparing multiple sets of 
 	items at once.&nbsp; For example, an entire gear set versus another person&#39;s 
 	entire gear set.&nbsp; Or, at the very least, a dagger and an off-hand 
 	versus a staff.</li>
-	<li>I could make it so that Pawn could generate Wowhead/LootRank item search URLs from your 
-	scales.</li>
 	<li>There could be a way to automatically share Pawn scale 
 	tags with another player through an in-game whisper.&nbsp; Something like 
 	/pawn share Vger &lt;scale name&gt;.&nbsp; Or, there could just be a window 
@@ -219,9 +113,6 @@ besides fixing issues listed in the &quot;known issues&quot; below.</p>
 	addon, or something similar. Once Pawn has a better concept of "this is 
 	which gear set this character wears for this task," I should be able to do 
 	this.</li>
-	<li>An "ignore sockets when below the level cap" option would be great for 
-	people who are never going to bother putting gems into items, ever, until 
-	they hit 90.</li>
 </ul>
 	<h2>Known issues and bugs</h2>
 <p>Check here first if you think you&#39;ve found a new bug; maybe I already know 
@@ -255,6 +146,131 @@ about it.</p>
 </ul>
 <h2>Release history</h2>
 <p>For recent version history, see the <a href="Readme.htm">Pawn readme</a>.</p>
+<h3>Version 1.8.11</h3>
+<ul>
+	<li>Made a tweak to make Pawn's Quest Advisor work better with ElvUI.</li>
+	<li>Updated Russian and German translations.</li>
+</ul>
+<h3>Version 1.8.10</h3>
+<ul>
+	<li>The new Timeless, Flexible, Warforged, and Heroic Warforged items will 
+	no longer show a (?) next to those terms.</li>
+</ul>
+<h4>Version 1.8.10a</h4>
+<ul>
+	<li>Actually including the right file this time so the fix described in the 
+	notes works.</li>
+	<li>New German translation updates.</li>
+</ul>
+<h4>Version 1.8.10b</h4>
+<ul>
+	<li>New Russian and Simplified Chinese translation updates.</li>
+</ul>
+<h3>Version 1.8.9</h3>
+<ul>
+	<li>Items that an Eye of the Black Prince can be applied to (Sha-Touched 
+	weapons from Heart of Fear and Terrace of Eternal Spring, Level 502 
+	Blacksmithing weapons, and weapons that drop in Throne of Thunder) will be 
+	valued assuming that you add the socket to that weapon.&nbsp; Weapons from 
+	heroic scenarios and Siege of Orgrimmar will not.&nbsp; (Previously only 
+	Sha-Touched weapons were correctly being valued in this way.)</li>
+	<li>Made a few adjustments to try to better handle chest armor that is 
+	classified as "robes" by the game.</li>
+	<li>Minor changes for patch 5.4.</li>
+</ul>
+<h3>Version 1.8.8</h3>
+<ul>
+	<li>Fixed some issues with upgrade displays showing incorrect information 
+	for wands.</li>
+	<li>Fixed some issues with upgrade displays showing incorrect information 
+	for characters that don't save healing gear but still have a healing scale 
+	enabled.</li>
+</ul>
+<h3>Version 1.8.7</h3>
+<ul>
+	<li>Pawn will now no longer show any weapons other than daggers as upgrades 
+	for assassination rogues when using the default Wowhead scales.</li>
+	<li>Fixed a rare bug that could occur with quests such as Returned Sevenfold 
+	that include both a choice of rewards and some guaranteed rewards, where 
+	Pawn could incorrectly display upgrade symbols that were intended for the 
+	guaranteed rewards on the icons for the reward choices.</li>
+	<li>Fixed a problem that appears to be new for patch 5.3 where inspecting 
+	another player that you're not also targeting would not calculate an average 
+	item level for that player's equipment.</li>
+</ul>
+<h3>Version 1.8.6</h3>
+<ul>
+	<li>Adjusted the values of PvP power and PvP resilience on MoP-quality gems 
+	to their new (halved) values.</li>
+	<li>Added Tense Imperial Amethyst.</li>
+</ul>
+<h3>Version 1.8.5</h3>
+<ul>
+	<li>A few minor changes to work around a rare issue where Pawn would load 
+	files in a different order on some machines.</li>
+</ul>
+<h3>Version 1.8.4</h3>
+<ul>
+	<li>Priests will no longer incorrectly see bows, crossbows, and guns as 
+	potential upgrades when using the built-in Wowhead scales.</li>
+</ul>
+<h3>Version 1.8.3</h3>
+<ul>
+	<li>Sha-touched items from Heart of Fear and Terrace of Eternal Spring (all 
+	difficulties) will now always be valued (for base value) as if you've 
+	completed Wrathion's Chapter II questline and can add a prismatic socket to 
+	the item.</li>
+	<li>Added a Brailian Portuguese translation.&nbsp; Thanks maxmag!</li>
+	<li>Includes minor updates to the other translations.</li>
+	<li>Fixed a couple minor display issues on the Compare tab when one item had 
+	sockets and the other did not.</li>
+	<li>Thunderforged and Heroic Thunderforged items on the English PTR will no 
+	longer show (?) on their tooltips.</li>
+</ul>
+<h3>Version 1.8.2</h3>
+<ul>
+	<li>Fixed a bug in average item level calculations when inspecting hunters.&nbsp; 
+	(Their ranged weapons were only getting counted for half the appropriate 
+	level.)</li>
+	<li>The Reforging Advisor will now also show up when you right-click an item 
+	while talking to an arcane reforger.</li>
+</ul>
+<h3>Version 1.8.1</h3>
+<ul>
+	<li>This version of Pawn now includes French support, thanks to translation 
+	volunteers othor and Snuff, and an untested Traditional Chinese translation 
+	based on work by BNSSNB.</li>
+	<li>Reduced Pawn's memory usage by about 35% (at least on my PC) by 
+	optimizing the way translations are loaded.&nbsp; Pawn's memory usage should 
+	return to about where it was back when it was for a single language only.</li>
+	<li>Corrected a calculation problem where the Ghost Iron Dragonling trinket 
+	was undervalued because Pawn suggested Cataclysm cogwheels for it instead of 
+	Mists of Pandaria cogwheels.&nbsp; (Thanks durandal42!)</li>
+	<li>Fixed a minor problem that could occur when using the Compare tab if you 
+	used Pawn in the past (or on another computer), then stopped using it, then 
+	sold some of your best items, and then started using it again.</li>
+</ul>
+<h3>Version 1.8</h3>
+<ul>
+	<li>This version of Pawn now works for German and Russian in addition to 
+	English.&nbsp; Big thanks to the translation volunteers Sandmahn and 
+	mgotovtsev!&nbsp; It also has an untested Simplified Chinese translation 
+	based on work by bigbamboo.</li>
+	<li>This version also contains a large number of changes to prepare for 
+	German, Russian, and more languages in the future.</li>
+	<li>Some now-unnecessary information that was being stored in Pawn's 
+	SavedVariables file will now be removed when logging out.</li>
+	<li>Reorganized the Options tab to make it a bit cleaner.&nbsp; Options for 
+	changing the digits of displayed precision for values and for controlling 
+	the visibility of (?) icons on tooltips were removed.</li>
+	<li>Changed a bunch of bits of text throughout Pawn.</li>
+	<li>Worked around a problem that occurred with Pawn annotations showing up 
+	on AtlasLoot items twice.&nbsp; (To show Pawn annotations on AtlasLoot 
+	items, click Options in AtlasLoot and then check Use GameTooltip.)</li>
+	<li>Added support for the Pyrium Weapon Chain and Living Steel Weapon Chain.</li>
+	<li>Crystals of Fear will now no longer improperly show (?) on their 
+	tooltips.</li>
+</ul>
 <h3>Version 1.7.4</h3>
 <ul>
 	<li>Pawn will now properly show values and/or upgrades for mistweaver monks 

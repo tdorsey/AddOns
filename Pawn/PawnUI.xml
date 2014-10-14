@@ -353,6 +353,10 @@
 		<Anchors><Anchor point="BOTTOMLEFT"><Offset><AbsDimension x="15" y="-5" /></Offset></Anchor></Anchors>
 		<Size><AbsDimension x="30" y="30" /></Size>
 	</Texture>
+	<Texture name="PawnUI_QuestAdvisorTexture_Map" file="Interface\AddOns\Pawn\Textures\UpgradeArrowBig" virtual="true" hidden="true">
+		<Anchors><Anchor point="BOTTOMLEFT"><Offset><AbsDimension x="15" y="-5" /></Offset></Anchor></Anchors>
+		<Size><AbsDimension x="18" y="18" /></Size>
+	</Texture>
 
 
 	<!-- The main Pawn configuration UI -->
@@ -1291,22 +1295,22 @@
 						<Scripts><OnClick function="PawnUIFrame_ShowSocketingAdvisorCheck_OnClick" /></Scripts>
 					</CheckButton>
 					
-					<CheckButton name="PawnUIFrame_ShowReforgingAdvisorCheck" inherits="PawnUICheckboxTemplate">
-						<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="300" y="-160" /></Offset></Anchor></Anchors>
-						<Layers><Layer level="ARTWORK">
-							<FontString name="$parent_Label" inherits="PawnUICheckboxLabelTemplate" text="PawnUIFrame_ShowReforgingAdvisorCheck_Text" />
-						</Layer></Layers>
-						<Scripts><OnClick function="PawnUIFrame_ShowReforgingAdvisorCheck_OnClick" /></Scripts>
-					</CheckButton>
-					
 					<CheckButton name="PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck" inherits="PawnUICheckboxTemplate">
-						<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="300" y="-185" /></Offset></Anchor></Anchors>
+						<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="300" y="-160" /></Offset></Anchor></Anchors>
 						<Layers><Layer level="ARTWORK">
 							<FontString name="$parent_Label" inherits="PawnUICheckboxLabelTemplate" text="PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck_Text" />
 						</Layer></Layers>
 						<Scripts><OnClick function="PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck_OnClick" /></Scripts>
 					</CheckButton>
 					
+					<CheckButton name="PawnUIFrame_IgnoreGemsWhileLevelingCheck" inherits="PawnUICheckboxTemplate">
+						<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="300" y="-185" /></Offset></Anchor></Anchors>
+						<Layers><Layer level="ARTWORK">
+							<FontString name="$parent_Label" inherits="PawnUICheckboxLabelTemplate" text="PawnUIFrame_IgnoreGemsWhileLevelingCheck_Text" />
+						</Layer></Layers>
+						<Scripts><OnClick function="PawnUIFrame_IgnoreGemsWhileLevelingCheck_OnClick" /></Scripts>
+					</CheckButton>
+
 					<!-- Other options -->
 					
 					<CheckButton name="PawnUIFrame_DebugCheck" inherits="PawnUICheckboxTemplate">

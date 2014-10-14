@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 --
 -- User interface code
@@ -937,8 +937,7 @@ function PawnUI_SetCompareItem(Index, ItemLink)
 			end
 		else
 			-- Unenchant the item link.
-			local UnenchantedLink = PawnUnenchantItemLink(ItemLink)
-			if UnenchantedLink then ItemLink = UnenchantedLink end
+			ItemLink = PawnUnenchantItemLink(ItemLink, true)
 			Item = PawnGetItemData(ItemLink)
 			-- If Item is nil, then that item isn't actually a valid item with stats, so we shouldn't allow it in the compare UI.
 			if not Item then return end
@@ -1084,10 +1083,9 @@ function PawnUI_SetShortcutBestItem(ShortcutIndex, InvType)
 	end
 	
 	-- Find the best item for this shortcut, and save it for later.  (If InvType is nil, this will return nil.)
-	local BestItemID = PawnGetBestItemID(PawnUICurrentScale, InvType, ShortcutIndex - 2)
-	local BestItem
-	if BestItemID then
-		PawnUIShortcutItems[ShortcutIndex] = PawnGetItemData("item:" .. BestItemID)
+	local BestItemLink = PawnGetBestItemLink(PawnUICurrentScale, InvType, ShortcutIndex - 2)
+	if BestItemLink then
+		PawnUIShortcutItems[ShortcutIndex] = PawnGetItemData(BestItemLink)
 	else
 		PawnUIShortcutItems[ShortcutIndex] = nil
 	end
@@ -1225,9 +1223,9 @@ function PawnUI_CompareItems()
 		PawnUI_AddComparisonStatLineNumbers(PawnLocal.UI.CompareColoredSockets, HasSockets1, HasSockets2)
 	end
 
-	local _, UseRed, UseYellow, UseBlue, TotalSocketValue1 = PawnGetItemValue(ItemStats1, Item1.Level, ItemSocketBonusStats1, PawnUICurrentScale,false, true, true)
+	local _, UseRed, UseYellow, UseBlue, TotalSocketValue1 = PawnGetItemValue(ItemStats1, Item1.Level, ItemSocketBonusStats1, PawnUICurrentScale,false, true)
 	local ProperlySocket1 = HasSockets1 and not UseRed and not UseYellow and not UseBlue and ItemSocketBonusStats1 ~= nil
-	local _, UseRed, UseYellow, UseBlue, TotalSocketValue2 = PawnGetItemValue(ItemStats2, Item2.Level, ItemSocketBonusStats2, PawnUICurrentScale, false, true, true)
+	local _, UseRed, UseYellow, UseBlue, TotalSocketValue2 = PawnGetItemValue(ItemStats2, Item2.Level, ItemSocketBonusStats2, PawnUICurrentScale, false, true)
 	local ProperlySocket2 = HasSockets2 and not UseRed and not UseYellow and not UseBlue and ItemSocketBonusStats2 ~= nil
 	if ProperlySocket1 then ProperlySocket1 = YES end
 	if ProperlySocket2 then ProperlySocket2 = YES end
@@ -1300,25 +1298,10 @@ function PawnUI_CompareItems()
 		PawnUI_AddComparisonStatLineNumbers(PawnLocal.ItemLevelTooltipLine, Level1, Level2)
 	end
 	
-	-- Add reforge potential.
-	local ReforgePotential1 = PawnFindOptimalReforging(Item1, PawnUICurrentScale, true)
-	if ReforgePotential1 and ReforgePotential1 <= 0 then ReforgePotential1 = nil end
-	local ReforgePotential2 = PawnFindOptimalReforging(Item2, PawnUICurrentScale, true)
-	if ReforgePotential2 and ReforgePotential2 <= 0 then ReforgePotential2 = nil end
-	if ReforgePotential1 or ReforgePotential2 then
-		if ReforgePotential1 then ReforgePotential1 = "+" .. VgerCore.FormatCompactDecimal(ReforgePotential1) end
-		if ReforgePotential2 then ReforgePotential2 = "+" .. VgerCore.FormatCompactDecimal(ReforgePotential2) end
-		if LastFoundHeader then
-			PawnUI_AddComparisonHeaderLine(LastFoundHeader)
-			LastFoundHeader = nil
-		end
-		PawnUI_AddComparisonStatLineStrings(PawnLocal.UI.CompareReforgingPotential, ReforgePotential1, ReforgePotential2)
-	end
-	
 	-- Add asterisk indicator.
 	local Asterisk1, Asterisk2
-	if Item1.UnknownLines then Asterisk1 = YES end
-	if Item2.UnknownLines then Asterisk2 = YES end
+	if Item1.UnknownLines then Asterisk1 = YES VgerCore.Message("#(Item1.UnknownLines) = " .. tostring(#(Item1.UnknownLines))) end
+	if Item2.UnknownLines then Asterisk2 = YES VgerCore.Message("#(Item2.UnknownLines) = " .. tostring(#(Item2.UnknownLines))) end
 	if Asterisk1 or Asterisk2 then
 		if LastFoundHeader then
 			PawnUI_AddComparisonHeaderLine(LastFoundHeader)
@@ -1550,9 +1533,7 @@ function PawnUICompareItemShortcut_TooltipOn(self)
 	local Item = PawnUIShortcutItems[ShortcutIndex]
 	if Item then
 		GameTooltip:SetOwner(getglobal("PawnUICompareItemShortcut" .. ShortcutIndex), "ANCHOR_TOPLEFT")
-		local UnenchantedLink = PawnUnenchantItemLink(Item.Link)
-		if not UnenchantedLink then UnenchantedLink = Item.Link end
-		GameTooltip:SetHyperlink(UnenchantedLink)
+		GameTooltip:SetHyperlink(PawnUnenchantItemLink(Item.Link, true))
 	end
 end
 
@@ -1780,8 +1761,8 @@ function PawnUIOptionsTabPage_OnShow()
 	PawnUIFrame_ShowLootUpgradeAdvisorCheck:SetChecked(PawnCommon.ShowLootUpgradeAdvisor)
 	PawnUIFrame_ShowQuestUpgradeAdvisorCheck:SetChecked(PawnCommon.ShowQuestUpgradeAdvisor)
 	PawnUIFrame_ShowSocketingAdvisorCheck:SetChecked(PawnCommon.ShowSocketingAdvisor)
-	PawnUIFrame_ShowReforgingAdvisorCheck:SetChecked(PawnCommon.ShowReforgingAdvisor)
 	PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck:SetChecked(PawnCommon.ShowBoth1HAnd2HUpgrades)
+	PawnUIFrame_IgnoreGemsWhileLevelingCheck:SetChecked(PawnCommon.IgnoreGemsWhileLeveling)
 
 	-- Other options
 	PawnUIFrame_DebugCheck:SetChecked(PawnCommon.Debug)
@@ -1789,22 +1770,22 @@ function PawnUIOptionsTabPage_OnShow()
 end
 
 function PawnUIFrame_ShowItemIDsCheck_OnClick()
-	PawnCommon.ShowItemID = PawnUIFrame_ShowItemIDsCheck:GetChecked() ~= nil
+	PawnCommon.ShowItemID = PawnUIFrame_ShowItemIDsCheck:GetChecked()
 	PawnResetTooltips()
 end
 
 function PawnUIFrame_ShowIconsCheck_OnClick()
-	PawnCommon.ShowTooltipIcons = PawnUIFrame_ShowIconsCheck:GetChecked() ~= nil
+	PawnCommon.ShowTooltipIcons = PawnUIFrame_ShowIconsCheck:GetChecked()
 	PawnToggleTooltipIcons()
 end
 
 function PawnUIFrame_ShowExtraSpaceCheck_OnClick()
-	PawnCommon.ShowSpace = PawnUIFrame_ShowExtraSpaceCheck:GetChecked() ~= nil
+	PawnCommon.ShowSpace = PawnUIFrame_ShowExtraSpaceCheck:GetChecked()
 	PawnResetTooltips()
 end
 
 function PawnUIFrame_AlignRightCheck_OnClick()
-	PawnCommon.AlignNumbersRight = PawnUIFrame_AlignRightCheck:GetChecked() ~= nil
+	PawnCommon.AlignNumbersRight = PawnUIFrame_AlignRightCheck:GetChecked()
 	PawnResetTooltips()
 end
 
@@ -1822,34 +1803,36 @@ function PawnUIFrame_TooltipUpgradeList_UpdateSelection()
 end
 
 function PawnUIFrame_ColorTooltipBorderCheck_OnClick()
-	PawnCommon.ColorTooltipBorder = PawnUIFrame_ColorTooltipBorderCheck:GetChecked() ~= nil
+	PawnCommon.ColorTooltipBorder = PawnUIFrame_ColorTooltipBorderCheck:GetChecked()
 	PawnResetTooltips()
 end
 
 function PawnUIFrame_EnchantedValuesCheck_OnClick()
-	PawnCommon.ShowEnchanted = PawnUIFrame_EnchantedValuesCheck:GetChecked() ~= nil
+	PawnCommon.ShowEnchanted = PawnUIFrame_EnchantedValuesCheck:GetChecked()
 	PawnResetTooltips()
 end
 
 function PawnUIFrame_ShowLootUpgradeAdvisorCheck_OnClick()
-	PawnCommon.ShowLootUpgradeAdvisor = PawnUIFrame_ShowLootUpgradeAdvisorCheck:GetChecked() ~= nil
+	PawnCommon.ShowLootUpgradeAdvisor = PawnUIFrame_ShowLootUpgradeAdvisorCheck:GetChecked()
 	if LootHistoryFrame then LootHistoryFrame_FullUpdate(LootHistoryFrame) end
 end
 
 function PawnUIFrame_ShowQuestUpgradeAdvisorCheck_OnClick()
-	PawnCommon.ShowQuestUpgradeAdvisor = PawnUIFrame_ShowQuestUpgradeAdvisorCheck:GetChecked() ~= nil
+	PawnCommon.ShowQuestUpgradeAdvisor = PawnUIFrame_ShowQuestUpgradeAdvisorCheck:GetChecked()
 end
 
 function PawnUIFrame_ShowSocketingAdvisorCheck_OnClick()
-	PawnCommon.ShowSocketingAdvisor = PawnUIFrame_ShowSocketingAdvisorCheck:GetChecked() ~= nil
-end
-
-function PawnUIFrame_ShowReforgingAdvisorCheck_OnClick()
-	PawnCommon.ShowReforgingAdvisor = PawnUIFrame_ShowReforgingAdvisorCheck:GetChecked() ~= nil
+	PawnCommon.ShowSocketingAdvisor = PawnUIFrame_ShowSocketingAdvisorCheck:GetChecked()
 end
 
 function PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck_OnClick()
-	PawnCommon.ShowBoth1HAnd2HUpgrades = PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck:GetChecked() ~= nil
+	PawnCommon.ShowBoth1HAnd2HUpgrades = PawnUIFrame_ShowBoth1HAnd2HUpgradesCheck:GetChecked()
+	PawnResetTooltips()
+end
+
+function PawnUIFrame_IgnoreGemsWhileLevelingCheck_OnClick()
+	PawnCommon.IgnoreGemsWhileLeveling = PawnUIFrame_IgnoreGemsWhileLevelingCheck:GetChecked()
+	PawnInvalidateBestItems()
 	PawnResetTooltips()
 end
 
@@ -1859,7 +1842,7 @@ function PawnUIFrame_ResetUpgradesButton_OnClick()
 end
 
 function PawnUIFrame_DebugCheck_OnClick()
-	PawnCommon.Debug = PawnUIFrame_DebugCheck:GetChecked() ~= nil
+	PawnCommon.Debug = PawnUIFrame_DebugCheck:GetChecked()
 	PawnResetTooltips()
 end
 
@@ -1906,7 +1889,11 @@ function PawnUI_OnSocketUpdate()
 	CreateFrame("GameTooltip", "PawnSocketingTooltip", ItemSocketingFrame, "PawnUI_HintTooltip_PointsUp")
 	PawnSocketingTooltip:SetOwner(ItemSocketingFrame, "ANCHOR_NONE")
 	PawnSocketingTooltip:SetPoint("TOPLEFT", ItemSocketingFrame, "BOTTOMLEFT", 6, -6)
+	local ShouldIncludeSockets = (not PawnCommon.IgnoreGemsWhileLeveling) or (Item.Level ~= nil and Item.Level >= PawnMinimumItemLevelToConsiderGems)
 	PawnSocketingTooltip:SetText(PawnLocal.UI.SocketingAdvisorHeader, 1, 1, 1)
+	if not ShouldIncludeSockets then
+		PawnSocketingTooltip:AddLine(PawnLocal.UI.SocketingAdvisorIgnoreThisItem, VgerCore.Color.BlueR, VgerCore.Color.BlueG, VgerCore.Color.BlueB)
+	end
 	
 	for _, Entry in pairs(Item.Values) do
 		local ScaleName, UseRed, UseYellow, UseBlue = Entry[1], Entry[4], Entry[5], Entry[6]
@@ -1989,95 +1976,6 @@ function PawnUI_OnSocketUpdate()
 end
 
 ------------------------------------------------------------
--- Reforging Advisor
-------------------------------------------------------------
-
-function PawnUI_ReforgingAdvisor_Initialize()
-	hooksecurefunc("ReforgingFrame_Update", PawnUI_OnReforgingUpdate)
-end
-
-function PawnUI_OnReforgingUpdate()
-	-- Hide the existing reforging tooltip if there is one.
-	if PawnReforgingTooltip then PawnReforgingTooltip:Hide() end
-
-	if not PawnCommon.ShowReforgingAdvisor then return end
-
-	-- Find out what item it is.
-	PawnPrivateTooltip:ClearLines()
-	PawnPrivateTooltip:SetOwner(UIParent, "ANCHOR_NONE")
-	PawnPrivateTooltip:SetReforgeItem()
-	local _, ItemLink = PawnPrivateTooltip:GetItem()
-	if not ItemLink then return end
-	
-	local Item = PawnGetItemData(ItemLink)
-	if not Item or not Item.Values then
-		VgerCore.Fail("Failed to update the reforging UI because we didn't know what item was in it.")
-		return
-	end
-	if not Item.UnenchantedStats then return end -- Can't do anything interesting if we couldn't get unenchanted item data
-	local IsUpgradeNotTracked = (Item.InvType == "INVTYPE_TRINKET") -- Don't grey out reforge instructions for trinkets
-	local UpgradeInfo, BestItemFor, SecondBestItemFor = PawnIsItemAnUpgrade(Item)
-	
-	-- Now, find out what to do for each scale.
-	local ScaleName
-	local InstructionsList = { }
-	local SuggestedAnyCappedStats
-	for ScaleName, _ in pairs(PawnCommon.Scales) do
-		if PawnIsScaleVisible(ScaleName) then
-			local StatDelta, Instructions, SuggestedCappedStat = PawnFindOptimalReforging(Item, ScaleName)
-			if StatDelta == nil then
-				-- This item can't be reforged.
-				return
-			end
-			SuggestedAnyCappedStats = SuggestedAnyCappedStats or SuggestedCappedStat
-			local TextColor = PawnGetScaleColor(ScaleName)
-			local LocalizedName = PawnGetScaleLocalizedName(ScaleName)
-			local Color = ""
-			if IsUpgradeNotTracked then
-				-- We don't track upgrades for this type of item, so don't grey it out.
-			elseif (BestItemFor and BestItemFor[ScaleName]) or (SecondBestItemFor and SecondBestItemFor[ScaleName]) then
-				-- This is one of our best items for this scale.
-			elseif UpgradeInfo then
-				-- Is this an upgrade for this scale?
-				local WasUpgrade = nil
-				local UpgradeData
-				for _, UpgradeData in pairs(UpgradeInfo) do
-					if UpgradeData[1] == ScaleName then
-						WasUpgrade = true
-						break
-					end
-				end
-				if not WasUpgrade then Color = VgerCore.Color.Grey end
-			else
-				-- This item isn't good for this scale, so grey out the instructions.
-				Color = VgerCore.Color.Grey
-			end
-			
-			tinsert(InstructionsList, format("%s%s:|r  %s%s", TextColor, LocalizedName, Color, Instructions))
-		end
-	end
-	sort(InstructionsList, PawnColoredStringCompare)
-	
-	-- Add the annotation lines to the tooltip.
-	if not PawnReforgingTooltip then CreateFrame("GameTooltip", "PawnReforgingTooltip", ReforgingFrame, "PawnUI_HintTooltip_PointsUp") end
-	PawnReforgingTooltip:SetOwner(ReforgingFrame, "ANCHOR_NONE")
-	PawnReforgingTooltip:SetPoint("TOPLEFT", ReforgingFrame, "BOTTOMLEFT", 12, -12)
-	PawnReforgingTooltip:SetText(PawnLocal.UI.ReforgingAdvisorHeader, 1, 1, 1)
-	
-	local Instructions
-	for _, Instructions in pairs(InstructionsList) do
-		PawnReforgingTooltip:AddLine(Instructions, 1, 1, 1)
-	end
-	
-	if SuggestedAnyCappedStats then
-		PawnReforgingTooltip:AddLine(PawnLocal.ReforgeCappedStatWarning, VgerCore.Color.BlueR, VgerCore.Color.BlueG, VgerCore.Color.BlueB)
-	end
-	
-	-- Show our annotations tooltip.
-	PawnReforgingTooltip:Show()
-end
-
-------------------------------------------------------------
 -- Loot Upgrade Advisor
 ------------------------------------------------------------
 
@@ -2132,8 +2030,8 @@ function PawnUI_GroupLootFrame_OnShow(self)
 				else
 					ThisText = format(PawnLocal.TooltipUpgradeAnnotation, format("|n%s%s:", PawnGetScaleColor(ScaleName), ThisUpgradeData.LocalizedScaleName), ThisUpgradeData.PercentUpgrade * 100, SetAnnotation)
 				end
-				if ShowOldItems and ThisUpgradeData.ExistingItemID then
-					local ExistingItemName, _, Quality = GetItemInfo(ThisUpgradeData.ExistingItemID)
+				if ShowOldItems and ThisUpgradeData.ExistingItemLink then
+					local ExistingItemName, _, Quality = GetItemInfo(ThisUpgradeData.ExistingItemLink)
 					if ExistingItemName then
 						-- It's possible (though rare) that the existing item isn't in the user's cache, so we can't get its quality color.  In that case, don't display it in the tooltip.
 						local _, _, _, QualityColor =  GetItemQualityColor(Quality)
@@ -2231,13 +2129,14 @@ function PawnUI_OnQuestInfo_ShowRewards()
 	-- Before doing anything else, clear out our state from last time.
 	local i
 	for i = 1, MAX_NUM_ITEMS  do
-		local ItemButton = _G["QuestInfoItem" .. i]
+		local ItemButton = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, i)
 		if ItemButton.PawnQuestAdvisor then ItemButton.PawnQuestAdvisor:Hide() end
 	end
 	
 	if not PawnCommon.ShowQuestUpgradeAdvisor then return end
 
 	-- Now, get information about this quest.
+	local IsInMap = WorldMapFrame:IsShown()
 	local StaticRewards, RewardChoices
 	local GetLinkFunction, GetRewardInfoFunction, GetChoiceInfoFunction
 	if QuestInfoFrame.questLog then
@@ -2254,8 +2153,8 @@ function PawnUI_OnQuestInfo_ShowRewards()
 		GetChoiceInfoFunction = function(Index) return GetQuestItemInfo("choice", Index) end
 	end
 	if StaticRewards + RewardChoices == 0 then return end
-	if not QuestInfoItem1 then
-		VgerCore.Fail("Failed to annotate quest info because QuestInfoItem1 doesn't exist.  (Is a quest log mod interfering with Pawn?)")
+	if not QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, 1) then
+		VgerCore.Fail("Failed to annotate quest info because we couldn't find the reward button.  (Is a quest log mod interfering with Pawn?)")
 		return
 	end
 	
@@ -2289,11 +2188,15 @@ function PawnUI_OnQuestInfo_ShowRewards()
 	
 	local Reward
 	for _, Reward in pairs(QuestRewards) do
-		local ItemButton = _G["QuestInfoItem" .. Reward.Index]
+		local ItemButton = QuestInfo_GetRewardButton(QuestInfoFrame.rewardsFrame, Reward.Index)
 		local TextureName
 		if ItemButton then
 			if not ItemButton.PawnQuestAdvisor then
-				ItemButton.PawnQuestAdvisor = ItemButton:CreateTexture(nil, "OVERLAY", "PawnUI_QuestAdvisorTexture")
+				if IsInMap then
+					ItemButton.PawnQuestAdvisor = ItemButton:CreateTexture(nil, "OVERLAY", "PawnUI_QuestAdvisorTexture_Map")
+				else
+					ItemButton.PawnQuestAdvisor = ItemButton:CreateTexture(nil, "OVERLAY", "PawnUI_QuestAdvisorTexture")
+				end
 				-- Mod compatibility: ElvUI
 				ItemButton.PawnQuestAdvisor:SetDrawLayer("OVERLAY", 7)
 			end

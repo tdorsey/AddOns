@@ -1,6 +1,6 @@
 ﻿-- Pawn by Vger-Azjol-Nerub
 -- www.vgermods.com
--- © 2006-2013 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
+-- © 2006-2014 Green Eclipse.  This mod is released under the Creative Commons Attribution-NonCommercial-NoDerivs 3.0 license.
 -- See Readme.htm for more information.
 
 -- 
@@ -51,10 +51,6 @@ PawnLocal =
 	NoScalesDescription = "准备开始, 导入一个比重或者啟用一个新的.",
 	NoStatDescription = "从左侧列表选择一个属性.",
 	Or = "或 ",
-	ReforgeCappedStatWarning = "当您要重铸掉命中或校准属性时，请务必注意保证您的未命中概率不会超过0%.",
-	ReforgeDebugMessage = "   ---- 通过重铸装备获得 +%g",
-	ReforgeInstructions = "重铸 %s 为 %s",
-	ReforgeInstructionsNoReforge = "不要重铸",
 	RenameScaleEnterName = "%s 的新名为:",
 	SocketBonusValueCalculationMessage = "   -- 插槽加成是值得的: %g",
 	StatNameText = "1 |cffffffff%s|r 价值:",
@@ -87,28 +83,27 @@ PawnLocal =
 		ApInfo = "攻击强度，现在不会直接出现在装备属性中，不包括从力量、敏捷获得的攻击强度。",
 		ArmorInfo = "护甲值, 无论物品类型。有获得额外护甲技能的职业将指定一个数值来代替基础护甲和额外护甲。",
 		ArmorTypes = "护甲类型",
-		CasterStats = "法术属性",
+		AvoidanceInfo = "Avoidance.  Reduces the damage you take from area-of-effect attacks.", -- Requires localization
 		Cloth = "布甲",
 		ClothInfo = "物品类型为布甲。",
 		Crit = "爆击",
 		CritInfo = "爆击等级，影响近战、远程和法术的爆击几率。",
-		DodgeInfo = "躲闪等级。",
 		DpsInfo = "武器的每秒伤害。(如果你想要给不同类型的武器估分，前往 \"特殊武器属性\" 部分。)",
-		ExpertiseInfo = "精准属性。",
 		HasteInfo = "急速等级，影响近战、远程和法术的攻击速度",
-		Hit = "命中",
-		HitInfo = "命中等级，影响近战远程和法术的命中。",
-		HybridStats = "混合属性",
+		IndestructibleInfo = "Indestructible.  Prevents your equipment from taking durability damage.", -- Requires localization
+		IndestructibleIs = "Being |cffffffffindestructible|r is worth:", -- Requires localization
 		IntellectInfo = "主要属性，智力。",
 		Leather = "皮甲",
 		LeatherInfo = "物品类型为皮甲。",
+		LeechInfo = "Leech.  Causes your attacks and healing spells to restore your health.", -- Requires localization
 		Mail = "锁甲",
 		MailInfo = "物品类型为锁甲。",
 		MasteryInfo = "精通等级，从你投入点数最多的天赋树中获得的奖励。",
 		MetaSocket = "多彩:特效",
 		MetaSocketInfo = "多彩插槽，不管宝石是否镶嵌，只计算多彩宝石触发后的特效价值。",
-		ParryInfo = "招架等级。",
-		PhysicalStats = "物理攻击属性",
+		MinorStats = "Minor stats", -- Requires localization
+		MovementSpeedInfo = "Movement speed.  Causes your character to run faster.", -- Requires localization
+		MultistrikeInfo = "Multistrike.  Increases the chance that your attacks and healing spells will hit your target two extra times at reduced potency.", -- Requires localization
 		Plate = "板甲",
 		PlateInfo = "物品类型为板甲。",
 		PrimaryStats = "基础属性",
@@ -117,6 +112,7 @@ PawnLocal =
 		PvPResilience = "PvP韧性",
 		PvPResilienceInfo = "PvP韧性. 减少您受到的损害从其他玩家的攻击。",
 		PvPStats = "PvP属性",
+		SecondaryStats = "Secondary stats", -- Requires localization
 		Shield = "盾牌",
 		ShieldInfo = "物品类型为盾牌。",
 		Sockets = "插槽",
@@ -131,7 +127,7 @@ PawnLocal =
 		SpiritInfo = "主要属性，精神。",
 		StaminaInfo = "主要属性，耐力。",
 		StrengthInfo = "主要属性，力量。",
-		TankStats = "防御属性",
+		VersatilityInfo = "Versatility.  Increases damage dealt for damage characters, increases healing done by healing characters, and reduces damage taken for tank characters.", -- Requires localization
 		WeaponMainHandDps = "主手:每秒伤害",
 		WeaponMainHandDpsInfo = "主手武器每秒伤害。",
 		WeaponMainHandMaxDamage = "主手:伤害上限",
@@ -225,9 +221,11 @@ PawnLocal =
 		Ap = "^%+?([%d%.,]+) 攻击强度$",
 		Armor = "^([%d%.,]+)点护甲$",
 		Armor2 = "^UNUSED$",
+		Avoidance = "^%+([%d%.,]+) Avoidance$", -- Requires localization
 		Axe = "^斧$",
 		BagSlots = "^%d+格容器 .+$",
 		BladesEdgeMountains = "^刀锋山$",
+		BonusArmor = "^%+([%d%.,]+) Bonus Armor$", -- Requires localization
 		Bow = "^弓$",
 		ChanceOnHit = "击中时可能：",
 		Charges = "^.+ Charges?$",
@@ -239,8 +237,6 @@ PawnLocal =
 		Dagger = "^匕首$",
 		Design = "设计图：",
 		DisenchantingRequires = "^分解需要",
-		Dodge = "^%+?([%d%.,]+) 躲闪$",
-		Dodge2 = "^UNUSED$",
 		Dps = "^%（每秒伤害([%d%.,]+)）$",
 		DpsAdd = "^Adds ([%d%.,]+) damage per second$",
 		Duration = "^耐久度:",
@@ -254,8 +250,6 @@ PawnLocal =
 		EnchantmentPyriumWeaponChain = "^燃钢武器链$",
 		EnchantmentTitaniumWeaponChain = "^泰坦神铁武器链$",
 		Equip = "装备：",
-		Expertise = "^%+?([%d%.,]+) 精准$",
-		Expertise2 = "^UNUSED$",
 		FistWeapon = "^拳套$",
 		Flexible = "弹性级别",
 		Formula = "公式：",
@@ -269,27 +263,24 @@ PawnLocal =
 		HeroicElite = "^英雄精锐级别$",
 		HeroicThunderforged = "英雄雷霆",
 		HeroicWarforged = "英雄战火",
-		Hit = "^%+?([%d%.,]+) 命中$",
-		Hit2 = "^UNUSED$",
-		Hit3 = "^UNUSED$",
 		Hp5 = "^装备: 每5秒恢复([%d%.,]+)生命力。$",
 		Hp52 = "^装备: 每5秒恢复([%d%.,]+)生命力。$",
 		Hp53 = "^每5秒恢复([%d%.,]+)生命力$",
 		Hp54 = "^每5秒恢复([%d%.,]+)生命力。$",
 		Intellect = "^%+?([-%d%.,]+) 智力$",
 		Leather = "^皮甲$",
+		Leech = "^%+([%d%.,]+) Leech$", -- Requires localization
 		Mace = "^锤$",
 		Mail = "^锁甲$",
 		Manual = "配方：",
 		Mastery = "^%+?([%d%.,]+) 精通$",
 		Mastery2 = "^UNUSED$",
 		MetaGemRequirements = "|cff%x%x%x%x%x%x需要",
+		MovementSpeed = "^%+([%d%.,]+) Speed$", -- Requires localization
 		MultiStatSeparator1 = "和",
+		Multistrike = "^%+([%d%.,]+) Multistrike$", -- Requires localization
 		NormalizationEnchant = "^附魔：(.*)$",
-		NormalizationReforge = "^(.*)%（由(.*)重铸而来%）$",
 		OnlyFitsInMetaGemSlot = "^\"只能镶嵌在多彩宝石插槽中%。\"$",
-		Parry = "^%+?([%d%.,]+) 招架$",
-		Parry2 = "^UNUSED$",
 		Pattern = "图样：",
 		Plans = "食谱：",
 		Plate = "^板甲$",
@@ -323,6 +314,7 @@ PawnLocal =
 		Timeless = "永恒",
 		UpgradeLevel = "^升级：",
 		Use = "使用：",
+		Versatility = "^%+([%d%.,]+) Versatility$", -- Requires localization
 		Wand = "^魔杖$",
 		Warforged = "战火",
 		WeaponDamage = "^([%d%.,]+) %- ([%d%.,]+)点伤害$",
@@ -354,7 +346,6 @@ Wowhead负责默认的评分尺度的统计与设定。]=],
 		CompareHeader = "用 %s 进行对比",
 		CompareMetaSockets = "多彩插槽",
 		CompareOtherHeader = "其他",
-		CompareReforgingPotential = "重铸潜力",
 		CompareShaTouchedSockets = "染煞",
 		CompareSlotEmpty = "(空)",
 		CompareSocketBonus = "镶孔奖励",
@@ -427,6 +418,12 @@ Pawn 的评分尺度默认是由Wowhead提供的标准适合大众的，你也�
 
 该命令会在你的聊天记录窗口刷屏，所以不用的时候请关闭。]=],
 		OptionsHeader = "调整 Pawn 选项",
+		OptionsIgnoreGemsWhileLevelingCheck = "Ignore sockets on low-level items", -- Requires localization
+		OptionsIgnoreGemsWhileLevelingCheckTooltip = [=[Enable this option to have Pawn ignore sockets on low-level items when calculating item values, since most people do not go to the effort or expense of socketing items while still leveling.  A "low-level" item is one weaker than what can be obtained in a heroic dungeon at the level cap.
+
+If checked, Pawn's socketing advisor will still suggest appropriate gems for low-level items, but sockets will be ignored in calculations and socketed items will not show up as upgrades as often.
+
+If unchecked, Pawn will calculate values for items as if they were socketed in the way that maximizes the item's value, regardless of the item's level.]=], -- Requires localization
 		OptionsInventoryIcon = "显示物品图标",
 		OptionsInventoryIconTooltip = "在你点击聊天窗口的物品显示其信息的时候，在信息旁边显示该物品的图标。",
 		OptionsItemIDs = "显示物品ID",
@@ -436,8 +433,6 @@ Pawn 的评分尺度默认是由Wowhead提供的标准适合大众的，你也�
 		OptionsOtherHeader = "其它选项",
 		OptionsQuestUpgradeAdvisor = "显示任务奖励升级建议",
 		OptionsQuestUpgradeAdvisorTooltip = "在你交任务、有奖励选择的时候，在最有用装备上显示对你有属性提升的标志，如果没有能提升属性的装备，那么会在卖给NPC最值钱的装备上、显示一个金币图案。",
-		OptionsReforgingAdvisor = "显示重铸建议",
-		OptionsReforgingAdvisorTooltip = "当访问重铸商时候，将显示一个弹出的统计框，提示重铸的建议。",
 		OptionsResetUpgrades = "重新扫描装备",
 		OptionsResetUpgradesTooltip = [=[Pawn会清除本身记录的曾经见过的最好的装备（已装备过的银行的等），所有评分从你角色现在已装备的为标准来比较。
 
@@ -472,7 +467,6 @@ Pawn 的评分尺度默认是由Wowhead提供的标准适合大众的，你也�
 
 如果不选中，你只能看到针对于你已经装备的武器的提升。（译者注：建议选上。）]=],
 		OptionsWelcome = "按照你的偏好配置 Pawn.  更改会马上生效.",
-		ReforgingAdvisorHeader = "Pawn 重铸建议:",
 		ScaleChangeColor = "调整顏色",
 		ScaleChangeColorTooltip = "调整物品提示栏中比重名称和数值的顏色.",
 		ScaleCopy = "复制",
@@ -502,6 +496,7 @@ Pawn 的评分尺度默认是由Wowhead提供的标准适合大众的，你也�
 		ScaleWelcome = "比重是设定属性和价值，这是用来分配物品的EP值。你可以定制你自己的或别人已经创造的比重值。",
 		SocketingAdvisorButtonTooltip = "点击显示Pawn珠宝介面, 此处你可看到 Pawn 为每种比重推荐的宝石,和更换至更高或更低品质的宝石.",
 		SocketingAdvisorHeader = "Pawn 插槽建议:",
+		SocketingAdvisorIgnoreThisItem = "Don't bother adding gems to this low-level item.  But if you do, use these:", -- Requires localization
 		ValuesDoNotShowUpgradesFor1H = "请不要显示单手装备的提升",
 		ValuesDoNotShowUpgradesFor2H = "请不要显示双手装备的提升",
 		ValuesDoNotShowUpgradesTooltip = "启用该选项来隐藏此类型装备的提升。比如，虽然坦骑可以用双手武器，但是对坦骑设定来说一件双手武器从来都不是一个\"提升\"，因此Pawn将不会为它们显示提升信息。同样，惩戒骑可以使用单手武器，但它们从不是一个提升。",
@@ -543,6 +538,7 @@ Pawn 的评分尺度默认是由Wowhead提供的标准适合大众的，你也�
 		PriestHoly = "牧师:神圣",
 		PriestShadow = "牧师:暗影",
 		Provider = "Wowhead 尺度标准",
+		ProviderStarter = "Starter scales", -- Requires localization
 		RogueAssassination = "潜行者:刺杀",
 		RogueCombat = "潜行者:战斗",
 		RogueSubtlety = "潜行者:敏锐",

@@ -1,3 +1,81 @@
+Version 3.60.
+
+
+Bugfixes:
+-- Fixed bug where saving custom debuff settings would reset the custom debuff color
+-- Fixed bug where custom debuffs added by spell ID did not have all settings applied
+-- Fixed bug where custom debuffs were not playing sounds when selected
+-- Fixed bug where isInSameZone check always returned true
+--	BuffWatch now correctly ignores other players outside the players zone
+--	Global scanner perf bump when 'same zone' limit selected
+-- Fixed bug in the combat log parsing for incoming swing damage amount
+-- Removed deprecated spells and abilities
+--	Removed Death Knight spell Unholy Frenzy
+--	Removed Druid spell Nourish
+--	Removed Druid spell Symbiosis
+--	Removed Hunter aspect Aspect of the Hawk
+--	Changed Hunter aspect Aspect of the Iron Hawk to Iron Hawk
+--	Removed Monk raid cooldown Avert Harm
+--	Removed Monk spell Serpent's Zeal
+--	Changed Paladin spell Divine Light to Holy Light
+--	Removed Paladin spell Inquisition
+--	Removed Priest spell Hymn of Hope
+--	Removed Priest spell Void Shift
+--	Removed Priest spell Inner Fire
+--	Removed Priest spell Inner Will
+--	Changed Priest spell Greater Heal to Heal
+--	Removed Rogue poison Mind Numbing Poison
+--	Changed Rogue poison Paralytic Poison to Internal Bleeding
+--	Changed Shaman spell Greater Healing Wave to Healing Wave
+--	Removed Shaman weapon enchant Earthliving Weapon
+--	Removed Shaman weapon enchant Flametongue Weapon
+--	Removed Shaman weapon enchant Frostbrand Weapon
+--	Removed Shaman weapon enchant Rockbiter Weapon
+--	Removed Shaman weapon enchant Windfury Weapon
+--	Removed Shaman totem Mana Tide Totem
+--	Removed Shaman totem Stormlash Totem
+--	Removed Shaman spell Burning Wrath
+--	Removed Warrior raid cooldown Demoralizing Banner
+
+
+Improvements:
+-- Added new raid group size 20 man
+--   Tools > Profiles > Activate due to group size
+--   Move > Hold to Test 
+-- Added custom debuffs for 6.0 raid content
+-- Added new spells and abilities
+--	Added new Priest spell Clarity of Will as pumpable absorb
+--	Added new Hunter aspect Aspect of the Fox
+--	Added new Mage raid cooldown Amplify Magic
+--	Added new Druid spell Rejuvenation (Germination) as HoT icon
+--	Added new Druid spell Genesis as HoT icon
+
+
+Changes:
+-- Updated TOC for 6.0
+-- Updated Swiftmendable check to include units with Rejuvenation (Germination)
+-- Updated Swiftmendable check to exclude others HoTs when Rampant Growth is selected
+-- Updated toolbox helper function for GetTalentInfo API changes
+-- Updated 'Spells > Keys global' edit box to properly decorate text
+
+
+Features:
+-- Minor update for Warlords of Draenor
+
+
+TODO:
+-- Updated incoming/over heal estimation
+--   Appears to not be a bug in VuhDo
+--   UnitGetIncomingHeals API seems to return bogus values on beta/PTR?
+-- Updated AOE advisor spell bases
+--   Healing spell base values have been removed (H = Cx + B is now H = Cx)
+--   Need to empirically test coefficients shown on beta tooltips
+--   Use Hamlet's updated spreadsheet for WoD?
+-- Updated AOE advisor glyph item IDs
+-- Updated AOE advisor Glyph of Light of Dawn support
+
+
+--------------------------------------------------------------
 Version 3.53.
 
 

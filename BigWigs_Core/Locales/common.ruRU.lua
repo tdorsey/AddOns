@@ -26,7 +26,7 @@ L["intermission"] = "Перерыв"
 L["interrupted"] = "%s прервано"
 L["mob_killed"] = "%s убит! (%d/%d)"
 L["mob_remaining"] = "%s убит, %d осталось"
-L["mythic"] = "Эпохальный режим" -- Needs review
+L["mythic"] = "Эпохальный режим"
 L["near"] = "%s около ТЕБЯ!"
 L["next_add"] = "Следующий помощник"
 L["no"] = "Нет %s!"
@@ -43,7 +43,7 @@ L["soon"] = "%s скоро!"
 L["spawning"] = "%s появление!"
 L["stack"] = "%dx %s на %s"
 L["stage"] = "Этап %d"
-L["trash"] = "Трэш" -- Needs review
+L["trash"] = "Трэш"
 L["underyou"] = "%s под ТОБОЙ!"
 L["you"] = "%s на ТЕБЕ"
 

@@ -1,8 +1,0 @@
-2014-07-10  yellowfive  <yellowfive>
-
-[218628cb4a29] [v1.2.16.0]
-* AskMrRobot.toc, ui/CombatLogTab.lua:
-
-removed test button from combat log tab
-
-

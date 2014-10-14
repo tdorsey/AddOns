@@ -1123,7 +1123,6 @@ local tRaidCds = {
 	--  Warrior
 	871, -- Shield Wall
 	97462, -- Rallying Cry
-	114203, -- Demoralizing Banner
 	118038, -- Die by the Sword
 	12975, -- Last Stand
 	114028, -- Mass Spell Reflect
@@ -1135,7 +1134,6 @@ local tRaidCds = {
 	22812, -- Barkskin
 	106922, -- Might of Ursoc
 	740, -- Tranquility
-	--110309, -- Symbiosis
 	102342, -- Ironbark
 	61336, -- Survival Instincts
 	105739, -- Mass Regeneration
@@ -1159,14 +1157,12 @@ local tRaidCds = {
 	108503, -- Grimmoire of Sacrifice
 
 	-- Priest
-	108968, -- Void Shift
 	47585, -- Dispersion
 	64843, -- Divine Hymn
 	47788, -- Guardian Spirit
 	33206, -- Pain Suppression
 	62618, -- Power Word: Barrier
 	108945, -- Angelic Bulwark
-	64901, -- Hymn of Hope
 
 	-- Shaman
 	30823, -- Shamanistic Rage
@@ -1187,6 +1183,7 @@ local tRaidCds = {
 	45438, -- Ice Block
 	86949, -- Cauterize
 	110959, -- Greater Invisibility
+	159916, -- Amplify Magic
 
 	-- Hunter
 	19263, -- Deterrence
@@ -1194,7 +1191,6 @@ local tRaidCds = {
 
 	-- Monk
 	115203, -- Fortifying Brew
-	115213, -- Avert Harm
 	116849, -- Life Cocoon
 	122278, -- Dampen Harm
 	122783  -- Diffuse Magic

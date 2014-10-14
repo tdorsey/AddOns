@@ -25,9 +25,9 @@ AskMrRobot.GemTab = AskMrRobot.inheritsFrom(AskMrRobot.Frame)
 local MAX_SLOTS = 4
 
 -- GemTab contructor
-function AskMrRobot.GemTab:new(name, parent)
+function AskMrRobot.GemTab:new(parent)
 	-- create a new frame (if one isn't supplied)
-	local tab = AskMrRobot.Frame:new(name, parent)
+	local tab = AskMrRobot.Frame:new(nil, parent)
 	tab:SetPoint("TOPLEFT")
 	tab:SetPoint("BOTTOMRIGHT")
 	-- use the GemTab class
@@ -126,16 +126,22 @@ function AskMrRobot.GemTab:Update()
 	local i = 1
 	local badGemTotal = 0
 
-	if AskMrRobot.itemDiffs.gems then
-		for slotNum, badGems in AskMrRobot.sortSlots(AskMrRobot.itemDiffs.gems) do
-			self.count = self.count + 1
-			if i <= MAX_SLOTS then
-				self.jewelPanels[i]:Show()
+	if AskMrRobot.ComparisonResult.gems then
+		for iSlot = 1, #AskMrRobot.slotIds do
+			local slotId = AskMrRobot.slotIds[iSlot]
+			local badGems = AskMrRobot.ComparisonResult.gems[slotId]
+			if badGems ~= nil then
+				self.count = self.count + 1
+				if i <= MAX_SLOTS then
+					self.jewelPanels[i]:Show()
+				end
+				for g = 1, #badGems.optimized do
+					if not AskMrRobot.AreGemsCompatible(badGems.optimized[g], badGems.current[g]) then
+						badGemTotal = badGemTotal + 1
+					end
+				end
+				i = i + 1
 			end
-			for k, v in pairs(badGems.badGems) do
-				badGemTotal = badGemTotal + 1
-			end
-			i = i + 1
 		end
 	end
 
@@ -155,8 +161,8 @@ function AskMrRobot.GemTab:Update()
 		self.gemCurrentHeader:Show()
 		self.gemOptimizedHeader:Show()
 		self.gemsTextToOptimize:Show()
-		self.button:Show()
-		self.usePerfectButton:Show()
+		--self.button:Show()
+		--self.usePerfectButton:Show()
 		self.stamp:Hide()
 	end	
 
@@ -179,18 +185,24 @@ function AskMrRobot.GemTab.OnUpdate(scrollframe)
 	local offset = FauxScrollFrame_GetOffset(scrollframe)
 
 	local i = 1
-	for slotNum, badGems in AskMrRobot.sortSlots(AskMrRobot.itemDiffs.gems) do
-		if offset > 0 then
-			offset = offset - 1
-		else
+	if AskMrRobot.ComparisonResult.gems then
+		for iSlot = 1, #AskMrRobot.slotIds do
+			local slotId = AskMrRobot.slotIds[iSlot]
+			local badGems = AskMrRobot.ComparisonResult.gems[slotId]
+			if badGems ~= nil then
+				if offset > 0 then
+					offset = offset - 1
+				else
 
-			if i > MAX_SLOTS then
-				break
+					if i > MAX_SLOTS then
+						break
+					end
+
+					self.jewelPanels[i]:SetItemLink(AskMrRobot.slotDisplayText[slotId], AmrDb.Equipped[AmrDb.ActiveSpec][slotId])
+					self.jewelPanels[i]:SetOptimizedGems(badGems.optimized, badGems.current)
+					i = i + 1
+				end
 			end
-
-			self.jewelPanels[i]:SetItemLink(_G[strupper(AskMrRobot.slotNames[slotNum])], badGems.current.link )
-			self.jewelPanels[i]:SetOptimizedGems(badGems.optimized, badGems.badGems)
-			i = i + 1
 		end
 	end
 end

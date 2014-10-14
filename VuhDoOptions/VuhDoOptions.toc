@@ -1,13 +1,17 @@
-## Interface: 50400
+## Interface: 60000
 ## Title: VuhDo ['vu:du:] - Options
-## Author: Iza@Gilneas
-## Version: 3.53
+## Author: Iza@Gilneas, humfras
+## Version: 3.6
 ## Notes: VuhDo Options
 ## SavedVariables: VUHDO_OPTIONS_SETTINGS
 ## SavedVariablesPerCharacter: VUHDO_GLOBAL_ICONS, VUHDO_GI_SCAN_IDX
 ## DefaultState: Enabled
 ## Dependencies: VuhDo
 ## LoadOnDemand: 0
+## X-Curse-Packaged-Version: v3.60
+## X-Curse-Project-Name: VuhDo
+## X-Curse-Project-ID: vuhdo
+## X-Curse-Repository-ID: wow/vuhdo/mainline
 
 Libs\ChatThrottleLib\ChatThrottleLib.xml
 

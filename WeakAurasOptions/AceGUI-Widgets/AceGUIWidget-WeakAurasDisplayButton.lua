@@ -1,8 +1,11 @@
-﻿local Type, Version = "WeakAurasDisplayButton", 20
+local Type, Version = "WeakAurasDisplayButton", 21
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local L = WeakAuras.L;
+local name, realm = UnitFullName("player")
+local fullName = name.."-"..realm
+
 
 local function Hide_Tooltip()
     GameTooltip:Hide();
@@ -60,7 +63,7 @@ local methods = {
             elseif(IsShiftKeyDown()) then
                 local editbox = GetCurrentKeyBoardFocus();
                 if(editbox) then
-                    editbox:Insert("[WeakAuras: "..UnitName("player").." - "..data.id.."]");
+                    editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
                 end
             else
                 if(mouseButton == "RightButton") then
@@ -150,13 +153,23 @@ local methods = {
         end
         
         function self.callbacks.OnDuplicateClick()
-            local new_id = data.id;
+            local base_id = data.id .. " ";
             local num = 2;
+
+            -- if the old id ends with a number increment the number
+            local matchName, matchNumber = string.match(data.id, "^(.-)(%d*)$")
+            matchNumber = tonumber(matchNumber)
+            if (matchName ~= "" and matchNumber ~= nil) then
+                base_id = matchName;
+                num = matchNumber + 1
+            end
+
+            local new_id = base_id .. num;
             while(WeakAuras.GetData(new_id)) do
-                new_id = data.id.." "..num;
+                new_id = base_id .. num;
                 num = num + 1;
             end
-            
+
             local newData = {};
             WeakAuras.DeepCopy(data, newData);
             newData.id = new_id;

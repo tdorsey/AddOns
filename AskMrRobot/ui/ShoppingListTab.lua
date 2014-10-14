@@ -52,8 +52,8 @@ function AskMrRobot.ShoppingListTab:new(parent)
 	end)
 
 	tab.enchantMaterialsCheckbox = CreateFrame("CheckButton", "AmrEnchantMaterialsCheckbox", tab.shoppingPanel, "ChatConfigCheckButtonTemplate");
-	tab.enchantMaterialsCheckbox:SetChecked(AmrSendSettings.SendEnchantMaterials)
-	tab.enchantMaterialsCheckbox:SetScript("OnClick", function () AmrSendSettings.SendEnchantMaterials = tab.enchantMaterialsCheckbox:GetChecked() end)
+	tab.enchantMaterialsCheckbox:SetChecked(AmrDb.SendSettings.SendEnchantMaterials)
+	tab.enchantMaterialsCheckbox:SetScript("OnClick", function () AmrDb.SendSettings.SendEnchantMaterials = tab.enchantMaterialsCheckbox:GetChecked() end)
 	tab.enchantMaterialsCheckbox:SetPoint("TOPLEFT", tab.sendButton, "TOPLEFT", 0, 25)
 	local text3 = getglobal(tab.enchantMaterialsCheckbox:GetName() .. 'Text')
 	text3:SetFontObject("GameFontHighlightLarge")
@@ -63,8 +63,8 @@ function AskMrRobot.ShoppingListTab:new(parent)
 
 
 	tab.enchantsCheckbox = CreateFrame("CheckButton", "AmrEnchantsCheckbox", tab.shoppingPanel, "ChatConfigCheckButtonTemplate");
-	tab.enchantsCheckbox:SetChecked(AmrSendSettings.SendEnchants)
-	tab.enchantsCheckbox:SetScript("OnClick", function () AmrSendSettings.SendEnchants = tab.enchantsCheckbox:GetChecked() end)
+	tab.enchantsCheckbox:SetChecked(AmrDb.SendSettings.SendEnchants)
+	tab.enchantsCheckbox:SetScript("OnClick", function () AmrDb.SendSettings.SendEnchants = tab.enchantsCheckbox:GetChecked() end)
 	tab.enchantsCheckbox:SetPoint("TOPLEFT", tab.sendButton, "TOPLEFT", 0, 50)
 	local text2 = getglobal(tab.enchantsCheckbox:GetName() .. 'Text')
 	text2:SetFontObject("GameFontHighlightLarge")
@@ -76,8 +76,8 @@ function AskMrRobot.ShoppingListTab:new(parent)
 
 	tab.gemsCheckbox = CreateFrame("CheckButton", "AmrGemsCheckbox", tab.shoppingPanel, "ChatConfigCheckButtonTemplate");
 	tab.gemsCheckbox:SetPoint("TOPLEFT", tab.sendButton, "TOPLEFT", 0, 75)
-	tab.gemsCheckbox:SetChecked(AmrSendSettings.SendGems)
-	tab.gemsCheckbox:SetScript("OnClick", function () AmrSendSettings.SendGems = tab.gemsCheckbox:GetChecked() end)
+	tab.gemsCheckbox:SetChecked(AmrDb.SendSettings.SendGems)
+	tab.gemsCheckbox:SetScript("OnClick", function () AmrDb.SendSettings.SendGems = tab.gemsCheckbox:GetChecked() end)
 	local text = getglobal(tab.gemsCheckbox:GetName() .. 'Text')
 	text:SetFontObject("GameFontHighlightLarge")
 	text:SetText(L.AMR_SHOPPINGLISTTAB_GEMS)
@@ -167,7 +167,7 @@ function AskMrRobot.ShoppingListTab:new(parent)
 	tab.dropDown = CreateFrame("FRAME", "AmrSendType", tab.shoppingPanel, "UIDropDownMenuTemplate")
 	tab.dropDown:SetPoint("TOPLEFT", tab.sendMessage3, "TOPRIGHT", 0, 5)
 	UIDropDownMenu_SetWidth(tab.dropDown, 140)
-	UIDropDownMenu_SetText(tab.dropDown, AmrSendSettings.SendToType)
+	UIDropDownMenu_SetText(tab.dropDown, AmrDb.SendSettings.SendToType)
 
 	local text = getglobal(tab.dropDown:GetName() .. 'Text')
 	text:SetFontObject("GameFontHighlightLarge")
@@ -176,7 +176,7 @@ function AskMrRobot.ShoppingListTab:new(parent)
 		local info = UIDropDownMenu_CreateInfo()
 		info.justifyH = "RIGHT"
 		info.text = optionText
-		info.checked = AmrSendSettings.SendToType == optionText
+		info.checked = AmrDb.SendSettings.SendToType == optionText
 		info.arg1 = optionText
 		info.func = list.SetValue
 		info.owner = list
@@ -196,9 +196,9 @@ function AskMrRobot.ShoppingListTab:new(parent)
 	end)
 
 	function tab.dropDown:SetValue(newValue)
-		AmrSendSettings.SendToType = newValue
+		AmrDb.SendSettings.SendToType = newValue
 		-- Update the text; if we merely wanted it to display newValue, we would not need to do this
-		UIDropDownMenu_SetText(tab.dropDown, AmrSendSettings.SendToType)
+		UIDropDownMenu_SetText(tab.dropDown, AmrDb.SendSettings.SendToType)
 		-- Because this is called from a sub-menu, only that menu level is closed by default.
 		-- Close the entire menu with this next call
 		CloseDropDownMenus()
@@ -208,11 +208,11 @@ function AskMrRobot.ShoppingListTab:new(parent)
 	tab.sendTo:SetPoint("TOPLEFT", tab.dropDown, "TOPRIGHT", 0, 0)
 	tab.sendTo:SetPoint("RIGHT", 0, 0)
 	tab.sendTo:SetHeight(30)
-	tab.sendTo:SetText(AmrSendSettings.SendTo or "")
+	tab.sendTo:SetText(AmrDb.SendSettings.SendTo or "")
 	tab.sendTo:SetFontObject("GameFontHighlightLarge")
 	tab.sendTo:SetAutoFocus(false)
 	tab.sendTo:SetScript("OnChar", function()
-		AmrSendSettings.SendTo = tab.sendTo:GetText()
+		AmrDb.SendSettings.SendTo = tab.sendTo:GetText()
 	end)
 
 	tab.messageQueue = {}
@@ -256,7 +256,8 @@ function AskMrRobot.ShoppingListTab:SetGemIcon(row, gemInfo)
 
 	-- set the link (tooltip + icon)
 	gemIcon:SetItemLink(gemLink)
-	gemIcon:SetGemColor(gemInfo.color)
+	--gemIcon:SetGemColor(gemInfo.color)
+	gemIcon:SetGemColor('Prismatic')
 
 	-- if we didn't get one, its because WoW is slow
 	if not gemLink and gemInfo.id then
@@ -552,28 +553,33 @@ function AskMrRobot.ShoppingListTab:HasStuffToBuy()
 end
 
 function AskMrRobot.ShoppingListTab:CalculateItems()
-	-- build a map of missing gem-ids -> {id, color, enchantid, count, total}
+	-- build a map of missing gem-enchant-ids -> {id, enchantid, count, total}
 	local gemList = {}
-	for slotNum, badGems in pairs(AskMrRobot.itemDiffs.gems) do
-		--badGems: {current: array of enchant ids, optimized: (array of {id, color, enchantId})
-		for i = 1, #badGems.optimized do
-			if badGems.badGems[i] then
-				local goodGem = badGems.optimized[i]
-				if goodGem.id ~= 0 then
-					local gem = gemList[goodGem.id]
-					if gem == nil then
-						gemList[goodGem.id] = {id = goodGem.id, enchantId = goodGem.enchantId, color = goodGem.color, count = 0, total = 1}
-					else
-						gem.total = gem.total + 1
-					end
+
+	-- for each piece of gear that needs at least 1 gem changed
+	for _, badGems in pairs(AskMrRobot.ComparisonResult.gems) do
+		-- for each specified gem
+		for g = 1, #badGems.optimized do
+			local goodGemEnchantId = badGems.optimized[g]
+			-- if AMR says to optimized this gem AND it does *NOT* match matches the current gem		
+			if goodGemEnchantId ~= 0 and not AskMrRobot.AreGemsCompatible(goodGemEnchantId, badGems.current[g]) then
+				-- see if this gem is in our list of gems to optimize
+				local gem = gemList[goodGemEnchantId]
+				if gem == nil then
+					-- if not, add it
+					gemList[goodGemEnchantId] = {id = AskMrRobot.ExtraGemData[goodGemEnchantId].id, enchantId = goodGemEnchantId, count = 0, total = 1, compatibleGemIds = AskMrRobot.ExtraGemData[goodGemEnchantId].identicalItemGroup}
+				else
+					-- if so, increase the total requested for this 
+					gem.total = gem.total + 1
 				end
 			end
 		end
 	end
 
 	local enchantList = {}
-	for slot, enchantData in AskMrRobot.sortSlots(AskMrRobot.itemDiffs.enchants) do
-		local id = AskMrRobot.getEnchantItemId(enchantData.optimized) or enchantData.optimized
+	for slot, enchantData in AskMrRobot.sortSlots(AskMrRobot.ComparisonResult.enchants) do
+		local extraData = AskMrRobot.ExtraEnchantData[enchantData.optimized]
+		local id = extraData and extraData.itemId or enchantData.optimized
 		local qty = enchantList[id]
 		if qty then
 			qty.total = qty.total + 1
@@ -584,63 +590,55 @@ function AskMrRobot.ShoppingListTab:CalculateItems()
 	end
 
 	local enchantMaterials = {}
-	for slot, enchantData in pairs(AskMrRobot.itemDiffs.enchants) do
-		AskMrRobot.addEnchantMaterials(enchantMaterials, enchantData.optimized)
-	end
-	
-	--substract any inventory we already have in the bank
-	for i = 1, #AmrBankItemsAndCounts do
-		local itemId = AskMrRobot.getItemIdFromLink(AmrBankItemsAndCounts[i].link)
-		if itemId then
-			local gem = gemList[itemId]
-			if gem then
-				gem.count = gem.count + AmrBankItemsAndCounts[i].count
-			else 
-				local alternateGemId = AskMrRobot.gemDuplicates[itemId]
-				if alternateGemId then
-					gem = gemList[alternateGemId]
-					if gem then
-						gem.count = gem.count + AmrBankItemsAndCounts[i].count
-					end
+	for slot, enchantData in pairs(AskMrRobot.ComparisonResult.enchants) do
+		local extraData = AskMrRobot.ExtraEnchantData[enchantData.optimized]
+		if extraData and extraData.materials then
+			local itemId
+			local count
+			for itemId, count in pairs(extraData.materials) do
+				if enchantMaterials[itemId] then
+					enchantMaterials[itemId].total = enchantMaterials[itemId].total + count
+				else
+					enchantMaterials[itemId] = { count = 0, total = count }
 				end
 			end
-			local material = enchantMaterials[itemId]
-			if material then
-				material.count = material.count + AmrBankItemsAndCounts[i].count
-			end
-			local enchant = enchantList[itemId]
-			if enchant then
-				enchant.count = enchant.count + AmrBankItemsAndCounts[i].count
-			end
+		end
+
+	end
+	
+	local bagItemsWithCounts = {}
+	-- copy the bank items into a new table so we don't alter them
+	if (AmrDb.BankItemsAndCounts) then
+		for id, count in pairs(AmrDb.BankItemsAndCounts) do
+			bagItemsWithCounts[id] = count
 		end
 	end
 
-	local _ , bagItemsWithCount = AskMrRobot.ScanBags()
+	-- add the items from the players bags
+	AskMrRobot.ScanBags(bagItemsWithCounts)
 
-	--substract any inventory we already have in bags
-	for i = 1, #bagItemsWithCount do
-		local itemId = AskMrRobot.getItemIdFromLink(bagItemsWithCount[i].link)
-		if itemId then
-			local gem = gemList[itemId]
-			if gem then
-				gem.count = gem.count + bagItemsWithCount[i].count
-			else 
-				local alternateGemId = AskMrRobot.gemDuplicates[itemId]
-				if alternateGemId then
-					gem = gemList[alternateGemId]
-					if gem then
-						gem.count = gem.count + bagItemsWithCount[i].count
-					end
+	--substract any inventory we already have in bags/bank
+	for itemId, count in pairs(bagItemsWithCounts) do
+		for _, gem in pairs(gemList) do
+			if gem.compatibleGemIds[itemId] and gem.count < gem.total then
+				local needed = gem.total - gem.count
+				if count > needed then
+					gem.count = gem.total
+					-- only consume the number needed (subtract in case this is compatible with a different gem)
+					count = count - needed
+				else
+					gem.count = gem.count + count
+					count = 0
 				end
 			end
-			local material = enchantMaterials[itemId]
-			if material then
-				material.count = material.count + bagItemsWithCount[i].count
-			end
-			local enchant = enchantList[itemId]
-			if enchant then
-				enchant.count = enchant.count + bagItemsWithCount[i].count
-			end
+		end
+		local material = enchantMaterials[itemId]
+		if material then
+			material.count = material.count + count
+		end
+		local enchant = enchantList[itemId]
+		if enchant then
+			enchant.count = enchant.count + count
 		end
 	end
 
@@ -783,22 +781,22 @@ function AskMrRobot.ShoppingListTab:sendMail()
 
 	local gemList, enchantList, enchantMaterials = self:CalculateItems()
 
-	if AmrSendSettings.SendGems then
+	if AmrDb.SendSettings.SendGems then
 		for k,v in pairs(gemList) do
 			--exclude jewelcrafter gems
-			if not AskMrRobot.JewelcrafterGems[k] then
+			--if not AskMrRobot.JewelcrafterGems[k] then
 				local needed = v.total - v.count
 				if needed > 0 then
-					local itemName = GetItemInfo(k)
+					local itemName = GetItemInfo(v.id)
 					if itemName then
 						message = message .. "\n" .. needed .. "x " .. itemName
 					end
 				end
-			end
+			--end
 		end
 	end
 
-	if AmrSendSettings.SendEnchants then
+	if AmrDb.SendSettings.SendEnchants then
 		for k,v in pairs(enchantList) do
 			local needed = v.total - v.count
 			if needed > 0 then
@@ -810,7 +808,7 @@ function AskMrRobot.ShoppingListTab:sendMail()
 		end
 	end
 
-	if AmrSendSettings.SendEnchantMaterials then
+	if AmrDb.SendSettings.SendEnchantMaterials then
 		for k,v in pairs(enchantMaterials) do
 			local needed = v.total - v.count
 			if needed > 0 then
@@ -823,8 +821,8 @@ function AskMrRobot.ShoppingListTab:sendMail()
 	end
 
 	MailFrameTab_OnClick(nil, 2)
-	if AmrSendSettings.SendGems then
-		if AmrSendSettings.SendEnchants then
+	if AmrDb.SendSettings.SendGems then
+		if AmrDb.SendSettings.SendEnchants then
 			SendMailSubjectEditBox:SetText(L.AMR_SHOPPINGLISTTAB_MAIL_SUBJECT_GE)
 		else
 			SendMailSubjectEditBox:SetText(L.AMR_SHOPPINGLISTTAB_MAIL_SUBJECT_G)
@@ -832,21 +830,21 @@ function AskMrRobot.ShoppingListTab:sendMail()
 	else
 		SendMailSubjectEditBox:SetText(L.AMR_SHOPPINGLISTTAB_MAIL_SUBJECT_E)
 	end
-	SendMailNameEditBox:SetText(AmrSendSettings.SendTo)
+	SendMailNameEditBox:SetText(AmrDb.SendSettings.SendTo)
 	SendMailBodyEditBox:SetText(message)
 end
 
 function AskMrRobot.ShoppingListTab:Send()	
 	local chatType = nil
-	if AmrSendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_PARTY then
+	if AmrDb.SendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_PARTY then
 		chatType = "PARTY"
-	elseif AmrSendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_GUILD then
+	elseif AmrDb.SendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_GUILD then
 		chatType = "GUILD"
-	elseif AmrSendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_RAID then
+	elseif AmrDb.SendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_RAID then
 		chatType = "RAID"
-	elseif AmrSendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_CHANNEL then
+	elseif AmrDb.SendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_CHANNEL then
 		chatType = "CHANNEL"
-	elseif AmrSendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_MAIL then
+	elseif AmrDb.SendSettings.SendToType == L.AMR_SHOPPINGLISTTAB_DROPDOWN_MAIL then
 		self:sendMail()
 		return
 	else
@@ -860,18 +858,18 @@ function AskMrRobot.ShoppingListTab:Send()
 	local gemList, enchantList, enchantMaterials = self:CalculateItems()
 
 	local items = {}
-	if AmrSendSettings.SendGems then
+	if AmrDb.SendSettings.SendGems then
 		for k,v in pairs(gemList) do
-			if not AskMrRobot.JewelcrafterGems[k] then
+			--if not AskMrRobot.JewelcrafterGems[k] then
 				local needed = v.total - v.count
 				if needed > 0 then
-					tinsert(items, {id = k, needed = needed})
+					tinsert(items, {id = v.id, needed = needed})
 				end
-			end
+			--end
 		end
 	end
 
-	if AmrSendSettings.SendEnchants then
+	if AmrDb.SendSettings.SendEnchants then
 		for k,v in pairs(enchantList) do
 			local needed = v.total - v.count
 			if needed > 0 then
@@ -880,7 +878,7 @@ function AskMrRobot.ShoppingListTab:Send()
 		end
 	end
 
-	if AmrSendSettings.SendEnchantMaterials then
+	if AmrDb.SendSettings.SendEnchantMaterials then
 		for k,v in pairs(enchantMaterials) do
 			local needed = v.total - v.count
 			if needed > 0 then
@@ -895,7 +893,7 @@ function AskMrRobot.ShoppingListTab:Send()
 			message = message .. " " .. entry.needed .. "x " .. link
 			count = count + 1
 			if count == 2 then
-				tinsert(self.messageQueue, {message = message, chatType = chatType, chatChannel = AmrSendSettings.SendTo})
+				tinsert(self.messageQueue, {message = message, chatType = chatType, chatChannel = AmrDb.SendSettings.SendTo})
 				count = 0
 				message = L.AMR_SHOPPINGLISTTAB_CHAT_ROBOT_MESSAGE
 			end
@@ -903,7 +901,7 @@ function AskMrRobot.ShoppingListTab:Send()
 	end
 
 	if count > 0 then
-		tinsert(self.messageQueue, {message = message, chatType = chatType, chatChannel = AmrSendSettings.SendTo})
+		tinsert(self.messageQueue, {message = message, chatType = chatType, chatChannel = AmrDb.SendSettings.SendTo})
 	end
 
 	self:SendNextMessage()
